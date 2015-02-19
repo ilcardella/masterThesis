@@ -1,0 +1,160 @@
+\chapter{Programming indoor applications}
+\label{cap3}
+
+
+
+\section {Indoor context and requirements}
+
+The goal of our work is to develop a programming framework to help programmers in creating applications for indoor usage of swarm of drones; for example, drones can find a lost item in a house, or bring objects in hospitals and warehouses.
+Besides of localization problem, indoor context also leads to the limits of the size of the drone. As a result, programmer constantly confronts with a limited battery resource and a small weigh the drone can carry out. These problems, as well as their possible solutions, are described in the following section.
+
+\subsection{Indoor localization}
+
+The main issue that all developers are facing, working on an indoor application for drones, is that they are not able to use the Global Positioning System (GPS); it cannot be used because of walls,a roof or a ceiling. For that reason Indoor Positioning System(IPS) is widely applied for indoor localization. In this section we will discuss several implementations of IPS.  
+
+An indoor positioning system is a solution to locate objects or people inside a building using radio waves, magnetic fields, acoustic signals, or other information collected from the sensors of mobile devices.
+Although there is no "standard" for IPS methods, many commercial solutions have already been developed and are available on the market.
+The IPS methods rely on alternative technologies, such as \textit{magnetic positioning} and \textit{dead reckoning}, to actively locate mobile devices and provide ambient location for devices to get sensed.
+The localized nature of an IPS has resulted in design fragmentation, with systems making use of various optical,radio, or even acoustic technologies.
+Like in \textit{trilateration}, an IPS needs three independent measurements to unambiguously find a location and there must be a sound method for reducing the unpredictable error budget significantly.
+
+Today many IPS methods have been developed and they can be divided in two main categories:
+
+\begin{itemize}
+\itemsep2pt
+\item{
+Non-Radio technologies
+}
+\item{
+Wireless technologies
+}
+\end{itemize}
+
+\subsubsection{Non-Radio technologies}
+
+Non-radio technologies have been developed for localization without using the existing wireless infrastructures, and they can provide very high accuracy.
+Nevertheless, they also require expensive installations and costly equipment.
+\\
+
+\textit{Magnetic positioning}
+\\
+Magnetic positioning is based on the iron inside buildings that create local variations in the Earth’s magnetic field.
+Modern smartphones can use their magnetometers to sense these variations in order to map indoor locations, with an accuracy of 1-2 meters and a confidence level of 90 percent, without using the wireless infrastructures.
+\\
+
+\textit{Inertial measurements}
+\\
+
+Pedestrians can carry an inertial measurement unit(IMU) by measuring steps indirectly or in a foot mounted approach, referring to maps or additional sensors to constrain the sensor drift encountered with inertial navigation.
+Since IMUs cover only the differential of motions, the location gets determined by integration, and so there is need of integration constants to provide results.
+
+ 
+\subsubsection{Wireless technologies}
+
+Existing wireless infrastructures can be used for indoor localization; almost every wireless technology is suitable, although they won't be as precise as non-radio technologies.
+Localization accuracy can be improved at the expense of new wireless infrastructure equipment and installation.
+WiFi signal strength measurements are extremely noisy, so there is need to find a way to make more accurate systems by using statistics to filter out the inaccurate input data. WiFi Positioning Systems are sometimes used outdoors as a supplement to GPS on mobile devices, where only few reflection phenomena could happen.
+\\
+
+\textit{WiFi Positioning System (WPS)}
+\\
+
+WPS is based on measuring the intensity of the received signal(the well known RSS) together with the technique of \textit{fingerprinting}.
+In computer science, a fingerprinting algorithm is a procedure that maps an arbitrarily large data item to a much shorter bit string, its fingerprint, that uniquely identifies the original data for all practical purposes just as human fingerprints uniquely identify people for practical purposes.
+The accuracy of WPS improves with the increase of the number of positions entered in the database.
+WPS is subjected to fluctuations in the signal, that can increase errors and inaccuracies in the path of the user.
+\\
+
+\textit{Bluetooth}
+\\
+
+Bluetooth cannot provide a precise location, since it's based on the concept of \textit{proximity}, indeed it is considered an \textit{indoor proximity solution}.
+However, by linking micro-mapping and indoor mapping to Bluetooth and through the usage of \textit{iBeacons}, real existing solutions have been developed for providing large scale indoor mapping.
+\\
+
+\textit{RFID}
+\\
+
+Passive radio-frequency identification(RFID) systems are based on the concepts of \textit{location indexing} and \textit{presence reporting} for tagged objects.
+These systems do not report the signal strengths and the distances between tagged objects, and do not renew the location coordinates of the sensors or the locations of the tags.
+Some mechanisms have to be applied to prevent from passing by out of range.
+
+\newpage
+
+\textit{Grid concepts}
+\\
+
+Low-range receivers can be used, and arranged in a grid pattern, for economy, in the space that must be observed.
+Since they are low-range effective, each tagged receiver can be identified only by some neighbors.
+Existing advanced solutions add visual coverage with cameras to wireless coverage for the location, making possible indoor localization.
+\\
+
+\textit{Angle of arrival}
+\\
+
+The angle of arrival is the inclination at which a signal arrives at the receiver, and is determined,having an array of directional sensors, by which sensor received the signal.
+Combining it with \textit{triangulation} and a known base line makes it possible to determine location relative to two transmitters.
+\\
+
+\textit{Time of arrival}
+\\
+
+Time of arrival is the amount of time a signal takes to propagate from transmitter to receiver. The travel time of a signal is used to determine this distance, since the signal propagates constantly.
+ToA, which is also used by GPS, require complicated synchronization mechanisms to leave sensors a reliable source of time.
+Since, in indoor contexts, objects like tables,walls or doors reflect and diffract the RF signal, temporal or spatial sparsity based techniques must be applied to reduce these effects.
+\\
+
+\textit{RSSI}
+\\
+
+Received signal strength indication (RSSI) is a measurement of the power level received by sensors.
+Radio waves propagate following the inverse-square law, the distance can be computed considering the signal strengths at the transmitter and receiver.
+As already explained, indoor contexts contains a lot of obstacles, like walls, doors, tables etc., and so the accuracy is lowered by absorption and reflection phenomena; some corrective mechanism must be adopted to lower these phenomena.
+
+\newpage
+
+\subsection{Drones and Objects size limitation}
+
+
+Indoor contexts imply small areas which are usually full of people and obstacles (think of an house context) hence, drones have to be small, in order to avoid crashes with both human and environmental obstacles.
+
+Size limitations result in many problems; the first is battery duration, which can reach a maximum of 10 minutes, having a recharge time of about 20/30 minutes.
+This problem is partially solved by the fact that the vast majority of applications that can be developed with our final solution, the Pluto programming framework, involve a team of drones. 
+So, if one drone's battery is about to get empty, the drone can return to the base station and recharge while another drone can substitute it.
+This obviously complicates the system's logic, because it must also take care to check the drones battery and to find a free drone that can eventually substitute the one whose battery is low.
+It limits the programmer in developing applications which don't require the drones to perform long trips to carry out their actions or to work in parallel.
+
+Another problem arising from size limitations is that the smaller the drone is the less stable he is.
+Almost every kind of micro-drone has serious stability issues, and a lot of research efforts goes in this direction. This problem is lowered by the developing of programming libraries that could improve stability of the drones at real-time, adjusting a set of parameters while the drone is flying.
+
+Micro-drones are obviously more fragile than the big ones, so a crash with humans or obstacles can definitely destroy the drone or make it seriously damaged. This is the price to be paid for having little drones that can operate in small indoor contexts.
+
+Finally, the use of small drones means that only small objects can be took, so the applications developed with Pluto framework must take this into account.
+For example, a pair of keys can be brought to a person, not a book nor a pair of shoes. For big objects, a different kind of applications can be designed, such as one that find the object and then notify the user of the position of this object, through a camera or acoustic signaling.
+
+
+
+
+\newpage
+
+
+\section{Team level approach for the nano-drones coordination}\label{teamlevelproblems}
+
+
+Using a Team level approach, that we described in section \ref{teamlevel}, entails some problems. 
+The user can neither address individual drones nor express actions that involve direct interactions between drones, such as those required to pass an object between them.
+This is the main limitation of the approach, but it does not affect the scenarios we focused in our work, which we show in section \ref{applicability}.
+Another problem of the Team-level approach is that, having a single brain which manages all the application logic and the dispatching of drones, the system has a single point of failure, so, if the central brain breaks then the whole system won't work.
+This problem can be fixed or at least weakened by applying dependable systems methods, improving reliability of the central brain, reducing is rate of failure etc.
+
+Even though team-level approach has his own limitations, other approaches we discussed in section \ref{cap2} are less suitable.
+
+Indeed, the Drone-oriented approach's main problem is that the programmer has to manage the single drone's movements and interactions with other drones: he must give a list of instructions that the drone will perform sequentially.
+In the case of multiple drones,the programmer should deal with difficult programming tasks, like concurrency and parallelism, and it should also manage the drone batteries and their crashes/failures.
+Adding one or more drones to the system could complicate a lot the programming task. The programmer should also deal with timing constraints and he should dinamically balance the load between drones; so, the drone-level approach is most suitable for applications involving only one drone.
+
+On the other and, the Swarm-level approach is more suitable for applications where there’s need of a lot of drones performing the same actions, indeed the programmer can give a set of basic rules that each drone can follow. It is important to underline that, in swarm-level approach, there is no possibility to have a shared state between drones; each drone execute the actions specified by the programmer on his own local state. This means that this approach is very easy to scale up to many drones, but it’s not suitable for applications that require the drones to explicitly coordinate.
+
+Since we don't want to manage the single drone and we need a sort of "global state" for our framework, the team-level approach, as already said, is a good compromise.
+
+

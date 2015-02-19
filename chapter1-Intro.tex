@@ -1,0 +1,61 @@
+\chapter{Introduction}
+\label{cap1}
+
+
+\section{General context}
+
+Autonomous drones are performing a revolution in the field of mobile sensing:
+various type of drones are used to perform a great number of applications, since they can carry rich sensor payloads, such as cameras and microphones.
+Often there is a simple abstraction which allows drones navigation: they can be controlled through smartphones and tablets interfaces or by setting waypoints.
+Drones can greatly extend the capabilities of traditional sensing systems while simultaneously reducing cost.
+They can monitor a farmer’s crops, manage parking spaces, or monitor underwater telecommunication systems more practically and/or more cheaply than stationary sensors.
+The great innovation brought by drones is that they offer direct control on where to sample the environment; this was impossible with previous mobile sensing systems that could only passively sample the environment, laying on the mobility of smartphones or vehicles.
+Many drones applications have been developed in the recent years, performing a wide range of different functionality, but they are all suitable for outdoor contexts and so they use medium/big sized drones.
+We aim to create a general model for the interaction of nano-drones, in order to extend the support for programmers who want to create new applications in indoor contexts.
+
+
+\section{Brief description of the work}
+
+We developed a programming framework for developing applications utilizing swarms of nano-drones.
+
+We thought about three applications case study (see~\ref{applicability}), from which we extracted a general behavioral model, which can be used for a wide range of applications; so we decided to create a general programming abstraction which describes a set of features that can be used for a wide range of applications.
+Each of these features is represented by a block, each one concerning with a specific task of the work: there is a block which assigns a drone to an object to deliver, one that manages the priority of a mission etc.
+
+We wanted to facilitate as much as possible the work of the programmer, so we decided to develop a graphical editor (see~\ref{editor}) through which the programmer  can create its application, connecting the functional blocks; he is not forced to use all the blocks provided by the editor and can connect only the blocks he needs according to the functionality he wants for the specific application.
+
+We created the whole model (see~\ref{dataFlow}) for our programming abstraction, choosing a Java model to represent all the features we needed and enriching our description through Sequence diagrams, Visio diagrams and Pseudo-code representation of the model.
+
+The editor and the model are strictly connected; the programmer can create its graphical schema through the graphical editor, and then the editor generates the Java code according to the model created.
+
+We also developed the final user interface(see \ref{interface}) to make the user able to fully exploit the applications created with Pluto programming framework, simply asking him what he wants the drones to do and where.
+
+\section{Outline}
+
+This document is structured in a way that you can easily follow the proceedings and the reasoning behind our contribution.
+
+In this chapter, we have given the general context and the general goals of the work.
+
+In Chapter~\ref{cap2} there is a description of the actual state of the art in the context of our work.
+We describe the three main existing approaches for drone programming, the "Swarm-level","Drone-level" and "Team-level" approaches, also proposing existing examples for each one of them.
+
+Chapter~\ref{cap3} is focused on the problems issued by the indoor context and on the requirements deriving from it.
+The similarities and differences with respect to the outdoor applications are analyzed, in order to derive a new implementation of the system, suitable for the indoor context.
+
+Chapter~\ref{cap4} presents our solution for the research problems described in~\ref{cap3}, the Pluto programming framework; first, the architecture of the system is analyzed, describing in details each component of framework.
+In this section we describe also the graphical editor and the user interface.
+Then the dataflow model of our framework is presented, using visual diagrams, in order to give a sound representation which is easy to understand.
+The last section of the chapter describes all the steps performed to arrive to the final system, showing all the previous solutions which, once refined, brought us to the development of the Pluto programming framework.
+
+Chapter~\ref{cap5} shows how the designed choices have been implemented technically, describing all the software and tools used for the development of Pluto programming framework.
+
+
+Once the solution has been deeply described at design and implementation level, we will show the evaluation and the results of the work.
+
+Chapter~\ref{cap6} starts with an analysis on the applicability of the Pluto framework (see section \ref{applicability}).
+There is a description of many already existing applications and of three case study, and an analysis on whether they can be developed with Pluto. 
+In section \ref{usability} we propose two exercises to real people, in order to evaluate the effective usability of Pluto.
+We also propose a survey to the users and then present the result in a graphical way.
+In section \ref{performance} we measure the software and hardware consumption metrics required by Pluto, presenting the results in a graphical way.
+
+
+Finally, Chapter~\ref{cap7} draws the conclusion and recaps the results obtained, also showing the possibilities of future works to extend our programming model.

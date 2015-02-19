@@ -1,0 +1,229 @@
+\chapter{State of the art}
+\label{cap2}
+
+In the last years, the drone technology is expanding rapidly;especially the aerial drones, which are often used as toys controlled by joystick  or to make aerial videos through mounted cameras, there exist also aquatic and terrestrial drones, which can be used for many applications. 
+For example, through aquatic drones the submarine network infrastructure could be managed more efficiently, and through terrestrial drones some emergency situations, like fires, can be managed without involving human life.
+
+Basically, the mobile sensing through drones represents a technological revolution, opening the way for many applications which could not have been developed with the traditional technologies.
+Actually, there are a lot of fields where this new technology could be applied, improving performance and reducing costs:
+for example surveillance applications, instructing drones to fly over an area monitoring people, or an application in a domestic context, for example instructing drones to find a lost object or to perform some kind of actions, like bringing some objects to the final user.
+
+
+In the following section we present three main approaches for programming drones , providing existing examples for each one of them:
+
+\begin{itemize}
+\itemsep2pt
+\item{
+\textit{Drone-level approach}, described in section \ref{droneLevel}
+}
+\item{
+\textit{Swarm-level approach}, described in section \ref{swarmLevel}
+}
+\item{
+\textit{Team-level approach}, described in section \ref{teamlevel}
+}
+\end{itemize}
+
+The former is focused on the programming of an every single drone, while the second implies basic rules to execute for the whole swarm of drones. The third approach is the most modern work. It creates a middle-ground between drone and swarm approaches, by providing a flexibility in expressing sophisticated collaborative tasks without addressing to a single drone.
+
+\newpage
+
+\section {Drone-level approach}\label{droneLevel}
+
+In the Drone-level approach, the programmer must manage the single drone, taking care of giving a list of instructions that the drone will perform sequentially.
+This approach may be suitable for applications where there is a single drone performing some actions, like searching for a lost object and bringing it back to the user.But scaling the application to a number of drones makes programmer to deal with  concurrency and parallelism. Moreover, battery and crashes/failures should be managed manually for every drone. Finally, timing constraints and a dynamic load balance drastically increase the complexity of the programming. For these reasons drone-level approach is not suitable for a large number of drones.
+
+A concrete example of the application of the Drone-level approach is the so called Robot Create(fig.~\ref{fig:irobot}), a hobbyist robot manufactured by iRobot that was introduced in 2007 and based on their Roomba vacuum cleaning platform. The iRobot Create is explicitly designed for robotics development and improves the experience beyond simply hacking the Roomba. 
+Since the built-in serial port supports the transmission of sensor data and can receive actuation commands, any embedded computer that supports serial communication can be used as the control system.
+A number of robot interface server / simulators support the iRobot Create. Most notably, the Player Project has long included a device interface for the Roomba, and developed a Create interface in Player 2.1. The Universal Real-time Behavior Interface (URBI) environment also contains a Create interface.
+This robot is designed for a single execution of a single task without being connected with other robots. Moreover, the design does not imply the collaboration with other robots.
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=5cm,height=5cm]{pictures/Irobot.png}
+  \caption{The iRobot Create}
+  \label{fig:irobot}
+\end{figure}
+
+\section{Swarm-level approach}\label{swarmLevel}
+
+The Swarm-level approach is more suitable for applications where a number of drones are supposed to perform the same actions. Indeed the programmer can give a set of basic rules that each drone in the swarm can follow.
+It is important to underline that, in swarm-level approach, there is no possibility to have a shared state between drones; each drone execute the actions specified by the programmer on his own local state.
+It enables the scaling of the approach, but it's not suitable for applications that require the drones to explicitly coordinate.
+For example, the swarm-level approach could be applied in an application where many drones take objects at different locations and bring them to the final user, without considering any time or space coordination between them; each drone will simply bring the object back to the user when found.  
+There are several existing applications using the swarm-level approach, but we decided to describe three of them:
+the Robot Operating System (ROS)\cite{ros}, which provides a Publish/Subscribe coordination layer for decentralized computations, as shown in section \ref{ros}; Karma\cite{karma}, which lets programmers specify modes of operation for the swarm, such as “Monitor” or “Pollinate”(as shown in section \ref{karma}); and Proto\cite{proto}, which lets programmers specify actions in space and time(as shown in section \ref{proto}). 
+
+\subsection{Robot Operating System}\label{ros}
+
+ROS\cite{ros} is not an operating system in the traditional sense, indeed it provides a layer for communication between many, possibly heterogeneous, operating systems connected in a cluster.
+
+The whole functioning of ROS, shown in fig.\ref{fig:ros}, is based on \textit{Nodes}, which are software modules performing computations; the whole system is composed by many nodes exchanging messages, according to the \textit{Publish-Subscribe} model:
+a node can send messages publishing them on a particular \textit{Topic}, and nodes which are interested in a particular topic simply subscribe to it; publishers and subscribers don't know each others' existence.
+The publish-subscribe topic based communication model is very flexible, but is not suitable for synchronous exchanges, because of its broadcast functioning; for this reasons ROS provides also \textit{Services}, which are composed by a name and two messages, one for the request and one for the response.
+
+
+
+
+
+\begin{figure}[htbp]
+  \centering
+  \includegraphics[width=\linewidth]{pictures/ros.jpg}
+  \caption{ROS communication layer functioning}
+  \label{fig:ros}
+\end{figure}
+
+
+\newpage
+
+\subsection{Karma}\label{karma}
+
+Karma\cite{karma} is a resource management system for drones swarms based on the so called hive-drone model; the hive-drone model is a feature that moves the coordination complexity of the application to a centralized computer: the hive is the base station where drones can land, if they are not busy, and charge their batteries; the hive also takes care of dispatching the drones in order to perform the actions specified by the programmer to accomplish the swarm objectives; the programmer specifies the desired swarm behaviour through a programming model which allows him not to deal with a coordination between drones.
+
+The Karma\cite{karma} runtime at the hive is composed by functional blocks, as shown in fig.~\ref{fig:karma}:
+
+\begin{itemize}
+\itemsep2pt
+\item{
+\textit{Controller}: is the overall manager of the runtime and invokes the other modules when needed; when a user submits an application to the Karma system, the hive Controller determines the set of active processes, and invokes the Scheduler to allocate the available drones to them.
+}
+\item{
+\textit{Scheduler}: is periodically invoked by the Controller to allocate drones to each active process.
+}
+\item{
+\textit{Dispatcher}:  is responsible for tracking the status of the drones; it programs the drones with the allocated behavior prior to a sortie, tracks the size of the swarm, and notifies the Controller when a drone returns to the hive and is ready for redeployment.
+}
+\item{
+\textit{Datastore}: when drones return to the hive, they transfer the data they collected to the Datastore.
+}
+\end{itemize}
+
+
+\begin{figure}[htbp]
+  \centering
+  \includegraphics[width=\linewidth]{pictures/Karma.png}
+  \caption{The basic schema of Karma}
+  \label{fig:karma}
+\end{figure}
+
+\newpage
+
+\subsection{Proto}\label{proto}
+
+The amorphous medium abstraction\cite{medium} is derived from the observation that in many spatial computing applications, we are not interested in the particular devices that make up our network, but rather in the space through which they are distributed; indeed, for example, the only things that matter for a sensor network are the values that it senses, not the particular devices it's composed of.
+The amorphous medium\cite{medium} takes this concept to the extreme: indeed it is defined as a spatial area with a computational device at every point, as shown in fig.\ref{fig:medium}: Information propagates through this medium at a maximum velocity. Each device is associated with a neighborhood of nearby devices, and knows the "state" of every device in its neighborhood, i.e. the most recent information that can have arrived from its neighbors.
+
+
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=\linewidth]{pictures/ProtoMedium.png}
+  \caption{The amorphous medium abstraction}
+  \label{fig:medium}
+\end{figure}
+
+
+
+The Proto\cite{proto} language uses the amorphous medium abstraction\cite{medium} to divide the spatial programming problem in three sub-problems, as shown in fig.~\ref{fig:proto}:
+
+\begin{itemize}
+\itemsep2pt
+\item{
+global descriptions of programs as functional operations on fields of values
+}
+\item{
+compilation from global to local execution on an amorphous medium
+}
+\item{
+discrete approximation of an amorphous medium by a real network
+}
+\end{itemize}
+
+
+\begin{figure}[htb]
+  \centering
+  \includegraphics[width=\linewidth]{pictures/Proto.png}
+  \caption{Proto: problem decomposition}
+  \label{fig:proto}
+\end{figure}
+
+To apply Proto\cite{proto} language to mobile devices, such as drones in a swarm, the amorphous medium\cite{medium} must be extended with the concept of \textit{density}; indeed for the vast majority of mobile applications, it is important to distribute drones depending on what is happening in the environment, for example one may want to send more drones in an area where something is happening; so it must be possible to distribute drones heterogeneously in the space.
+Adding the concept of \textit{density}, Proto can express a lot of applications using the swarm-level approach.
+For example, a swarm of lightweight scout robots might search a disaster area and coordinate with a team of more capable rescue robots that can aid victims, or a swarm of aerial vehicles might team with firefighters to survey and manage wildfires and toxic spills, or a group of autonomous underwater vehicles might survey their environment and autonomously task portions of the swarm to concentrate data gathering on particular interesting phenomena.
+\newpage
+
+\section {Team-level approach}\label{teamlevel}
+
+In this section we describe the team-level programming approach, which allows the user to express a list of sensing tasks to be performed by the system, without dealing with the management of the single drone and with complex programming tasks such as concurrent programming and parallel execution; the user can also require a layer of coordination, defining constraints in space and time for the tasks' execution, and the system will follow these constraints choosing the actions for each drone at run-time, in order to collaboratively accomplish all the tasks.
+This run-time drones management makes the whole system scalable, since one can add as many drones as he wants, and also fault tolerant, because it can easily manage crashes or exceptions.
+So, the main advantage of using the team-level approach is that the user can simply specify a list of tasks to be performed,together with constraints in space and time for the execution, not caring about the dispatching and coordination of the drones; this is also a limitation, because one cannot develop applications which require explicit communication between drones.
+So, the team-level approach is most suitable for applications involving tasks that could be also performed by a single drone, but require a large number of drones to be completed faster and/or to operate in a big area.
+
+
+A concrete example of team-level approach application is Voltron\cite{voltron}, a system containing a set of programming constructs to explore the notion of team-level drone programming. 
+Voltron's\cite{voltron} basic functioning includes:
+
+\begin{itemize}
+\itemsep2pt
+\item{
+the so-called \textit{abstract drone}, which makes the application scalable, allowing to add drones without changing the code
+}
+\item{spatial semantics, which allow the drones to execute parallel tasks at different locations
+}
+\item{
+the possibility to dinamically re-schedule drones operations in case of crashes or failures
+}
+\item{
+the possibility to define time constraints for the tasks 
+}
+\end{itemize}
+
+Voltron\cite{voltron} exposes an API, as shown in fig.\ref{fig:voltron}, that programmers can use to task the drones without individual addressing; since the abstract drone is the only entry point to the system’s functionality, an application’s code can remain unaltered no matter how many real devices are deployed.
+\\
+
+\begin{figure}[htbp]
+  \centering
+  \includegraphics[width=\linewidth]{pictures/Voltron.png}
+  \caption{Voltron APIs}
+  \label{fig:voltron}
+\end{figure}
+
+
+The team-level approach represents a  middle-ground between the drone-level and swarm-level approaches, and it also solves many problems. Unlike the drone-level approach, there is no need to address the single drone and, unlike the swarm-level approach, there can be a "global state" and also time and space constraints can be defined; as already said, the team-level approach's main limitation is that there is no possibility to perform tasks which require explicit communication between drones, such as passing an object between them.
+
+\newpage
+
+\section{Conclusion}
+
+In this chapter we have described the actual state of the art in the field of our work, showing the three main existing approaches for programming a team of drones to perform many actions.
+
+Since the approaches we mentioned in this chapter are designed for outdoor applications, and our work is focused on indoor applications, we need to add a contribution to the actual state of the art.
+Neither the drone-level nor the swarm-level approaches are suitable, since  we don't want  to manage the single drone and the parallel execution.
+On the other hand, the swarm-level approach is feasible for a large number of drones to execute the same actions, but we need to manage a small number of drones (5 or 10) performing different actions, and we also need to address to time and space constraints, which cannot be expressed with this approach.
+The most suitable approach for our work is the team-level model, but we need to apply some modifications to it, in order to make it suitable for indoor contexts.
+Indeed even with many problems being solved by Voltron\cite{voltron} architecture, we found some limitations: for example, the size of drones is essential indoors, but with size decrease, we bump into battery limitations; another problem is that of indoor localization, since GPS cannot be used inside buildings; we discuss this and other problems in details in the next chapter.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

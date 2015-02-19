@@ -1,0 +1,132 @@
+\documentclass[12pt,a4paper,twoside,openright]{book}
+
+\usepackage[dvips]{graphicx}
+\usepackage{tabularx}
+\usepackage{subfigure}
+\usepackage{afterpage}
+\usepackage{amsmath,amssymb}            
+\usepackage{rotating}  
+\usepackage{fancyhdr}  
+\usepackage[scriptsize]{caption}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage[italian, british]{babel}
+\usepackage{times}
+\usepackage{graphicx}
+\usepackage{listings}
+\usepackage{color}
+\usepackage{microtype}
+\usepackage{url}
+\usepackage{float}
+
+\definecolor{dkgreen}{rgb}{0,0.6,0}
+\definecolor{gray}{rgb}{0.5,0.5,0.5}
+\definecolor{mauve}{rgb}{0.58,0,0.82}
+
+\lstset{
+frame=tb,
+  language=Java,
+  aboveskip=3mm,
+  belowskip=3mm,
+  showstringspaces=false,
+  columns=flexible,
+  basicstyle={\small\ttfamily},
+  numbers=none,
+  numberstyle=\tiny\color{gray},
+  keywordstyle=\color{blue},
+  commentstyle=\color{dkgreen},
+  stringstyle=\color{mauve},
+  breaklines=true,
+  breakatwhitespace=true,
+  tabsize=3
+}
+
+\lstset{
+    breaklines=true,
+    basicstyle=\ttfamily\scriptsize,
+    numbers=left,
+    postbreak=\raisebox{0ex}[0ex][0ex]{\ensuremath{\space}}  
+}
+
+\usepackage{xspace}
+\usepackage{indentfirst}
+\usepackage{todonotes}
+
+\setlength{\paperwidth}{16cm}
+\setlength{\paperheight}{24cm}
+\setlength{\oddsidemargin} {2. cm}
+\setlength{\evensidemargin} {2. cm}
+\addtolength{\oddsidemargin} {-0.4 cm}
+\addtolength{\evensidemargin} {-0.4 cm}
+\linespread{1.15}
+
+\renewcommand{\captionfont}{\normalfont \sffamily \itshape \small}
+
+
+\newcommand{\eg}{\textit{e.g.,}\xspace}
+\newcommand{\ie}{\textit{i.e.,}\xspace}
+
+\graphicspath{{pictures/}}
+
+\begin{document}
+
+\frontmatter
+\pagenumbering{Roman}
+
+\title{Tesi}
+\include{title_page}\thispagestyle{empty} \normalfont 
+\cleardoublepage
+
+\linespread{1.20}
+\pagestyle{plain}
+\include{dedicated_to}
+\include{abstract}
+\begin{otherlanguage*}{italian}
+\include{abstract-ita}
+\end{otherlanguage*}
+\include{acknowledgements}
+\tableofcontents
+\listoffigures
+\listoftables
+
+\pagestyle{plain}\renewcommand{\chaptermark}[1]{\markboth{\chaptername\ \thechapter.\ #1}{}} 
+\renewcommand{\sectionmark}[1]{\markright{\thesection.\ #1}}         
+\fancyhead[LE,RO]{\bfseries\thepage}    
+                                        
+\fancyhead[RE]{\bfseries\leftmark}    
+\fancyhead[LO]{\bfseries\rightmark}     
+\renewcommand{\headrulewidth}{0.3pt}
+
+\mainmatter
+\include{chapter1-Intro}
+\include{chapter2-StateOfTheArt}
+\include{chapter3-Problem}
+\include{chapter4-Solution}
+\include{chapter5-Implementation}
+\include{chapter6-Evaluation}
+\include{chapter7-Conclusions}
+
+
+\addcontentsline{toc}{chapter}{Bibliography}
+\bibliographystyle{IEEEtran}
+\bibliography{bib}{}
+
+%\appendix
+
+%\pagestyle{plain} 
+%\renewcommand{\chaptermark}[1]{\markboth{\appendixname\ \thechapter.\ #1}{}} 
+%\renewcommand{\sectionmark}[1]{\markright{\thesection.\ #1}}         
+%\fancyhead[LE,RO]{\bfseries\thepage}    
+                                        
+%\fancyhead[RE]{\bfseries\leftmark}    
+%\fancyhead[LO]{\bfseries\rightmark}     
+%\renewcommand{\headrulewidth}{0.3pt}
+
+%\include{appendixA}
+%\include{appendixB}
+%\include{appendixC}
+%\include{appendixD}
+%\include{appendixE}
+%\include{appendixF}
+
+\end{document}
