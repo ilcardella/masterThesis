@@ -35,29 +35,7 @@ The following Pluto Editor graph describes the Alfalfa Crop Monitoring and Polli
 \end{figure}
 
 
-Thanks to the \textit{Take photo} action, Pluto allows the drones to perform the monitoring of leaves for pests, diseases and flowers in bloom.
-Since the Trips of a Mission are performed sequentially, if the user wants to send more than one drone at the same time in the same location, he has to create a number of Mission entities equal to the number of  drones he wants to send simultaneously in that location.
-To concretely choose the specific locations to monitor, the user is provided with a map over which he can drag and drop the action \textit{Take photo}.
-Then the Mission Repeater block takes care of continuously send the drones to monitor these locations.
-Regarding the "Pollination" task, it can be added thanks to the \textit{custom action} feature, through which the programmer can add to the model a brand new Action, making use of a specific external API.
-Concerning the pictures evaluation to detect pests, diseases and flowers in bloom, the developer has to add the custom code in the Evaluator class, using again an external API. 
-Each photo will have three associated parameters: the boolean attributes \textit{pest}, \textit{disease} and \textit{bloom}.
-These attributes are false by default and they are set to true when the leaves are damaged, their color turns greenish-white or the flowers are in bloom, respectively. 
-The MissionEvaluator block enables the evaluation of the photos taken by the drones. If the pest and/or disease attributes are true, the system notifies the farmer of the damaged location, adding a log line in the console of the Monitor Page of the Pluto Main Application.
-If the bloom attribute is true, a new Trip will be created and the drones will be sent to that location to pollinate the flowers.
-The time constraints, which are set by the user thanks to the timer attribute of the Mission entity, will be respected thanks to the TimerMonitor block.
-This block takes care of setting the Mission status to Failed if one of its Trips has expired.
-The GateFIFO block takes as input two Mission instances, one from the Trip Monitor and the other one from the Timer Monitor.
-It takes care of propagating only the first instance that arrives to it.
-For example, if the timer has expired then it will propagate the Timer Monitor instance, otherwise the Trip Monitor one.
-
-Here is the code of the Evaluator needed for the development of the Alfalfa\cite{alfalfa} application:
-"dataMap" is an hashmap that binds each Trip with the picture. The Trip is the key, which represents the journey performed by the drone and the Photo is the value, which is the picture taken by the drone once the Trip has been completed.
-For each photo taken by the drone, if the \textit{pest} or the \textit{disease} attribute are true, the system will signal to the farmer the location where the problem exists, through the log function.
-If the \textit{bloom} attribute is true, the plants at that location must be pollinated, so a new Trip is created, its status is set to WAITING, the Action is set to Pollinate and the target location is set to the same location of the Trip where the bloom attribute is true.
-Finally the Trip is added to the list of trips of the current mission.
-The Mission status is set to STANDBY because there is at least a new inserted Trip to execute.
-\\
+We tried to implement this application drawing a diagram showed in figure \ref{fig:alfalfaGraph}. this diagram is an extension of the basic one showed in the chapter \ref{descriprionOfModel}. In order to satisfy the application constraints, we needed to add a couple of new blocks. The first difference consist in the presence of the TimerMonitor block parallel to the TripMonitor. This block is added in parallel because we need it to monitor the running Trip at the same time of the TripMonitor. Then the GateFIFO will wait for the first instance of the Mission from one of these two blocks. After that, if the mission is completed, it will pass through the MissionEvaluator that will evaluate the actions done. Further the MissionRepeater will make the mission to start again from the first Trip. With these blocks we were able to respect the main constraints of the Alfalfa\cite{alfalfa} application. After the generation of the code from the diagram, we needed to make some customizations in the Main Application sources, such as the add of a Pollination Action and the implementation of the Evaluator algorithm. Following there are these two pieces of code commented to better understand their behaviors.
 
 \begin{lstlisting}
 		String result = null;
@@ -100,31 +78,35 @@ The Mission status is set to STANDBY because there is at least a new inserted Tr
 		return result;
 \end{lstlisting}
 
+The "dataMap" attribute is an \textit{hashmap} that binds each Trip with the picture taken by the action.
+For each photo taken by the drone, the code checks the presence of \textit{pests} and \textit{diseases}. In that case, the system will warn the farmer the location where the problem exists, through the log function.
+If there are \textit{blooms}, the plants at that location must be pollinated, so a new Trip is created: its status is set to WAITING, its Action is set to Pollinate and the target location is set to the same location of the Trip that found the bloom.
+Finally this Trip is added to the execution queue of the mission. The Mission status is set to STANDBY because there is something new to do.
+\\
 
-To further clarify the development of the Alfalfa\cite{alfalfa} application with Pluto, we now show a real execution in a concrete scenario:
-we have five drones, two areas to monitor and we want to send two drones over each of them.
-So, as already explained, it is sufficient to create four missions, two with the trip composing the first area and two with the ones of the second area.
-Since the missions are executed in parallel,2 drones will monitor at the same time the first area and the other 2 will monitor  the second area.
-In the figure below the two areas to monitor are shown:
+The following is possible source code of the Pollination Action.
+
+\begin{lstlisting}
+System.out.println("GODO");
+\end{lstlisting}
+
+In the end we simulated the final user, so we created two missions with eight trips each, as if we needed to monitor a real field.
 
 \begin{figure}[H]
- \begin{minipage}[b]{7cm}
-   \centering
-   \includegraphics[width=6cm]{area1.png}
-   \caption{The first area to be monitored by the drones}
- \end{minipage}
- \ \hspace{2mm} \hspace{3mm} \
- \begin{minipage}[b]{7cm}
   \centering
-   \includegraphics[width=6cm]{area2.png}
-   \caption{The second area to be monitored by the drones}
- \end{minipage}
+  \includegraphics[width=\linewidth]{pictures/area3.png}
+  \caption{Trip distribution screenshot}
+  \label{fig:alfalfaArea}
 \end{figure}
 
-To describe in a detailed way the execution, we drawn the following sequence diagrams:
+To further understand the behavior of the MainApplication we drawn a sequence diagram, showed in figure \ref{fig:alfalfaSequence}.
 
-%mettere qui i sequence
-
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=\linewidth]{pictures/Alfalfa_Sequence.png}
+  \caption{Sequence diagram of the MainApplication behavior}
+  \label{fig:alfalfaSequence}
+\end{figure}
 
 \subsection{Aerial mapping of archaeological sites}\label{aerialMapping}
 
