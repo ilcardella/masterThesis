@@ -87,7 +87,14 @@ Finally this Trip is added to the execution queue of the mission. The Mission st
 The following is possible source code of the Pollination Action.
 
 \begin{lstlisting}
-System.out.println("GODO");
+	// This is the method called by the drone
+	// after it reaches the target location
+	@Override
+	public Object doAction() {
+		Camera camera = System.getCamera();
+		Photo photo = camera.takePhoto();
+		return photo;
+	}
 \end{lstlisting}
 
 In the end we simulated the final user, so we created two missions with eight trips each, as if we needed to monitor a real field.
