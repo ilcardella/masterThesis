@@ -5,7 +5,8 @@
 \section{Applicability of the Pluto framework}\label{applicability}
 
 
-We developed our programming framework thinking about indoor applications utilizing nano-drones; actually, since we work at a sufficiently high level of abstraction, because we can use an API which can make the drones navigate in the environment, the model can be extended to almost every kind of drone, aerial terrestrial and aquatic.
+We developed our programming framework thinking about indoor applications utilizing nano-drones.
+Actually, since we work at a sufficiently high level of abstraction, because we can use an API which make the drones navigate in the environment, the model can be extended to almost every kind of drone, aerial terrestrial and aquatic.
 So, we can say that the Pluto programming framework is "drone independent", and this greatly extends its applicability, including also outdoor, aquatic and terrestrial environments; it is in charge of the programmer to manage the interaction between Pluto and the specific type of drone he wants to use for the particular application he's developing.
 
 Pluto is fully exploited when there is a team of drones to manage (see \ref{fig:WIS} and \ref{fig:DD}), although it perfectly works also in the case of a single drone (see \ref{fig:OF}).
@@ -23,9 +24,9 @@ Alfalfa is an important food crop for cattle and requires an external pollinator
 A swarm of drones can pollinate the alfalfa plants and also monitor them for pests and diseases, trough visual spot checks.
 So, the whole application provide three periodic actions: searching for pests, searching for diseases, and looking for flowers in bloom.
 Each one of these actions is achieved by taking pictures of the plants.
-The user may need to define time constraints within the pollination  action must be completed.
+The user may need to define time constraints within the pollination action must be completed.
 
-The following Pluto Editor graph describes the Alfalfa Crop Monitoring and Pollination\cite{alfalfa} application:
+The following Pluto Editor graph describes the behavior of the Alfalfa Crop Monitoring and Pollination\cite{alfalfa} application:
 
 \begin{figure}[H]
   \centering
@@ -34,8 +35,53 @@ The following Pluto Editor graph describes the Alfalfa Crop Monitoring and Polli
   \label{fig:alfalfaGraph}
 \end{figure}
 
+Thanks to the \textit{Take photo} action, already implemented in Pluto, the drones are able to perform the monitoring of leaves for pests, diseases and flowers in bloom.
+\\
 
-We tried to implement this application drawing a diagram showed in figure \ref{fig:alfalfaGraph}. this diagram is an extension of the basic one showed in the chapter \ref{descriprionOfModel}. In order to satisfy the application constraints, we needed to add a couple of new blocks. The first difference consist in the presence of the TimerMonitor block parallel to the TripMonitor. This block is added in parallel because we need it to monitor the running Trip at the same time of the TripMonitor. Then the GateFIFO will wait for the first instance of the Mission from one of these two blocks. After that, if the mission is completed, it will pass through the MissionEvaluator that will evaluate the actions done. Further the MissionRepeater will make the mission to start again from the first Trip. With these blocks we were able to respect the main constraints of the Alfalfa\cite{alfalfa} application. After the generation of the code from the diagram, we needed to make some customizations in the Main Application sources, such as the add of a Pollination Action and the implementation of the Evaluator algorithm. Following there are these two pieces of code commented to better understand their behaviors.
+As already explained, a Mission object contains a list of trips to be executed.
+Since, inside the Mission entity, these trips are performed sequentially, if the user wants to send more than one drone simultaneously on the same location, he has to create more than one Mission.
+Indeed missions are executed in parallel, so if the user wants to simultaneously send 3 drones on the same location, he simply has to create three missions.
+Then, on the Trips page of each of the three missions, he has to choose the same location.
+\\
+
+To concretely choose the specific locations to monitor, the user is provided with a map over which he can drag and drop the action \textit{Take photo}.
+\\
+
+The Mission Repeater block takes care of continuously sending the drones to monitor these locations.
+Regarding the "Pollination" task, it can be added thanks to the \textit{custom action} feature, through which the programmer can add to the model a brand new Action, making use of a specific external API.
+\\
+
+Concerning the pictures evaluation to detect pests, diseases and flowers in bloom, the developer has to add the custom code in the Evaluator class, using again an external API. 
+Each photo will have three associated parameters: the boolean attributes \textit{pest}, \textit{disease} and \textit{bloom}.
+These attributes are false by default and they are set to true when the leaves are damaged, their color turns greenish-white or the flowers are in bloom, respectively. 
+\\
+
+The MissionEvaluator block enables the evaluation of the photos taken by the drones. If the pest and/or disease attributes are true, the system notifies the farmer of the damaged location, adding a log line in the console of the Monitor Page of the Pluto User Interface.
+If the bloom attribute is true, a new Trip will be created and the drones will be sent to that location to pollinate the flowers.
+\\
+
+The time constraints, which are set by the user thanks to the timer attribute of the Mission entity, will be respected thanks to the TimerMonitor block.
+This block takes care of setting the Mission status to FAILED if one of its Trips is not completed within the timer.
+\\
+
+The GateFIFO block takes as input two Mission instances, one from the Trip Monitor and the other one from the Timer Monitor.
+It takes care of propagating only the first instance that arrives to it.
+For example, if the timer has expired then it will propagate the Timer Monitor instance, otherwise the Trip Monitor one.
+\\
+
+After the GateFIFO block there is a bifurcation:
+if the Mission is completed, it is sent to the MissionEvaluator, otherwise there are some trips of the mission that must be executed again, and so the Mission is sent to the DroneAllocator.
+The full explanation of the functionality of each block can be found in section \ref{blocks}.
+\\
+
+The following is the code of the Evaluator needed for the development of the Alfalfa\cite{alfalfa} application:
+"dataMap" is an hashmap that binds each Trip with the picture. The Trip is the key, which represents the journey performed by the drone and the Photo is the value, which is the picture taken by the drone once the Trip has been completed.
+For each photo taken by the drone, if the \textit{pest} or the \textit{disease} attribute are true, the system will signal to the farmer the location where the problem exists, through the log function.
+If the \textit{bloom} attribute is true, the plants at that location must be pollinated, so a new Trip is created, its status is set to WAITING, the Action is set to Pollinate and the target location is set to the same location of the Trip where the bloom attribute is true.
+Finally the Trip is added to the list of trips of the current mission.
+The Mission status is set to STANDBY because there is at least a new inserted Trip to execute.
+\\
+
 
 \begin{lstlisting}
 		String result = null;
@@ -46,16 +92,16 @@ We tried to implement this application drawing a diagram showed in figure \ref{f
 			// consider only the trips related to the mission to evaluate
 			if (missionToEvaluate.getCompletedTrips().contains(entry.getKey())) {
 				
-				// take the Photo of the current Trip iteration
+				// take the Photo of the current Trip
 				Photo photo = (Photo) entry.getValue();
 				
-				// checking pest and disease
+				// checking pest and disease attributes
 				if (photo.hasPest() || photo.hasDisease())
 					
 					return "WARNING: Pest/disease at location: "
 							+ entry.getKey().getTargetLocation();
 
-				// checking for some bloom
+				// checking for flowers in bloom
 				if (photo.hasBloom()) {
 
 					// create a new Trip to pollinate the flowers
@@ -65,9 +111,9 @@ We tried to implement this application drawing a diagram showed in figure \ref{f
 					trip.setAction(Action.POLLINATE);
 					trip.setStatus(Trip.WAITING);
 
-					// add this new trip to the list of the mission
+					// add the new Trip to the list of trips to be executed
 					missionToEvaluate.getTrips().add(trip);
-					// set the mission status to STANDBY
+					// the Mission status is set to STANDBY, since new trips have been created
 					missionToEvaluate.setStatus(Mission.STANDBY);
 				}
 			}
@@ -78,42 +124,35 @@ We tried to implement this application drawing a diagram showed in figure \ref{f
 		return result;
 \end{lstlisting}
 
-The "dataMap" attribute is an \textit{hashmap} that binds each Trip with the picture taken by the action.
-For each photo taken by the drone, the code checks the presence of \textit{pests} and \textit{diseases}. In that case, the system will warn the farmer the location where the problem exists, through the log function.
-If there are \textit{blooms}, the plants at that location must be pollinated, so a new Trip is created: its status is set to WAITING, its Action is set to Pollinate and the target location is set to the same location of the Trip that found the bloom.
-Finally this Trip is added to the execution queue of the mission. The Mission status is set to STANDBY because there is something new to do.
-\\
-
-The following is possible source code of the Pollination Action.
+The following is a possible source code of the Pollination Action:
 
 \begin{lstlisting}
 	// This is the method called by the drone
 	// after it reaches the target location
 	@Override
 	public Object doAction() {
-		Camera camera = System.getCamera();
-		Photo photo = camera.takePhoto();
-		return photo;
+		Pollinator pollinator = System.getPollinator();
+		pollinator.pollinate();
+		return true;
 	}
 \end{lstlisting}
 
-In the end we simulated the final user, so we created two missions with eight trips each, as if we needed to monitor a real field.
+
+To further clarify the development of the Alfalfa\cite{alfalfa} application with Pluto, we now show a real execution of the Alfalfa application in a concrete scenario:
+we want to simultaneously send three drones to monitor the plants distributed in a circular area.
+So, we create three Mission entities, and, for each of them, we drag and drop the action \textit{Take photo} on the map, in order to create the trips composing the circular area, as shown in figure \ref{fig:alfalfaArea}
 
 \begin{figure}[H]
   \centering
-  \includegraphics[width=\linewidth]{pictures/area3.png}
-  \caption{Trip distribution screenshot}
+  \includegraphics[width=\linewidth, height=8cm]{pictures/alfalfaArea.png}
+  \caption{The circular area to monitor}
   \label{fig:alfalfaArea}
 \end{figure}
 
-To further understand the behavior of the MainApplication we drawn a sequence diagram, showed in figure \ref{fig:alfalfaSequence}.
 
-\begin{figure}[H]
-  \centering
-  \includegraphics[width=\linewidth]{pictures/Alfalfa_Sequence.png}
-  \caption{Sequence diagram of the MainApplication behavior}
-  \label{fig:alfalfaSequence}
-\end{figure}
+To describe in a detailed way the execution, we drawn the following sequence diagrams:
+
+
 
 \subsection{Aerial mapping of archaeological sites}\label{aerialMapping}
 
@@ -124,36 +163,40 @@ Drones are sent to take a series of ortophotos which then will be stitched toget
 If the obtained ortophoto is not adequate, the archaeologists should be able to send more drones on that particular area.
 The drones must perform their actions in a limited amount of time, since if too much time pass between two ortophotos, the scene may change.
 
-The following figure is the Pluto editor graph needed to create the Aerial Mapping of the "Domus dei Putti Danzanti" site application. 
+The following figure is the Pluto editor graph needed to create the Aerial Mapping of archaeological sites application. 
 
 \begin{figure}[H]
   \centering
   \includegraphics[width=\linewidth, height=8cm]{pictures/puttiEditor.png}
-  \caption{Pluto graph for the Aerial Mapping of the "Domus dei Putti Danzanti" site}
+  \caption{Pluto graph for the Aerial Mapping of archaeological sites}
   \label{fig:puttiGraph}
 \end{figure}
 
 The drones can already take pictures thanks to the \textit{Take Photo} action.
 To send the drones to take pictures over the site location, the user has to simply create the Missions entities and add the Trips to the map he will be provided with.
 In the case the archaeologists want to send more drones on the locations where they can't obtain an adequate ortophoto, they just have to add more Mission entities.
-For example, if one archaeologist want to send 3 drones on a particular location, he has to create 3 Mission entities.
-Then for each Mission he simply  has to drag and drop the \textit{Take photo} action on that particular location.
-The GateFIFO block takes as input two Mission instances, one from the Trip Monitor block and the other one from the Timer Monitor.
-It takes care of propagating only the first instance that arrives to it.
-For example, if the timer has expired then it will propagate the Timer Monitor instance, otherwise the Trip Monitor one.
-Thanks to the ActionEvaluator block, that analyzes the drones data at the end of the missions, the Main Application can decide if the photos are good enough or if more drones must be sent out to take new pictures in that specific location.
+For example, if one archaeologist want to send 3 drones simultaneously on a particular location, he has to create 3 Mission entities.
+Then for each Mission he simply has to drag and drop the \textit{Take photo} action on that particular location.
+Thanks to the MissionEvaluator block, that analyzes the drones data at the end of the missions, the Main Application can decide if the photos are good enough or if more drones must be sent out to take new pictures in that specific location.
 It is important to underline that, using the Pluto framework, it is not possible to obtain the very same behavior of the original application.
 Indeed, two consecutive photos must be taken within a time constraint.
 This cannot be fulfilled with Pluto, since the Timer Monitor block deals with a time interval that starts when the drone leaves the base station, ensuring that it will take the picture before the time interval expires.
 So, there is no way to state a time constraint between two consecutive photos.
+The GateFIFO block takes as input two Mission instances, one from the Trip Monitor block and the other one from the Timer Monitor.
+It takes care of propagating only the first instance that arrives to it.
+For example, if the timer has expired then it will propagate the Timer Monitor instance, otherwise the Trip Monitor one.
+After the GateFIFO block there is a bifurcation:
+if the Mission is completed, it is sent to the MissionEvaluator, otherwise there are some trips of the mission that must be executed again, and so the Mission is sent to the DroneAllocator.
+The full explanation of the functionality of each block can be found in section \ref{blocks}.
+
 
 
 Concerning the code of the Evaluator block needed for the development of the Aerial Mapping\cite{putti} application, as for the previous application, we can find each photo taken during the missions in the "dataMap" parameter, that is an hashmap that create a relation between a Trip and the photo taken through its Action.
 First of all, the ortophotos are stitched together to obtain the final ortophoto, trough the \textit{stitch} function.
 If the final ortophoto shows excessive aberration, the ortophotos composing it are analyzed and if they don't have sufficient overlap, few new Trips are created with the same target locations of the photos to be taken again. 
 The Mission status is set to STANDBY because there is at least a new inserted Trip to execute.
-It is important to underline that this application differs from the Alfalfa\cite{alfalfa} one, because the Evaluator algorithm acts in a different way: in Alfalfa\cite{alfalfa} application the algorithm takes care of analyzing the photos of a single mission without considering the others; now, instead, the evaluation needs to merge all the photos of every missions to calculate the aberration. This is why, as said in section \ref{blocks}, we decided to activate the ActionEvaluator block only when the Mission status is Completed. 
-Following we show our implementation for the Evaluator algorithm:
+It is important to underline that this application differs from the Alfalfa\cite{alfalfa} one, because the Evaluator algorithm acts in a different way: in Alfalfa\cite{alfalfa} application the algorithm takes care of analyzing the photos of a single mission without considering the others; now, instead, the evaluation needs to merge all the photos of every missions to calculate the aberration. 
+The following code snippet shows our implementation of the Evaluator algorithm:
 \\
 \begin{lstlisting}
 		String result = null;
@@ -202,10 +245,18 @@ Following we show our implementation for the Evaluator algorithm:
 \end{lstlisting}
 
 In order to show the real runtime execution of the Aerial Mapping application with Pluto, we now show a real scenario:
-there are 7 drones and 1 big area to monitor, and we want to send all the drones in that area at the same time to take the ortophotos.
+there are 7 drones and 1 big archaeological site to monitor, and we want to send all the drones in that area at the same time to take the ortophotos.
 As usual, the user has to create 7 Mission entities.
-Then, for each Mission, he has to create the list of Trips by using the map to drag and drop the action \textit{Take photo} on the locations forming the big area.
+Then, for each Mission, he has to create the list of Trips by using the map to drag and drop the action \textit{Take photo} on the locations forming the site, shown in figure area3:
 
+% \begin{figure}[H]
+% \centering
+% \includegraphics[width=\linewidth, height=8cm]{pictures/area3.png}
+% \caption{The archaeological site on the map}
+% \label{fig:area3}
+% \end{figure}
+
+%sequence
 
 
 \subsection{PM10}
@@ -236,8 +287,12 @@ As already explained, the timer of Pluto starts when the drone leaves the base s
 The GateFIFO block takes as input two Mission instances, one from the Trip Monitor block and the other one from the Timer Monitor.
 It takes care of propagating only the first instance that arrives to it.
 For example, if the timer has expired then it will propagate the Timer Monitor instance, otherwise the Trip Monitor one.
+After the GateFIFO block there is a bifurcation:
+if the Mission is completed, it is sent to the MissionEvaluator, otherwise there are some trips of the mission that must be executed again, and so the Mission is sent to the DroneAllocator.
+The full explanation of the functionality of each block can be found in section \ref{blocks}.
 
-Below there is our implementation of a possible Mission Evaluator algorithm:
+
+Below there is our implementation of a possible  Evaluator algorithm:
 \\
 
 \begin{lstlisting}
@@ -281,6 +336,12 @@ Below there is our implementation of a possible Mission Evaluator algorithm:
 
 
 Now we show the execution of the PM10 application with Pluto in a particular scenario:
+we have five drones and we want to measure the pollution quantity in the area shown in figure area4 using all of them.
+As usual, the user has to create five Missions and to choose the locations of the area to sample through the map of the Trips Page of the Pluto User Interface.
+In this way, five drones will monitor simultaneously the area to sample.
+
+
+%sequence
 
 
 \subsection{PURSUE}
@@ -293,14 +354,19 @@ There are time constraints to respect between the detection of a moving object a
 \\
 
 The PURSUE application represents a limit for the Pluto programming framework.
-Indeed, in our model, the drones perform their action only at the end of the Trip, so it's not possible for them to immediately take a picture of the moving object.
-This problem can be lowered by inserting a lot of trips in the area to monitor, with strict time constraints on them.
-But still there is no way for the drones to actively follow the moving objects.
+Indeed, in our model, the drones perform their action only at the end of the Trip, so it's not possible for them to actively take a picture in the very same moment the moving object enters in the camera field.
+This problem can be lowered by inserting a lot of trips in the area to monitor, with strict time constraints on them, in order to obtain a lot of pictures of the monitored area.
+But in this way, not only it's not sure to capture the moving object, but there will be a lot of useless empty pictures.
+And, above all, there is still no way for the drones to actively follow the moving objects.
+
+We can conclude that the PURSUE application is too "dynamic" for the Pluto programming framework, and this can be an hint for a future expansion of it.
 
 
 \newpage
 
-All the previous applications were already developed and tested with other systems, like Karma\cite{karma} and Voltron\cite{voltron}, but we also developed new applications and tested our framework on them, the Object-finder (OF), the Warehouse item-finder (WIF)and the Drugs distribution(DD); in the following subsections we will describe these applications in details, also using a visual representation of their behaviour, and sequence diagrams, to make understand better the whole functioning of each one of them.
+All the previous applications were already developed and tested with other systems, like Karma\cite{karma} and Voltron\cite{voltron}, but we also developed new applications and tested our framework on them.
+We developed the Object-finder (OF), the Warehouse item-finder (WIF)and the Drugs distribution(DD) applications.
+In the following subsections we will describe these applications in details, also using a visual representation of their behaviour, and sequence diagrams, to make understand better the whole functioning of each one of them.
 
 \subsection{Object-finder (OF)}
 
@@ -420,7 +486,7 @@ Their basic versions are represented by the basic graph of each application, sho
 \label{usability}
 
 To evaluate the concrete usability of the Pluto programming framework, we decided to test it on real people, proposing them two "exercises".
-The tester were recruited in the "Politecnico di Milano" and "SICS Swedish ICT" environment, in order to guarantee a solid development background and to avoid possible lack of programming knowledge.
+The testers were recruited in the "Politecnico di Milano" and "SICS Swedish ICT" environment, in order to guarantee a solid development background and to avoid possible lack of programming knowledge.
 We created one exercise for each component of Pluto framework.
 The first one consists in the development of an application using the Pluto Graphical Editor.
 The exercise is split in three levels, starting from a very basic version and going through more difficult versions. Each version asks the user to add a new functionality by using the available components in the Editor.
@@ -490,11 +556,9 @@ This is a useful step to compute, because the user learns how to use the connect
 
 \newpage
 
-
 For the third step, the user has to implement the feature of the Timer Monitor block without using it.
-So, he has to use the Mission Modifier block, through which he can insert his code in the application, and put it between the Trip Launcher and  Trip Monitor blocks, as shown in figure \ref{fig:thirdStep}.
-
-This is a very useful step to compute, because the user learns how to use Mission Modifier block, which is the most important feature of the Pluto Editor, because it allows the programmer to insert his custom code to characterize the application.
+So, he has to use the Mission Modifier block, through which he can insert his code in the application, and put it between the Trip Launcher and GateFIFO blocks, in parallel with the TripMonitor, as shown in figure \ref{fig:thirdStep}.
+This is a very useful step to compute, because the user learns how to use Mission Modifier block, which is an important feature of the Pluto Editor, because it allows the programmer to insert his custom code to characterize the application.
 
 \begin{figure}[H]
   \centering
@@ -553,7 +617,7 @@ Through metrics 8 and 9, finally, we can understand how easy is to confuse the s
 
 We want to demonstrate the effective usefulness of the Pluto programming framework, so we decide to compare its features with the API of the Crazyflie Nano-quadcopter, which was described in section \ref{crazyflie}.
 
-Actually, the crazyflie is the drone we chose to use for our applications case study, and we want to demonstrate that, without Pluto and using only the Crazyflie API would be very difficult to build the same kind of applications.
+Actually, the crazyflie is the drone we chose to use for our applications case study, and we want to demonstrate that, without Pluto and using only the Crazyflie API would be more difficult to build the same kind of applications.
 
 So we decide to propose another exercise to our users, but this time they can use only the Crazyflie API and they have a limited amount of time.
 

@@ -176,7 +176,7 @@ input: a list of Trips
 output: a Mission object
 \\
 
-The MissionCreator block receives as input the trips that the user wants to be performed by the drones, then it creates a Mission including all these trips and returns that Mission object.
+The Mission Creator block receives as input the trips that the user wants to be performed by the drones, then it creates a Mission including all these trips and returns that Mission object.
 This block is the starting point of each Pluto-developed application.
 \\
 
@@ -193,10 +193,10 @@ output: a Mission object
 The Clock block checks the delay attribute of each Trip of a Mission: if it's not equal to zero, it makes the Trip wait for the amount of time set by the user in the Mission creation step, and finally returns the Mission Object.
 If the programmer puts the Clock block in the graph of the application, the Pluto Main application shown in section \ref{plutoMainApp} will show an extra widow.
 On the Trips Page,after the final user drags and drops on the map the action to perform and the Priority panel is shown, the user will be asked to set a delay for the Trip.
-This block has to be put between the MissionCreator and the DroneAllocator blocks.
+This block has to be put between the Mission Creator and the Drone Allocator blocks.
 \\
 
-\underline{DroneAllocator block}
+\underline{Drone Allocator block}
 \\
 
 input: a Mission object
@@ -208,7 +208,7 @@ The DroneAllocator block chooses the appropriate Drone to be assigned to each Tr
 The output of the DroneAllocator is always sent to the TripLauncher, while its input can arrive from a variety of blocks, depending on the features of the considered application.
 \\
 
-\underline{TripLauncher block}
+\underline{Trip Launcher block}
 \\
 
 input: a Mission object
@@ -221,7 +221,7 @@ This block receives the input Mission from the DroneAllocator block, ans sends i
 If the application contains the TimerMonitor block, the TripLauncher's output will be also sent to it.
 \\
 
-\underline{TripMonitor block}
+\underline{Trip Monitor block}
 \\
 
 input: a Mission object
@@ -236,7 +236,7 @@ This block receives the input Mission from the TripLauncher, and its output can 
 
 
 
-\underline{MissionRepeater block}
+\underline{Mission Repeater block}
 \\
 
 input: a Mission object
@@ -249,7 +249,7 @@ If so, it set the Mission status to STANDBY and the status of all the Trips of t
 This block is put between the MissionEvaluator and the DroneAllocator.
 \\
 
-\underline{GateFIFO block}
+\underline{Gate FIFO block}
 \\
 
 input: a Mission object
@@ -263,7 +263,7 @@ That's why the FIFO acronym is used, since the first Mission instance that arriv
 This block receives the input Mission from one of the blocks connected to it and can send its output to the MissionEvaluator, MissionRepeater or DroneAllocator blocks, depending on the particular application.
 \\
 
-\underline{MissionEvaluator block}
+\underline{Mission Evaluator block}
 \\
 
 input: a Mission object
@@ -275,7 +275,7 @@ The MissionEvaluator block can read and write data carried by the drones, and ba
 It receives the input Mission from the GateFIFO or TripMonitor blocks and can send the output to the DroneAllocator or MissionRepeater blocks, depending on the particular application.
 \\
 
-\underline{MissionModifier block}\label{mm}
+\underline{Mission Modifier block}\label{mm}
 \\
 
 input: a Mission object
@@ -304,12 +304,12 @@ input: a Mission object
 output: a Mission object
 \\
 
-The PriorityManager block raise the priority of the first Trip of the Mission passed in input.
-This block can be considered as a particular case of MissionModifier. 
-This block can receive the input from the GateFifo or TripMonitor blocks, and sends the output to the DroneAllocator.
+The Priority Manager block raise the priority of the first Trip of the Mission passed in input.
+This block can be considered as a particular case of Missio nModifier. 
+This block can receive the input from the Gate Fifo or Trip Monitor blocks, and sends the output to the Drone Allocator.
 \\
 
-\underline{TimerMonitor block}
+\underline{Timer Monitor block}
 \\
 
 input: a Mission object
@@ -320,6 +320,27 @@ output: a Mission object
 The TimerMonitor block takes the input mission and waits for the completion of the current running Trip. If the Trip doesn't end before the fail-safe time, it will set the status of the Trip and of the Mission both to FAILED, then it will put the mission as output.
 This block can be considered as a particular case of MissionModifier.
 It's always put between the TripLauncher and the GateFIFO blocks.
+\\
+
+\underline{Gate Funnel block}
+\\
+
+input: a Mission object
+
+output: a Mission object
+\\
+
+Similar use of the GateFIFO, but this gate will wait for all the Mission instances that are being managed before this block. So if before this gate, there are 4 blocks in parallel that are managing their Mission instance, the propagation of the Mission after this gate will be activated only when all the 4 instances will arrive.
+\\
+
+\underline{Start block}
+\\
+State the beginning of the diagram
+\\
+
+\underline{End block}
+\\
+State the end of the diagram, where the completed missions will go into.
 \\
 
 \section{Aiming to the final model}

@@ -52,7 +52,6 @@ In the proceeding of this section, we show the code of the three pages, commenti
 Here we describe the main Swing features of the Missions Page, whose graphical result is shown in section \ref{plutoMainApp}:
 
 \begin{lstlisting}
-
 	private JList<String> list;
 	private JButton remallbtn;
 	private JButton addbtn;
@@ -82,7 +81,7 @@ Here we describe the main Swing features of the Missions Page, whose graphical r
 		okbtn = new JButton("Monitor Page");
 
 	}
-
+    
 \end{lstlisting}
 
 This is the basic structure of the Missions Page:
@@ -94,7 +93,6 @@ They are created thanks to the \textit{createButtons()} method.
 The constructor of the Missions page only calls the \textit{initUI()} method, whose implementation is shown in the following code snippet:
 
 \begin{lstlisting}
-
 	private void initUI() {
 
 		createList();
@@ -124,6 +122,7 @@ The constructor of the Missions page only calls the \textit{initUI()} method, wh
 		setDefaultCloseOperation(EXITONCLOSE);
 	}
 \end{lstlisting}
+
 First of all the \textit{createList()} and \textit{createButtons()} methods are called, in order to create the empty list of Missions and all the buttons of the Missions Page.
 We chose a \textit{GroupLayout} for the visualization of the Components in the page, but there exists a lot of Swing layouts that can be used.
 Through the \textit{setHorizontalGroup} and \textit{setVerticalGroup} methods, we simply chose the graphical disposition of the components in the Missions Page.
@@ -137,7 +136,218 @@ Since in this section we want to show only the graphical part of the Pluto Main 
 \textbf{Trips Page}
 \\
 
-jhsd
+In this section we show the main Swing features of the Trips Page:
+
+\begin{lstlisting}
+	...
+    
+	private JList<String> list;
+	private JList<String> tripList;
+
+	...
+
+	private ImageIcon icon;
+	private JLabel label;
+    
+	private JButton ok;
+	private JButton delete;
+	private JButton deleteOne;
+	private JTextField text;
+    
+	...
+
+	public TripsPage(...) {
+		this.nameMission = name;
+		this.tripsMap = map;
+
+		try {
+			initUI();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+\end{lstlisting}
+
+This is the basic structure of the Trips page, which is used to create the Trips list of each Mission created with the Missions Page.
+We have two \textit{Jlist} components: \textit{list} is the list of actions that the user can drag and drop on the map, the one displayed on the top of the page, and \textit{tripList} is the list of the Trips created by the user, initially empty, displayed on the south-east corner of the page.
+The \textit{ImageIcon} component is later filled with the map on which the user can drag and drop the action to build the various tips.
+The \textit{JLabel} component in just a container of the map element.
+The three \textit{Jbutton} components are the buttons displayed in the Trips Page.
+The constructor only calls the \textit{initUI()} method, as for each page.
+
+\begin{lstlisting}
+	private void createActionList() {
+		actionListModel = new DefaultListModel<String>();
+		list = new JList<String>(actionListModel);
+        
+        ...
+
+		list.setDragEnabled(true);
+		list.setTransferHandler(new TransferHandler("text"));
+		ds = new DragSource();
+		ds.createDefaultDragGestureRecognizer(list, DnDConstants.ACTION_COPY,
+				this);
+
+		// add the action names
+		for (Action a : Action.values())
+			actionListModel.addElement(a.toString());
+	}
+
+	private void createTripList() {
+		tripListModel = new DefaultListModel<String>();
+		tripList = new JList<String>(tripListModel);
+		...
+        }
+        
+\end{lstlisting}
+
+The \textit{createActionList()} method takes care of correctly fill and display the list of actions the user can drag and drop on the map.
+The lines from 7 to 11 set the list of actions \textit{list} as a drag source component.
+Lines 14 and 15 fill the action list with the correct values: Take photo, Measure, Pick Item and Release item.
+The \textit{createTripList()} method takes care of creating an empty list that will be filled with the trips created by the user.
+
+\begin{lstlisting}
+	public final void initUI() throws IOException {
+
+		setLayout(new BorderLayout());
+
+		icon = new ImageIcon("Map/casa.gif");
+		label = new JLabel(icon);
+
+		createActionList();
+		createTripList();
+        
+        ...
+
+		JScrollPane actionsPane = new JScrollPane(list);
+		JScrollPane tripsPane = new JScrollPane(tripList);
+		JPanel imagePane = new JPanel();
+		JPanel buttonsPane = new JPanel();
+
+		ok = new JButton("Ok");
+		delete = new JButton("Delete all");
+		deleteOne = new JButton("Delete trip");
+
+		imagePane.add(label);
+		imagePane.setTransferHandler(new TransferHandler("text"));
+		new MyDropTargetListener(imagePane);
+        
+		...
+
+		buttonsPane.add(ok);
+		buttonsPane.add(delete);
+		buttonsPane.add(deleteOne);
+
+		getContentPane().add(imagePane, BorderLayout.WEST);
+		getContentPane().add(actionsPane, BorderLayout.NORTH);
+		getContentPane().add(buttonsPane, BorderLayout.SOUTH);
+		getContentPane().add(tripsPane, BorderLayout.EAST);
+
+		setTitle("Pluto-Trips Page (" + nameMission + ")");
+		setSize(700, 600);
+        ...
+		setVisible(true);
+
+	}
+    
+\end{lstlisting}
+
+In line 5 we assign the picture of the map to the previously defined \textit{icon} element.
+In line 6 this element is put on the \textit{JLabel} container.
+Lines 8 and 9 create the trips and actions lists.
+Lines from 13 to 16 simply creates the containers for all the components of the Trips Page.
+Lines from 18 to 20 create the buttons.
+Lines from 22 to 24 sets the map element as the drop target of the dragged actions.
+Lines from 28 to 30 simply add the buttons to their container.
+Lines from 32 to 35 displays each container of the components in a different part of the Trips Page.
+Line 37 assigns a title to each Trips page, composed by the string "Pluto-Trips Page" and the name of the Mission of which the user is setting the trips.
+Line 38 simply sets the size of the Trips Page.
+Finally, line 40 simply makes the Trips Page appear on the screen.
+\\
+
+Once again, the remaining part of the code of the Trips Page involves all the reaction mechanisms of the components, such as all the methods needed to manage the correct functioning of the drag and drop mechanism.
+Since we are not interested in showing this details in this section, we simply skip them.
+
+\newpage
+
+\textbf{Monitor Page}
+\\
+
+Here the main Swing features of the Monitor Page are shown:
+
+\begin{lstlisting}
+	private JButton start;
+	private JButton stop;
+	private JButton back;
+	private JTable table;
+	private JTextArea text;
+    private jTable table;
+
+	public MonitorPage() {
+
+		initUI();
+		
+	}
+\end{lstlisting}
+
+Here all the components of the Monitor page are declared:
+we have a \textit{JTable} where will be displayed information on all the trips executing, a \textit{JTextArea} where the log of the execution will be displayed and three \textit{Jbutton} components.
+
+
+\begin{lstlisting}
+public final void initUI() {
+
+	...
+
+	JScrollPane tablePane = new JScrollPane(table);
+	DefaultTableModel model = new DefaultTableModel();
+    table = new JTable(model);
+	model.addColumn("Mission");
+    model.addColumn("Mission status");
+	model.addColumn("Drone");
+	model.addColumn("Drone status");
+	model.addColumn("Trip");
+	model.addColumn("Trip Status");
+
+	...
+    
+    JScrollPane textPane = new JScrollPane(text);
+	text = new JTextArea();
+	text.setBackground(Color.LIGHT_GRAY);
+	text.setForeground(Color.RED);
+
+	...
+
+	JPanel buttonsPane = new JPanel();
+	start = new JButton("Start");
+	stop = new JButton("Stop");
+	back = new JButton("Back"); 
+
+	buttonsPane.add(start);
+	buttonsPane.add(stop);
+	buttonsPane.add(back);
+
+	getContentPane().add(tablePane, BorderLayout.NORTH);
+	getContentPane().add(buttonsPane, BorderLayout.EAST);
+	getContentPane().add(textPane);
+
+	setTitle("Pluto - Monitor Page");
+	setSize(1000, 800);
+			
+	}
+\end{lstlisting}
+
+
+In lines 5, 17 and 24 the containers of the \textit{table}, log console \textit{text} and buttons, are defined respectively.
+Lines from 6 to 13 define the table and all his column. Each row will display the information of a Mission, such as the trip currently executing and the drone assigned to that trip.
+Lines 18 to 20 define the console where the log of the execution is showed.
+Lines 24 to 31 creates and add the buttons to their container.
+Lines 33 to 35 build the Monitor Page, adding each container in a different part of the page.
+Finally, lines 37 and 38 sets the title and the size of the page.
+\\
+
+Also for the Monitor Page, the rest of the code deals with mechanisms which are not interesting for this section, so we don't show it here.
+
 
 \section{The crazyflie nano-quadcopter}\label{crazyflie}
 
