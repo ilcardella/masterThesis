@@ -30,7 +30,7 @@ The following Pluto Editor graph describes the behavior of the Alfalfa Crop Moni
 
 \begin{figure}[H]
   \centering
-  \includegraphics[width=\linewidth]{pictures/alfalfaEditor.png}
+  \includegraphics[width=\linewidth]{pictures/Alfalfa_Diagram.png}
   \caption{Pluto graph for the Alfalfa Crop Monitoring and Pollination application}
   \label{fig:alfalfaGraph}
 \end{figure}
@@ -86,41 +86,54 @@ The Mission status is set to STANDBY because there is at least a new inserted Tr
 \begin{lstlisting}
 		String result = null;
 
-		// Retrieve all entries of the map
+		// Retrieve all entries of the map, it means we are iterating
+        // all the completed Trips that wrote their result in the Evaluator
 		for (Map.Entry<Trip, Object> entry : dataMap.entrySet()) {
 
-			// consider only the trips related to the mission to evaluate
+			// we need to consider only the Trips related to the current
+            // mission we are evaluating
 			if (missionToEvaluate.getCompletedTrips().contains(entry.getKey())) {
 				
-				// take the Photo of the current Trip
+				// retrieve the Photo related of the current Trip
 				Photo photo = (Photo) entry.getValue();
 				
-				// checking pest and disease attributes
 				if (photo.hasPest() || photo.hasDisease())
 					
 					return "WARNING: Pest/disease at location: "
 							+ entry.getKey().getTargetLocation();
 
-				// checking for flowers in bloom
 				if (photo.hasBloom()) {
 
 					// create a new Trip to pollinate the flowers
 					Trip trip = new Trip();
 					trip.setName("PollinateTrip");
+                    
+                    // Set the same target location
+                    // of the Trip that has found the flowers
 					trip.setTargetLocation(entry.getKey().getTargetLocation());
+                    
+                    // This action must be implemented by the developer
 					trip.setAction(Action.POLLINATE);
+                    
+                    // the status WAITING means that this Trip
+                    // is ready to be launched
 					trip.setStatus(Trip.WAITING);
 
-					// add the new Trip to the list of trips to be executed
+					// adding this Trip to the Trip list
+                    // that contains all the Trips to be launched
 					missionToEvaluate.getTrips().add(trip);
-					// the Mission status is set to STANDBY, since new trips have been created
+                    
+					// The status STANDBY means that the mission
+                    // has some Trips to be launched yet and
 					missionToEvaluate.setStatus(Mission.STANDBY);
 				}
 			}
 		}
 
-		// set the result of the evaluation
+		// Result is a "success" because all the Photos of this 
+        // mission have been evaluated
 		result = "Success";
+        
 		return result;
 \end{lstlisting}
 
@@ -140,19 +153,67 @@ The following is a possible source code of the Pollination Action:
 
 To further clarify the development of the Alfalfa\cite{alfalfa} application with Pluto, we now show a real execution of the Alfalfa application in a concrete scenario:
 we want to simultaneously send three drones to monitor the plants distributed in a circular area.
-So, we create three Mission entities, and, for each of them, we drag and drop the action \textit{Take photo} on the map, in order to create the trips composing the circular area, as shown in figure \ref{fig:alfalfaArea}
+So, we create three Mission entities, and, for each of them, we drag and drop the action \textit{Take photo} on the map, in order to create the trips composing the circular area, as shown in figure \ref{fig:alfalfaArea}. Then the drones will take photos over these spots and, in case of bloom, a new Trip will be created to Pollinate the same area.
 
 \begin{figure}[H]
   \centering
-  \includegraphics[width=\linewidth, height=8cm]{pictures/alfalfaArea.png}
+  \includegraphics[width=\linewidth]{pictures/alfalfaArea.png}
   \caption{The circular area to monitor}
   \label{fig:alfalfaArea}
 \end{figure}
 
 
-To describe in a detailed way the execution, we drawn the following sequence diagrams:
+To describe in a detailed way the execution flow, we now show the sequence diagrams of the execution:
+\\
 
+% \begin{figure}[H]
+%   \centering
+%   \includegraphics[width=\linewidth]{pictures/Alfalfa_Sequence_MissionStart.png}
+%   \caption{Sequence diagram of a starting mission}
+%   \label{fig:alfalfaSequence1}
+% \end{figure}
 
+In figure \ref{fig:alfalfaSequence1} are shown the first calls after the user clicks on the Start button in the MonitorPage.
+The execution of the Mission starts and a thread is assigned to each Trip of the Mission. The information on the execution of each Trip is sent to the Pluto Main Application and showed to the final user, through the \textit{log()} function.
+\\
+
+% \begin{figure}[H]
+%   \centering
+%   \includegraphics[width=\linewidth]{pictures/Alfalfa_Sequence_MissionExecution.png}
+%   \caption{Sequence diagram of the mission execution flow}
+%   \label{fig:alfalfaSequence2}
+% \end{figure}
+
+In figure \ref{fig:alfalfaSequence2} is shown the Mission Execution.
+The \textit{Mission Thread} component takes care of assigning a drone to the current Trip, setting the status of the drone as BUSY, the status of the Trip to EXECUTING, the status of the Mission to RUNNING.
+For each Trip a \textit{TripWorker} instance is created, that simply manage the threads associated to the trips.
+Then it waits for the completion of the current Trip, set its status to COMPLETED and the Mission Status to STANDBY, since there are other trips in the list to be executed.
+Finally, the completed Trip is removed from the list of trips to be executed and the Drone status is set to FREE
+\\
+
+% \begin{figure}[H]
+%   \centering
+%   \includegraphics[width=\linewidth]{pictures/Alfalfa_Sequence_TripExecution.png}
+%   \caption{Sequence diagram of the trip execution flow}
+%   \label{fig:alfalfaSequence3}
+% \end{figure}
+
+In figure \ref{fig:alfalfaSequence3} is shown the Trip execution.
+The Drone assigned to the Trip is sent to the established location to take the pictures.
+After that, the result is returned to the Evaluator class, where the specific algorithm of the application will perform the evaluation on the pictures captured.
+\\
+
+% \begin{figure}[H]
+%   \centering
+%   \includegraphics[width=\linewidth]{pictures/Alfalfa_Sequence_MissionEnd.png}
+%   \caption{Sequence diagram of the mission ending flow}
+%   \label{fig:alfalfaSequence4}
+% \end{figure}
+
+In figure \ref{fig:alfalfaSequence4} are shown the final steps of the Mission execution.
+The \textit{Evaluator} will control the pictures taken by the Drone, and it wind that there are some plants to pollinate.
+So the Mission status is set to STANBY since new trips will be created to pollinate the plants. The trip status is set to WAITING.
+\\
 
 \subsection{Aerial mapping of archaeological sites}\label{aerialMapping}
 
@@ -167,24 +228,34 @@ The following figure is the Pluto editor graph needed to create the Aerial Mappi
 
 \begin{figure}[H]
   \centering
-  \includegraphics[width=\linewidth, height=8cm]{pictures/puttiEditor.png}
+  \includegraphics[width=\linewidth]{pictures/Putti_Diagram.png}
   \caption{Pluto graph for the Aerial Mapping of archaeological sites}
   \label{fig:puttiGraph}
 \end{figure}
 
 The drones can already take pictures thanks to the \textit{Take Photo} action.
+\\
+
 To send the drones to take pictures over the site location, the user has to simply create the Missions entities and add the Trips to the map he will be provided with.
 In the case the archaeologists want to send more drones on the locations where they can't obtain an adequate ortophoto, they just have to add more Mission entities.
 For example, if one archaeologist want to send 3 drones simultaneously on a particular location, he has to create 3 Mission entities.
 Then for each Mission he simply has to drag and drop the \textit{Take photo} action on that particular location.
+\\
+
 Thanks to the MissionEvaluator block, that analyzes the drones data at the end of the missions, the Main Application can decide if the photos are good enough or if more drones must be sent out to take new pictures in that specific location.
+\\
+
 It is important to underline that, using the Pluto framework, it is not possible to obtain the very same behavior of the original application.
 Indeed, two consecutive photos must be taken within a time constraint.
 This cannot be fulfilled with Pluto, since the Timer Monitor block deals with a time interval that starts when the drone leaves the base station, ensuring that it will take the picture before the time interval expires.
 So, there is no way to state a time constraint between two consecutive photos.
+\\
+
 The GateFIFO block takes as input two Mission instances, one from the Trip Monitor block and the other one from the Timer Monitor.
 It takes care of propagating only the first instance that arrives to it.
 For example, if the timer has expired then it will propagate the Timer Monitor instance, otherwise the Trip Monitor one.
+\\
+
 After the GateFIFO block there is a bifurcation:
 if the Mission is completed, it is sent to the MissionEvaluator, otherwise there are some trips of the mission that must be executed again, and so the Mission is sent to the DroneAllocator.
 The full explanation of the functionality of each block can be found in section \ref{blocks}.
@@ -200,38 +271,41 @@ The following code snippet shows our implementation of the Evaluator algorithm:
 \\
 \begin{lstlisting}
 		String result = null;
-		// generate the final ortophoto
+		// The "stitch" method takes a collection of photos as input
+        // and return an Ortophoto object derived by a proper algorithm
+        // based on the passed photos
 		OrtoPhoto ortophoto = stitch(dataMap.values());
 		
-		// if the aberration is greater than a fixed threshold
 		if(ortophoto.getAberration() > ABERRATION_THRESHOLD){
 			
-			// for each photo that compose the ortophoto
+			// Iteration on the photos that were used in the stitch method
+            // to generate the Ortophoto
 			for (Photo photo: ortophoto.getPhotoCollection()){
 				
-				// if the overlap of the photo is not enough
+				// if the overlap of the single photo is not enough
 				if (ortophoto.getOverlapOfGivenPhoto(photo) < OVERLAP_THRESHOLD){
 					
-					// Retrieve all entries of the map
+					// Loop on all the Trips of every missions
 					for (Map.Entry<Trip, Object> entry : dataMap.entrySet()) {
 						
 						// take the Photo of the current iteration
 						Photo p = (Photo) entry.getValue();
 						
-						// if we found the photo in the map
+						// When we found the photo that has the low overlap
 						if(photo.equals(p)){
 							
-							// create a new Trip
+							// create a new Trip that will take a new photo
+                            // from the same location
 							Trip trip = new Trip();
 							trip.setName("NewTrip");
 							trip.setTargetLocation(entry.getKey().getTargetLocation());
 							trip.setAction(Action.TAKE_PHOTO);
 							trip.setStatus(Trip.WAITING);
 
-							// add this new trip to the list of the mission
+							// add this new trip to the list of trips to be executed
 							missionToEvaluate.getTrips().add(trip);
 							
-							// set the mission status to STANDBY
+							// set the mission status to STANDBY, since a new trip has been created
 							missionToEvaluate.setStatus(Mission.STANDBY);
 						}
 					}		
@@ -239,7 +313,7 @@ The following code snippet shows our implementation of the Evaluator algorithm:
 			}
 		}
         
-        // set the result of the evaluation
+        // All decisions were been chosen so we end the evaluation
 		result = "Success";
 		return result;
 \end{lstlisting}
@@ -271,28 +345,40 @@ The following figure is the Pluto editor graph needed to create the PM10 applica
 
 \begin{figure}[H]
   \centering
-  \includegraphics[width=\linewidth]{pictures/puttiEditor.png}
+  \includegraphics[width=\linewidth]{pictures/Putti_Diagram.png}
   \caption{Pluto graph for the PM10 application}
   \label{fig:pm10Graph}
 \end{figure}
 
 
 For the measurements of pollution quantity, the \textit{measure} action can be used.
+\\
+
 The spatial grid must be manually built by the user, organizing the Trips of each Mission on the map he's provided with.
+\\
+
 The data collected by the drones are not photos anymore, but a \textit{pollutionQuantity} value which indicates the percentage of pollution in that area.
+\\
+
 Then, thanks to the MissionEvaluator blocks, the \textit{pollutionQuantity} variables are confronted and the gradients between areas of higher concentration are computed.
 Then the drones will be sent along this gradients, improving the spatial profile.
+\\
+
 As for the Aerial Mapping application, shown in section \ref{aerialMapping}, Pluto cannot fulfill the time constraint between two consecutive pollution samples.
 As already explained, the timer of Pluto starts when the drone leaves the base station and ensures that it will perform the action within that time interval, but there is no way to constrain the time between two consecutive samples.
+\\
+
 The GateFIFO block takes as input two Mission instances, one from the Trip Monitor block and the other one from the Timer Monitor.
 It takes care of propagating only the first instance that arrives to it.
 For example, if the timer has expired then it will propagate the Timer Monitor instance, otherwise the Trip Monitor one.
+\\
+
 After the GateFIFO block there is a bifurcation:
 if the Mission is completed, it is sent to the MissionEvaluator, otherwise there are some trips of the mission that must be executed again, and so the Mission is sent to the DroneAllocator.
 The full explanation of the functionality of each block can be found in section \ref{blocks}.
 
 
-Below there is our implementation of a possible  Evaluator algorithm:
+Below there is our implementation of a possible Evaluator algorithm:
 \\
 
 \begin{lstlisting}
@@ -322,9 +408,9 @@ Below there is our implementation of a possible  Evaluator algorithm:
 			trip.setAction(Action.MEASURE);
 			trip.setStatus(Trip.WAITING);
 
-			// add this new trip to the list of the mission
+			// add this new trip to the list of trips to be executed
 			missionToEvaluate.getTrips().add(trip);
-			// set the mission status to STANDBY
+			// set the mission status to STANDBY, since there are new trips to perform
 			missionToEvaluate.setStatus(Mission.STANDBY);
 			
 		}
@@ -359,7 +445,7 @@ This problem can be lowered by inserting a lot of trips in the area to monitor, 
 But in this way, not only it's not sure to capture the moving object, but there will be a lot of useless empty pictures.
 And, above all, there is still no way for the drones to actively follow the moving objects.
 
-We can conclude that the PURSUE application is too "dynamic" for the Pluto programming framework, and this can be an hint for a future expansion of it.
+We can conclude that the PURSUE application is too "dynamic" for the Pluto programming framework, and this can be an hint for a future expansion of our work.
 
 
 \newpage
