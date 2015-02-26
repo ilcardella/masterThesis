@@ -166,23 +166,23 @@ So, we create three Mission entities, and, for each of them, we drag and drop th
 To describe in a detailed way the execution flow, we now show the sequence diagrams of the execution:
 \\
 
-% \begin{figure}[H]
-%   \centering
-%   \includegraphics[width=\linewidth]{pictures/Alfalfa_Sequence_MissionStart.png}
-%   \caption{Sequence diagram of a starting mission}
-%   \label{fig:alfalfaSequence1}
-% \end{figure}
+ \begin{figure}[H]
+   \centering
+   \includegraphics[width=\linewidth]{pictures/Alfalfa_Sequence_MissionStart.png}
+   \caption{Sequence diagram of a starting mission}
+   \label{fig:alfalfaSequence1}
+ \end{figure}
 
 In figure \ref{fig:alfalfaSequence1} are shown the first calls after the user clicks on the Start button in the MonitorPage.
 The execution of the Mission starts and a thread is assigned to each Trip of the Mission. The information on the execution of each Trip is sent to the Pluto Main Application and showed to the final user, through the \textit{log()} function.
 \\
 
-% \begin{figure}[H]
-%   \centering
-%   \includegraphics[width=\linewidth]{pictures/Alfalfa_Sequence_MissionExecution.png}
-%   \caption{Sequence diagram of the mission execution flow}
-%   \label{fig:alfalfaSequence2}
-% \end{figure}
+ \begin{figure}[H]
+   \centering
+   \includegraphics[width=\linewidth]{pictures/Alfalfa_Sequence_MissionExecution.png}
+   \caption{Sequence diagram of the mission execution flow}
+   \label{fig:alfalfaSequence2}
+ \end{figure}
 
 In figure \ref{fig:alfalfaSequence2} is shown the Mission Execution.
 The \textit{Mission Thread} component takes care of assigning a drone to the current Trip, setting the status of the drone as BUSY, the status of the Trip to EXECUTING, the status of the Mission to RUNNING.
@@ -191,24 +191,24 @@ Then it waits for the completion of the current Trip, set its status to COMPLETE
 Finally, the completed Trip is removed from the list of trips to be executed and the Drone status is set to FREE
 \\
 
-% \begin{figure}[H]
-%   \centering
-%   \includegraphics[width=\linewidth]{pictures/Alfalfa_Sequence_TripExecution.png}
-%   \caption{Sequence diagram of the trip execution flow}
-%   \label{fig:alfalfaSequence3}
-% \end{figure}
+ \begin{figure}[H]
+   \centering
+   \includegraphics[width=\linewidth]{pictures/Alfalfa_Sequence_TripExecution.png}
+   \caption{Sequence diagram of the trip execution flow}
+   \label{fig:alfalfaSequence3}
+ \end{figure}
 
 In figure \ref{fig:alfalfaSequence3} is shown the Trip execution.
 The Drone assigned to the Trip is sent to the established location to take the pictures.
 After that, the result is returned to the Evaluator class, where the specific algorithm of the application will perform the evaluation on the pictures captured.
 \\
 
-% \begin{figure}[H]
-%   \centering
-%   \includegraphics[width=\linewidth]{pictures/Alfalfa_Sequence_MissionEnd.png}
-%   \caption{Sequence diagram of the mission ending flow}
-%   \label{fig:alfalfaSequence4}
-% \end{figure}
+ \begin{figure}[H]
+   \centering
+   \includegraphics[width=\linewidth]{pictures/Alfalfa_Sequence_MissionEnd.png}
+   \caption{Sequence diagram of the mission ending flow}
+   \label{fig:alfalfaSequence4}
+ \end{figure}
 
 In figure \ref{fig:alfalfaSequence4} are shown the final steps of the Mission execution.
 The \textit{Evaluator} will control the pictures taken by the Drone, and it wind that there are some plants to pollinate.
@@ -323,12 +323,12 @@ there are 7 drones and 1 big archaeological site to monitor, and we want to send
 As usual, the user has to create 7 Mission entities.
 Then, for each Mission, he has to create the list of Trips by using the map to drag and drop the action \textit{Take photo} on the locations forming the site, shown in figure area3:
 
-% \begin{figure}[H]
-% \centering
-% \includegraphics[width=\linewidth, height=8cm]{pictures/area3.png}
-% \caption{The archaeological site on the map}
-% \label{fig:area3}
-% \end{figure}
+ \begin{figure}[H]
+ \centering
+ \includegraphics[width=\linewidth, height=8cm]{pictures/area3.png}
+ \caption{The archaeological site on the map}
+ \label{fig:area3}
+ \end{figure}
 
 %sequence
 
