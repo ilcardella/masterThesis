@@ -48,4 +48,64 @@ As already said, Swing is a lightweight toolkit since it paints its own widgets.
 
 \section{The crazyflie nano-quadcopter}\label{crazyflie}
 
-Description of crazyflie API 
+For the concrete actuation of the sensing tasks required by each application, we chose the Crazyflie Nano-Quadcopter, shown in figure \ref{fig:crazyflie}.
+
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=\linewidth]
+{pictures/crazyflie.jpg}
+  \caption{The Crazyflie Nano-Quadcopter}
+  \label{fig:crazyflie}
+\end{figure}
+
+The Crazyflie is a tiny quadcopter often referred to as a nano-quad, built using the PCB itself as the frame,developed solely by open source tools. The Crazyflie specs are the following:
+
+
+\begin{itemize}
+\item {Small and lightweight, around 19g and about 90mm motor to motor
+}
+\item {Flight time up to 7 minutes with standard 170mAh Li-Po battery
+}
+\item {Standard micro-USB connector for charging which takes 20min for the stock 170mAh Li-Po battery
+}
+\item {On-board low-energy radio@1mW based on the nRF24L01+ chip. Up to 80m range (environment dependent) when using the Crazyradio USB dongle}
+\item{Radio bootloader which enables wireless update of the firmware
+}
+\item{Powerful 32 bit MCU: STM32F103CB @ 72 MHz (128kb flash, 20kb RAM)
+}
+\item{3-axis high-performance MEMs gyros with 3-axis accelerometer: Invensense MPU-6050
+}
+\item{Available footprints to manually solder magnetometer HMC5883L/HMC5983 or/and barometer MS5611
+}
+\item{4-layer low noise PCB design with separate voltage regulators for digital and analog supply
+}
+\end{itemize}
+
+To concretely control the Crazyflie, there is a Python library which gives high level functions and hides the details.
+We used a particular API to send the control command: 
+\\
+
+\begin{lstlisting}
+	send_setpoint(roll, pitch, yaw, thrust)
+\end{lstlisting}
+
+The arguments roll/pitch/yaw/trust is the new set-points that should be sent to the copter.
+Foe example, to send a new control set-point:
+\\
+
+\begin{lstlisting}
+	roll    = 0.0
+    pitch   = 0.0
+    yawrate = 0
+    thrust  = 0
+    crazyflie.commander.send_setpoint(roll, pitch, yawrate, thrust)
+\end{lstlisting}
+
+Changing the \textit{roll} and \textit{pitch} will make the quadcopter tilt to the sides and thus change the direction that it's moving in.
+Changing the \textit{yaw} will make the quadcopter spin.
+The thrust is used to control the altitude of the quadcopter.
+
+By dynamically adjusting these four parameters we can make the Crazyflies move to the user specified locations.
+
+
