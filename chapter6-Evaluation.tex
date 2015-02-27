@@ -166,23 +166,23 @@ So, we should create three Mission entities, and, for each of them, we should dr
 To describe in a detailed way the execution flow, we now show the sequence diagrams of the Pluto Main Application behavior:
 \\
 
- \begin{figure}[H]
-   \centering
-   \includegraphics[width=\linewidth]{pictures/Alfalfa_Sequence_MissionStart.png}
-   \caption{Sequence diagram of a starting mission}
-   \label{fig:alfalfaSequence1}
- \end{figure}
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=\linewidth]{pictures/Alfalfa_Sequence_MissionStart.png}
+  \caption{Sequence diagram of a starting mission}
+  \label{fig:alfalfaSequence1}
+\end{figure}
 
 In figure \ref{fig:alfalfaSequence1} are shown the first calls after the user clicks on the Start button in the Monitor Page.
 The Main Application receives the start command from the user, then activates the Engine entity. Now, a new Thread is created and started for each missions. The status of the Missions are sent to the Pluto Main Application and showed to the final user, through the \textit{log()} function.
 \\
 
- \begin{figure}[H]
-   \centering
-   \includegraphics[width=\linewidth]{pictures/Alfalfa_Sequence_MissionExecution.png}
-   \caption{Sequence diagram of the mission execution flow}
-   \label{fig:alfalfaSequence2}
- \end{figure}
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=\linewidth]{pictures/Alfalfa_Sequence_MissionExecution.png}
+  \caption{Sequence diagram of the mission execution flow}
+  \label{fig:alfalfaSequence2}
+\end{figure}
 
 In figure \ref{fig:alfalfaSequence2} the Mission Execution is shown.
 The \textit{Mission Thread} entity manages all the diagram blocks logic and the Mission flow between them. For example, as can be seen, the first two method calls, belong to the Drone Allocator. 
@@ -192,24 +192,24 @@ Finally, the completed Trip is removed from the list of trips to be executed and
 Otherwise, if the launched Trips was the last one, the Mission status would have been set to COMPLETED.
 \\
 
- \begin{figure}[H]
-   \centering
-   \includegraphics[width=\linewidth]{pictures/Alfalfa_Sequence_TripExecution.png}
-   \caption{Sequence diagram of the trip execution flow}
-   \label{fig:alfalfaSequence3}
- \end{figure}
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=\linewidth]{pictures/Alfalfa_Sequence_TripExecution.png}
+  \caption{Sequence diagram of the trip execution flow}
+  \label{fig:alfalfaSequence3}
+\end{figure}
 
 In figure \ref{fig:alfalfaSequence3} the Trip execution is shown.
 The Drone assigned to the Trip is sent to the established location to take the pictures.
 After that, the resulting photo is written into the Evaluator entity, where the specific algorithm of the application will perform the evaluation, once the mission will be completed.
 \\
 
- \begin{figure}[H]
-   \centering
-   \includegraphics[width=\linewidth]{pictures/Alfalfa_Sequence_MissionEnd.png}
-   \caption{Sequence diagram of the mission ending flow}
-   \label{fig:alfalfaSequence4}
- \end{figure}
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=\linewidth]{pictures/Alfalfa_Sequence_MissionEnd.png}
+  \caption{Sequence diagram of the mission ending flow}
+  \label{fig:alfalfaSequence4}
+\end{figure}
 
 In figure \ref{fig:alfalfaSequence4} the final steps of the Mission execution are shown.
 The \textit{Evaluator} will check the pictures taken by the Drones, looking for pest, diseases or blooms.
@@ -325,12 +325,12 @@ there are 7 drones and 1 big archaeological site to monitor, and we want to send
 As usual, the user has to create 7 Mission entities.
 Then, for each Mission, he has to drag and drop the action \textit{Take photo} on the locations forming the site, shown in figure area3:
 
- \begin{figure}[H]
- \centering
- \includegraphics[width=\linewidth, height=8cm]{pictures/area3.png}
- \caption{The archaeological site on the map}
- \label{fig:area3}
- \end{figure}
+% \begin{figure}[H]
+% \centering
+% \includegraphics[width=\linewidth, height=8cm]{pictures/area3.png}
+% \caption{The archaeological site on the map}
+% \label{fig:area3}
+% \end{figure}
 
 %sequence
 
