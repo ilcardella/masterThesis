@@ -12,11 +12,47 @@ Graphical Editing Framework (GEF) provides a powerful foundation for creating ed
 
 \section{Code generation}\label{codeGeneration}
 
-Description of the generation process of the code from diagram
+%Description of the generation process of the code from diagram
+
+Once the programmer has created the graph of the application through the Pluto Graphical Editor, he has to generate the code in order to make the Pluto Main Application behavior coherent with the graph.
+
+This can simply be done by right clicking on the graph and choosing the "Generate code" command.
+
+In the implementation code of the Pluto Main Application there is the \textit{MissionWorker} class, which contains two \textit{tags}.
+These tags stands for the variables declaration and the instantiation of the blocks needed by the particular kind of application developed with the Pluto Graphical Editor.
+
+The code generation process simply replaces these \textit{tags} with the variables declaration and the calls to the blocks inserted by the programmer.
+
+
+
 
 \section{Object-oriented approach}\label{oomodel}
 
-Why we decided to use JAVA, How we implement entities, UML diagrams of classes, MVC pattern
+%Why we decided to use JAVA, How we implement entities, UML diagrams of classes, MVC pattern
+
+We used the Java programming language to implement both the Graphical Editor and the Main Application.
+We made this choice because we are very familiar with Java, since almost every academic project we implemented in these years made use of this Object-Oriented programming language.
+The Object-Oriented approach perfectly suits the Pluto model, since we have different independent entities such Drones,Missions,Trips that interact together in the execution of tasks.
+\\
+
+We decided to adopt a Model View Controller(MVC) approach, whose functioning is shown in figure \ref{fig:mvc}.
+The central component of MVC, the model, captures the behavior of the application in terms of its problem domain, independent of the user interface.
+The model directly manages the data, logic and rules of the application.
+A view can be any output representation of information, such as a chart or a diagram; multiple views of the same information are possible.
+The third part, the controller, accepts input and converts it to commands for the model or view.
+
+A controller can send commands to the model to update the model's state.
+It can also send commands to its associated view to change the view's presentation of the model.
+A model notifies its associated views and controllers when there has been a change in its state. This notification allows the views to produce updated output, and the controllers to change the available set of commands.
+A view requests information from the model that it uses to generate an output representation to the user.
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=\linewidth]
+{pictures/MVC.png}
+  \caption{The MVC pattern}
+  \label{fig:mvc}
+\end{figure}
 
 \section{Runtime Management}\label{runtimeMng}
 
@@ -24,13 +60,13 @@ Description of the management of threads, pub/sub pattern and log procedures
 
 \section{User interface}\label{interface}
 
-We chose the Swing tool to develop the Pluto User Interface, already described in section \ref{plutoMainApp}.
+We chose the Swing framework to develop the Pluto User Interface, already described in section \ref{plutoMainApp}.
 We made this choice since Swing is well known to us.
 Indeed we used it for the development of many academic projects, where we noticed that it allows to build graphical interface in a very fast and easy way and to add a great variety of components.
 \\
 
 Swing library is an official Java GUI toolkit released by Sun Microsystems. It is used to create Graphical user interfaces with Java.
-The main characteristics of the Swing toolkit:
+The main characteristics of the Swing toolkit are:
 \begin{itemize}
 \item platform independent
 \item customizable
@@ -39,8 +75,9 @@ The main characteristics of the Swing toolkit:
 \item lightweight
 \end{itemize}
 
-Swing is an advanced GUI toolkit. It has a rich set of widgets. From basic widgets like buttons, labels, scrollbars to advanced widgets like trees and tables. Swing itself is written in Java.
-Swing is a part of JFC, Java Foundation Classes. It is a collection of packages for creating full featured desktop applications.
+Swing is an advanced GUI toolkit. It has a rich set of widgets:
+from basic widgets like buttons, labels, scrollbars to advanced like trees and tables. 
+Swing itself is written in Java and is part of JFC, Java Foundation Classes: it is a collection of packages for creating full featured desktop applications.
 
 There are basically two types of widget toolkits: \textit{Lightweight} and \textit{Heavyweight}.
 A heavyweight toolkit uses OS's API to draw the widgets. For example Borland's VCL is a heavyweight toolkit since it depends on WIN32 API, the built in Windows application programming interface.
@@ -91,11 +128,11 @@ We used a particular API to send the control command:
 \end{lstlisting}
 
 The arguments roll/pitch/yaw/trust is the new set-points that should be sent to the copter.
-Foe example, to send a new control set-point:
+For example, to send a new control set-point:
 \\
 
 \begin{lstlisting}
-	roll    = 0.0
+	 roll    = 0.0
     pitch   = 0.0
     yawrate = 0
     thrust  = 0
@@ -106,6 +143,6 @@ Changing the \textit{roll} and \textit{pitch} will make the quadcopter tilt to t
 Changing the \textit{yaw} will make the quadcopter spin.
 The thrust is used to control the altitude of the quadcopter.
 
-By dynamically adjusting these four parameters we can make the Crazyflies move to the user specified locations.
+By dynamically adjusting these four parameters we can make the Crazyflies move to the locations specified by the user through the Pluto User Interface.
 
 

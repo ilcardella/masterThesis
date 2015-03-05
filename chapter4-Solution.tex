@@ -34,7 +34,7 @@ When the Editor starts, it shows three main sections: the Palette that contains 
   \label{fig:GraphicalEditor}
 \end{figure}
 
-The developer can choose among several types of pre-created blocks, each one containing a certain logic, explained in (section~\ref{entities}). Creating a block in the editor space can be done simply with a drag and drop gesture or clicking on the desired entity and then clicking on the chosen location in the editor. Then the user can connect blocks each other using the Connection tool in the Palette section.
+The developer can choose among several types of pre-created blocks, each one containing a certain logic, explained in section~\ref{entities}. Creating a block in the editor space can be done simply with a drag and drop gesture or clicking on the desired entity and then clicking on the chosen location in the editor. Then the user can connect blocks each other using the Connection tool in the Palette section.
 Apart from the standard functionality, such as Undo, Save, and Load, the Context Menu provides a command to generate a source-code of the Main Application based on the designed diagram. Toolbar provides Undo/Redo, Delete, and Magnify commands.
 To understand better Pluto Graphical Editor, it's worth to spend a word on the meaning of creating a diagram: each block in the Diagram is black box which is intended to manage a Mission entity. It takes a Mission as an input, works with it and sends it out as an output. The connections among blocks represents the path that the Mission entity will follow after going out from a block. Each block could have multiple outgoing and incoming connections.
 In the end, on the editor, the developer will have a set of blocks linked together with a set of connections. This drawing can be interpreted as the behavior of the Main Application in managing the missions. For example we designed a sketch of a possible diagram, as shown in figure ~\ref{fig:GraphicalEditor}. This design is very simple and could be a first skeleton for a more complex application, by simply adding new blocks.
@@ -46,37 +46,29 @@ Besides of simplicity, our editor is very flexible as well, since it provides a 
 The Pluto Main Application is the final application that act as a Ground Control Station, managing all the drones and the missions. In this section we explain how it works.
 Everything starts in the Mission Page where the user can define the tasks that will be carried out by the drones. After clicking to the "Add Mission" button the user is asked to set a name for the mission.
 
-\begin{figure}[htb]
+\begin{figure}[H]
   \centering
   \includegraphics[width=\linewidth]{pictures/MissionPage.png}
   \caption{Mission Page interface}
   \label{fig:MissionPage}
 \end{figure}
 
-Then, the user is asked to decide if the mission must be repeated. If he click "Yes", that mission will continue to execute cyclically until the user decide to stop it, through the Stop button of the Monitor Page.
-
-\begin{figure}[htb]
-  \centering
-  \includegraphics[width=\linewidth]{pictures/missionRepeat.png}
-  \caption{Mission Repeatable pop up}
-  \label{fig:missionRepeat}
-\end{figure}
 
 After that a Mission entity is created, but by now it doesn't contain any information about what has to be done. To add this information the user has to double-click on the mission in the main list or click on the "Set Trips" button. A new window will appear, as shown in figure  ~\ref{fig:TripsPage}, and the user can add Trips entity to the related Mission. A Trip is nothing but a movement from point A to point B inside our indoor context. Trips are the basic entities that constitute a single Mission. The single Trip contains information about the Action to execute once point B is reached. Furthermore the Trip has a reference of the drone assigned to it, but we will talk about this in section ~\ref{entities}.
 
-\begin{figure}[htb]
+\begin{figure}[H]
   \centering
   \includegraphics[width=\linewidth]{pictures/TripsPage.png}
   \caption{Trips Page interface}
   \label{fig:TripsPage}
 \end{figure}
 
-So after all the Trips are added to a single Mission the user can create more Mission or pass to the Monitor Page with the corresponding button.
+So after all the Trips are added to a single Mission the user can create more Mission entities  or pass to the Monitor Page with the corresponding button.
 The Monitor Page, shown in figure ~\ref{fig:MonitorPage}, is the window where the user can obtain information about the running missions, at run-time. On the top, there is a table where each row is assigned to a Mission, each column will display the information about the current Trip that is executing and the Drone that has been assigned to that Trip.
 Below the table there is a console where log messages are printed during the execution of each missions. In this way the user can obtain run-time information about the status of the entire system. 
 Of course the Start button will start the execution of the created missions, while the Stop button will prompt the user to a behaviour choice: "RTL" or "Land". The first will make all drones to return to the home location instantly, while the second option will make all drones to land in their current locations. After the Stop command, the missions status will be preserved and could be continued in the future.
 
-\begin{figure}[htb]
+\begin{figure}[H]
   \centering
   \includegraphics[width=\linewidth]{pictures/MonitorPage.png}
   \caption{Monitor Page interface}
@@ -117,6 +109,7 @@ In this section we show the fundamental entities of our model, in order to bette
 \label{entities}
 
 Basically, through the interface presented in section~\ref{plutoMainApp}, the user specifies a list of Missions that the system must perform; each Mission contains a list of Trips; a Trip is a path between a start location and a target location; the Trip is performed by a Drone which carries out an Action, for example it can bring an Item to a person, or take a photo or measure temperature at a particular location.
+In general, two consecutive trips are performed by two different drones.
 
 So we identified the following entities:
 
@@ -349,7 +342,7 @@ In this section we describe our previously developed solutions, which we refined
 
 In the version precedent to the final solution, presented in section~\ref{dataFlow}, we did not have a concept of Trip, and Mission was the main concept the whole model was based on. The following diagrams shows this in the particular case of the Timer feature, which contains also a "Switch source-target" block. Later, this block was included in the logic of the Trip.
 
-\begin{figure}[htb]
+\begin{figure}[H]
   \centering
   \includegraphics[width=\linewidth]{pictures/NoTrip.png}
   \caption{Solution without the Trip concept}
@@ -367,7 +360,7 @@ As said, there were also the "Delay Monitor" and "Timer Monitor" blocks, instead
 These blocks managed the delayed missions(fig.~\ref{fig:delayMonitor}) and the missions with an associated timer(fig.~\ref{fig:noClock}), respectively.
 There wasn't the MissionModifier block, but only the "Priority Manager" one, so the programmer couldn't insert blocks(fig.~\ref{fig:noMM}) with custom code.
 
-\begin{figure}[htb]
+\begin{figure}[H]
   \centering
   \includegraphics[width=\linewidth]{pictures/NoClock.png}
   \caption{Solution with the TimerMonitor}
@@ -382,7 +375,7 @@ There wasn't the MissionModifier block, but only the "Priority Manager" one, so 
   \label{fig:delayMonitor}
 \end{figure}
 
-\begin{figure}[htb]
+\begin{figure}[H]
   \centering
   \includegraphics[width=\linewidth]{pictures/NoMM.png}
   \caption{Solution without the MissionModifier block}

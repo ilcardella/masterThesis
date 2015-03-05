@@ -39,9 +39,10 @@ Thanks to the \textit{Take photo} action, already implemented in Pluto, the dron
 \\
 
 As already explained, a Mission object contains a list of trips to be executed.
-Since, inside the Mission entity, these trips are performed sequentially, if the user wants to send more than one drone simultaneously on the same location, he has to create more than one Mission.
+Inside the Mission entity, these trips are performed sequentially, in general each one by a different Drone, as already explained in section \ref{entities}.
+So, if the user wants to send more than one drone simultaneously on the same location, he has to create more than one Mission.
 Indeed missions are executed in parallel, so if the user wants to simultaneously send 3 drones on the same location, he simply has to create three missions.
-Then, on the Trips page of each of the three missions, he has to choose the same location.
+Then,  since each Mission has its own Trips Page, he has to choose the same locations on the maps of the three Trip pages.
 \\
 
 To concretely choose the specific locations to monitor, the user is provided with a map over which he can drag and drop the action \textit{Take photo}.
@@ -57,7 +58,7 @@ These attributes are false by default and they are set to true when the leaves a
 \\
 
 The MissionEvaluator block enables the evaluation of the photos taken by the drones. If the pest and/or disease attributes are true, the system notifies the farmer of the damaged location, adding a log line in the console of the Monitor Page of the Pluto User Interface.
-If the bloom attribute is true, a new Trip will be created and the drones will be sent to that location to pollinate the flowers.
+If the bloom attribute is true, a new Trip will be created and a new Drone, capable to perform the Pollinate action, will be sent to that location to pollinate the flowers.
 \\
 
 The time constraints, which are set by the user thanks to the timer attribute of the Mission entity, will be respected thanks to the TimerMonitor block.
@@ -70,7 +71,7 @@ For example, if the timer has expired then it will propagate the Timer Monitor i
 \\
 
 After the GateFIFO block there is a bifurcation:
-if the Mission is completed, it is sent to the MissionEvaluator, otherwise there are some trips of the mission that must be executed again, and so the Mission is sent to the DroneAllocator.
+if the Mission is completed, it is sent to the MissionEvaluator, otherwise there are some trips of the mission that must be executed again, and so the Mission is sent to the DroneAllocator, which will assign new drones to these trips.
 The full explanation of the functionality of each block can be found in section \ref{blocks}.
 \\
 
@@ -94,7 +95,7 @@ The Mission status is set to STANDBY because there is at least a new inserted Tr
             // mission we are evaluating
 			if (missionToEvaluate.getCompletedTrips().contains(entry.getKey())) {
 				
-				// retrieve the Photo related of the current Trip
+				// retrieve the Photo related to the current Trip
 				Photo photo = (Photo) entry.getValue();
 				
 				if (photo.hasPest() || photo.hasDisease())
@@ -124,7 +125,7 @@ The Mission status is set to STANDBY because there is at least a new inserted Tr
 					missionToEvaluate.getTrips().add(trip);
                     
 					// The status STANDBY means that the mission
-                    // has some Trips to be launched yet and
+                    // has some Trips to be executed
 					missionToEvaluate.setStatus(Mission.STANDBY);
 				}
 			}
@@ -152,8 +153,11 @@ The following is a possible source code of the Pollination Action:
 
 
 To further clarify the development of the Alfalfa\cite{alfalfa} application with Pluto, we now show a real execution of the Alfalfa application in a concrete scenario:
-Imagine we want to simultaneously send three drones to monitor the plants distributed in a circular area.
-So, we should create three Mission entities, and, for each of them, we should drag and drop the action \textit{Take photo} on the map, in order to create the trips composing the circular area, as shown in figure \ref{fig:alfalfaArea}. Then, when the missions start, the drones will take photos over these spots and, in case of bloom, new Trips will be created to Pollinate the area.
+imagine we want to simultaneously send three drones to monitor the plants distributed in a circular area.
+So, we create three Mission entities, and, for each of them, we drag and drop the action \textit{Take photo} on the map of its Trip page, in order to create the trips composing the circular area, as shown in figure \ref{fig:alfalfaArea}.
+The figure \ref{fig:alfalfaArea} represents the trips of one of the three Missions.
+Each one of the three missions has its own map where the user distribute the trips to perform.
+Then, when the missions start, the drones will take photos over these spots and, in case of bloom, new Trips will be created to Pollinate the area.
 
 \begin{figure}[H]
   \centering
@@ -173,7 +177,7 @@ To describe in a detailed way the execution flow, we now show the sequence diagr
   \label{fig:alfalfaSequence1}
 \end{figure}
 
-In figure \ref{fig:alfalfaSequence1} are shown the first calls after the user clicks on the Start button in the Monitor Page.
+In figure \ref{fig:alfalfaSequence1} we show the first calls after the user clicks on the Start button in the Monitor Page.
 The Main Application receives the start command from the user, then activates the Engine entity. Now, a new Thread is created and started for each missions. The status of the Missions are sent to the Pluto Main Application and showed to the final user, through the \textit{log()} function.
 \\
 
@@ -185,8 +189,8 @@ The Main Application receives the start command from the user, then activates th
 \end{figure}
 
 In figure \ref{fig:alfalfaSequence2} the Mission Execution is shown.
-The \textit{Mission Thread} entity manages all the diagram blocks logic and the Mission flow between them. For example, as can be seen, the first two method calls, belong to the Drone Allocator. 
-For each Trip a new \textit{Trip Thread} instance is created, that will manage the parallel execution of the trip.
+The \textit{Mission Thread} entity manages all the diagram blocks logic and the Mission flow between them. For example, the first two method calls belong to the Drone Allocator. 
+For each Trip a new \textit{Trip Thread} instance is created, that will manage the parallel execution of the trips.
 After that, the mission thread waits for the completion of the started Trip, and then the Mission Status is set to "STANDBY", since there are other trips to be executed in the list.
 Finally, the completed Trip is removed from the list of trips to be executed and the Drone status is set to "FREE".
 Otherwise, if the launched Trips was the last one, the Mission status would have been set to COMPLETED.
@@ -226,7 +230,7 @@ Drones are sent to take a series of ortophotos which then will be stitched toget
 If the obtained ortophoto is not adequate, the archaeologists should be able to send more drones on that particular area.
 The drones must perform their actions in a limited amount of time, since if too much time pass between two ortophotos, the scene may change.
 
-The following figure is the Pluto editor graph needed to create the Aerial Mapping of archaeological sites application. 
+The following figure is the Pluto Editor graph needed to create the Aerial Mapping of archaeological sites application. 
 
 \begin{figure}[H]
   \centering
@@ -238,13 +242,13 @@ The following figure is the Pluto editor graph needed to create the Aerial Mappi
 The drones can already take pictures thanks to the \textit{Take Photo} action.
 \\
 
-To send the drones to take pictures over the site location, the user has to simply create the Missions entities and add the Trips to the map he will be provided with.
-In the case the archaeologists want to send more drones on the locations where they can't obtain an adequate ortophoto, they just have to add more Mission entities.
+To send the drones to take pictures over the site locations, the user has to simply create the Mission entities and add the trips in the Trips Page of each Mission.
+In case the archaeologists want to send more drones on the locations where they can't obtain adequate ortophotos, they just have to add more Mission entities.
 For example, if one archaeologist want to send 3 drones simultaneously on a particular location, he has to create 3 Mission entities.
-Then for each Mission he simply has to drag and drop the \textit{Take photo} action on that particular location.
+Then, in the Trips pages of each Mission, he simply has to drag and drop the \textit{Take photo} action on that particular location.
 \\
 
-Thanks to the MissionEvaluator block, that analyzes the drones data at the end of the missions, the Main Application can decide if the photos are good enough or if more drones must be sent out to take new pictures in that specific location.
+Thanks to the MissionEvaluator block, that analyzes the drones data at the end of the missions, the Main Application can decide if the photos are good enough or if more drones must be sent out to take new pictures in those locations.
 \\
 
 It is important to underline that, using the Pluto framework, it is not possible to obtain the very same behavior of the original application.
@@ -261,7 +265,7 @@ For example, if the timer has expired then it will propagate the Timer Monitor i
 After the GateFIFO block there is a bifurcation:
 if the Mission is completed, it is sent to the MissionEvaluator, otherwise there are some trips of the mission that must be executed again, and so the Mission is sent to the DroneAllocator.
 The full explanation of the functionality of each block can be found in section \ref{blocks}.
-
+\\
 
 
 Concerning the code of the Evaluator block needed for the development of the Aerial Mapping\cite{putti} application, as for the previous application, we can find each photo taken during the missions in the "dataMap" parameter, that is an hashmap that create a relation between a Trip and the photo taken through its Action.
@@ -323,16 +327,24 @@ The following code snippet shows our implementation of the Evaluator algorithm:
 In order to show the real runtime execution of the Aerial Mapping application with Pluto, we now show a possible scenario:
 there are 7 drones and 1 big archaeological site to monitor, and we want to send all the drones in that area at the same time to take the ortophotos.
 As usual, the user has to create 7 Mission entities.
-Then, for each Mission, he has to drag and drop the action \textit{Take photo} on the locations forming the site, shown in figure area3:
+Then, in each Mission's Trips Page, he has to drag and drop the action \textit{Take photo} on the locations forming the site, shown in figure \ref{fig:puttiArea}.
+Once again, the figure shows the map on the Trips Page of one of the seven missions.
 
-% \begin{figure}[H]
-% \centering
-% \includegraphics[width=\linewidth, height=8cm]{pictures/area3.png}
-% \caption{The archaeological site on the map}
-% \label{fig:area3}
-% \end{figure}
+\begin{figure}[H]
+\centering
+\includegraphics[width=\linewidth, height=8cm]{pictures/puttiArea.png}
+\caption{The archaeological site on the map}
+\label{fig:puttiArea}
+\end{figure}
 
-%sequence
+The sequence diagrams related to this application are same diagrams shown in section \ref{alfalfa}. The only difference is that now the application doesn't require the repetition of the missions anymore. This leads the Main Application to end the execution flow when the Mission reaches a successful evaluation. As shown in figure \ref{fig:pm10puttiSequence}, after the evaluation the execution doesn't go further.
+
+ \begin{figure}[H]
+ \centering
+ \includegraphics[width=\linewidth, height=8cm]{pictures/pm10puttiSequence.png}
+ \caption{Sequence diagram of the mission ending flow, without repetition}
+ \label{fig:pm10puttiSequence}
+ \end{figure}
 
 
 \subsection{PM10}
@@ -353,7 +365,7 @@ The following figure is the Pluto editor graph needed to create the PM10 applica
 \end{figure}
 
 
-For the measurements of pollution quantity, the \textit{measure} action can be used.
+For the measurements of pollution quantity, the \textit{Measure} action can be used.
 \\
 
 The spatial grid must be manually built by the user, organizing the Trips of each Mission on the map he's provided with.
@@ -363,7 +375,7 @@ The data collected by the drones are not photos anymore, but a \textit{pollution
 \\
 
 Then, thanks to the Mission Evaluator blocks, the \textit{pollutionQuantity} variables are confronted and the gradients between areas of higher concentration are computed.
-Then the drones will be sent along this gradients, improving the spatial profile.
+So new drones will be sent along this gradients, improving the spatial profile.
 \\
 
 As for the Aerial Mapping application, shown in section \ref{aerialMapping}, Pluto cannot fulfill the time constraint between two consecutive pollution samples.
@@ -378,7 +390,7 @@ For example, if the timer has expired then it will propagate the Timer Monitor i
 After the GateFIFO block there is a bifurcation:
 if the Mission is completed, it is sent to the MissionEvaluator, otherwise there are some trips of the mission that must be executed again, and so the Mission is sent to the DroneAllocator.
 The full explanation of the functionality of each block can be found in section \ref{blocks}.
-
+\\
 
 Below there is our implementation of a possible Evaluator algorithm:
 \\
@@ -424,12 +436,18 @@ Below there is our implementation of a possible Evaluator algorithm:
 
 
 Now we show the execution of the PM10 application with Pluto in a particular scenario:
-we have 5 drones and we want to measure the pollution quantity in the area shown in figure area4 using all of them.
-As usual, the user has to create 5 Missions and has to choose the locations of the area to sample through the map of the Trips Page of the Pluto User Interface.
+we have 5 drones and we want to measure the pollution quantity in the area shown in figure \ref{fig:pm10Area} using all of them.
+As usual, the user has to create 5 Missions and has to choose the locations of the area to sample through the map on the Trips Page of each Mission.
 In this way, five drones will monitor simultaneously the area to sample.
 
+\begin{figure}[H]
+\centering
+\includegraphics[width=\linewidth, height=8cm]{pictures/pm10Area.png}
+\caption{The archaeological site on the map}
+\label{fig:pm10Area}
+\end{figure}
 
-%sequence
+As for Aerial Mapping\cite{putti} application, again, the repetition of a mission is not required. So the sequence diagrams don't change and the reader can see them in sections \ref{alfalfa} and \ref{aerialMapping}.
 
 
 \subsection{PURSUE}
@@ -452,13 +470,26 @@ We can conclude that the PURSUE application is too "dynamic" for the Pluto progr
 
 \newpage
 
-All the previous applications were already developed and tested with other systems, like Karma\cite{karma} and Voltron\cite{voltron}, but we also developed new applications and tested our framework on them.
-We developed the Object-finder (OF), the Warehouse item-finder (WIF)and the Drugs distribution(DD) applications.
-In the following subsections we will describe these applications in details, also using a visual representation of their behaviour, and sequence diagrams, to make understand better the whole functioning of each one of them.
+The applications described above were already developed and tested with other systems, like Karma\cite{karma} and Voltron\cite{voltron}, but we also developed new applications and tested our framework on them:
+the Object-finder (OF), the Warehouse item-finder (WIF) and the Drugs distribution(DD).
+\\
+
+The three applications are modeled by the same Pluto Editor graph, shown in figure \ref{fig:plutoGraph}:
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=\linewidth]{pictures/EditorScreen.png}
+  \caption{The Pluto graph of the OF,WIF and DD applications}
+  \label{fig:plutoGraph}
+\end{figure}
+
+In the following sections we describe these applications in details, also using a visual representation of their behavior, and a sequence diagram to make understand better the whole functioning of each one of them.
+
+\newpage
 
 \subsection{Object-finder (OF)}
 
-This application will help users to find various objects, in a domestic fashion, like shoes, keys, books etc:
+This application help users to find various objects, like shoes, keys, books, in a domestic fashion:
 
 \begin{itemize}
 \itemsep2pt
@@ -466,10 +497,10 @@ This application will help users to find various objects, in a domestic fashion,
 the user decides which item wants the drones to look for and the area to be inspected
 }
 \item{
-the main system organizes the team of drones, deciding the path for each one of them
+the main system organizes the team of drones, sending them on the specified locations
 }
 \item{
-the drones fly to the assigned location and, if found, bring the object back to the user, through a magnet or robotic arm
+the drones fly to the assigned location and, if found, bring the objects back to the user
 }
 \end{itemize}
 
@@ -482,31 +513,22 @@ the drones fly to the assigned location and, if found, bring the object back to 
 \end{figure}
 
 
-\begin{figure}[H]
-  \centering
-  \includegraphics[width=\linewidth, height=8cm]{pictures/OF_sequence.png}
-    \caption{Sequence diagram of the Object-finder application}
-  \label{fig:OFSequence}
-\end{figure}
-
-
-The user sets which item he needs in the ground station and sends the command; the ground station checks if there are drones unavailable, maybe broken or with low battery status. Then selects the drones that could carry out the mission and send them the command to start the mission. The ground station communicate with each drone, but in the sequence diagram we described the communication only with one of them. After the mission starts, all the drones start looking for the item in the house and when the lucky one finds it, it grabs it and send a notification message to the Ground Station. So, the Ground Station sends a “Stop Mission” message to each drone flying; in this way they could return to the home position. In the end the Ground Station checks if the drone with the item is returned and notifies it to the user.
 
 \newpage
 
 \subsection{Warehouse item-finder (WIF)}
 
-This application will be used to manage a warehouse, taking a list of objects to the user:
+This application help users to manage a warehouse, bringing a list of objects to the them:
 
 \begin{itemize}
 \itemsep2pt
 \item{
 the user makes a list of needed items and writes it on his laptop, tablet or smartphone}
 \item{
-the main system organizes the swarm of drones and decide which one will take each item in the list
+the main system organizes the drones and decide which one will take each item in the list
 }
 \item{
-the drones fly to the assigned object and bring them back to the user, through a magnet or robotic arm
+the drones fly to the assigned objects and bring them back to the user
 }
 
 \end{itemize}
@@ -520,26 +542,19 @@ the drones fly to the assigned object and bring them back to the user, through a
 \end{figure}
 
 
-\begin{figure}[H]
-  \centering
-  \includegraphics[width=\linewidth, height=8cm]{pictures/WIF_sequence.png}
-    \caption{Sequence diagram of the Warehouse item-finder application}
-  \label{fig:WISSequence}
-\end{figure}
-
 \newpage
 
 \subsection{Drugs distribution (DD)}\label{dd}
 
-This application is thought to assist elders to take their daily drugs, in an hospice context:
+This application help nurses in assisting elder people to take their daily medicines, in an hospice context:
 
 \begin{itemize}
 \itemsep2pt
 \item{
-the nurse will prepare a little box with each patient’s daily medicine
+the nurses prepare some little boxes with each patient’s daily medicine
 }
 \item{
-each drone, at the right time of the day, will bring the box to his assigned patient
+each drone, at the right time of the day, brings the box to its assigned patient
 }
 \item{
 after carrying out their action, the drones return to the start location
@@ -555,18 +570,9 @@ after carrying out their action, the drones return to the start location
   \label{fig:DD}
 \end{figure}
 
+Here there is a sequence diagram showing the behavior of the three applications:
 
-\begin{figure}[H]
-  \centering
-  \includegraphics[width=\linewidth,height=8cm]{pictures/DD_sequence.png}
-\caption{Sequence diagram of the Warehouse Drugs-distribution application}
-  \label{fig:DDSequence}
-\end{figure}
-
-
-
-The OF,WIF and DD applications can be easily developed with the Pluto editor.
-Their basic versions are represented by the basic graph of each application, shown in figure (see \ref{fig:firstStep}),and they can be possibly enriched with the Priority Manager and Timer Monitor blocks, in order to improve the priority of the failed trips or to give a time constraint within the trips must be executed.
+%sequence
 
 \newpage
 
@@ -726,7 +732,7 @@ We also ask for suggestions to improve the usability of Pluto.
 The survey can be found following this link:
 
 \url{https://docs.google.com/forms/d/1b_52e7VLuns6AH1jiT3TeIRZ_KPRTLJYJe9ckrJanWY/viewform?usp=send_form}
-
+\\
 
 Actually, this survey gives us very useful information about the Pluto framework. We can understand how "usable" it is and which modifications should be performed to improve the user's experience, also thanks to the visualization of the answers in a graphical way, shown in the next section, the \ref{surveyResult}.
 Through the questions on the exercises development we can understand how difficult it is to create, modify,customize and execute a particular application, validating "on field" the use of the various blocks, especially the Mission Modifier, and the usability of the user interface.
