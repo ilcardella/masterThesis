@@ -5,7 +5,7 @@ In this chapter we present our solution to the issues introduced by the indoor c
 The most important advantage of this approach is the reduced complexity given to the final user, while expressing the sensing tasks: there is no need to describe how the drones should execute them; these details are chosen by the Ground Control Station whose duty is to assign the right drone to the right task and check that each drone take its mission to the end with a successful status.
 
 
-\section{System's architecture}
+\section{System's architecture}\label{architecture}
 Pluto programming framework consists in two main components:
 \begin{itemize}
 \item Pluto Graphical Editor.
@@ -106,7 +106,6 @@ If you compare this figure with figure~\ref{fig:GraphicalEditor}, you can see th
 In this section we show the fundamental entities of our model, in order to better understand the functioning of the blocks. Then, all the blocks of figure ~\ref{fig:BlocksDiagram} are described in details, explaining what tasks they perform and showing a pseudo-code representation for each of them.
 
 \subsubsection {Entities}
-\label{entities}
 
 Basically, through the interface presented in section~\ref{plutoMainApp}, the user specifies a list of Missions that the system must perform; each Mission contains a list of Trips; a Trip is a path between a start location and a target location; the Trip is performed by a Drone which carries out an Action, for example it can bring an Item to a person, or take a photo or measure temperature at a particular location.
 In general, two consecutive trips are performed by two different drones.
@@ -334,7 +333,7 @@ State the beginning of the diagram
 State the end of the diagram, where the completed missions will go into.
 \\
 
-\section{Aiming to the final model}
+\section{Aiming to the final model}\label{history}
 
 In this section we describe our previously developed solutions, which we refined many times in order to obtain the final working version of the Pluto programming framework; this is done by using a top-down approach, starting from the final implementation to the very first one.
 

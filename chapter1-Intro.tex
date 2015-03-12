@@ -16,46 +16,59 @@ We aim to create a general model for the interaction of nano-drones, in order to
 
 \section{Brief description of the work}
 
-We developed a programming framework for developing applications utilizing swarms of nano-drones.
+In the beginning we developed three applications case study, shown in section ~\ref{applicability}), suitable for indoor contexts whose sensing tasks are performed by teams of nano-drones.
+We noticed that these applications had many common features, so we decided to create a general programming model which could be used to build a great variety of applications.
+Each of these features is represented by a block, each one concerning with a specific task of the work: there is a block which assigns a drone to an object to deliver, one that send the drones to sense the environment etc.
+\\
 
-We thought about three applications case study (see~\ref{applicability}), from which we extracted a general behavioral model, which can be used for a wide range of applications; so we decided to create a general programming abstraction which describes a set of features that can be used for a wide range of applications.
-Each of these features is represented by a block, each one concerning with a specific task of the work: there is a block which assigns a drone to an object to deliver, one that manages the priority of a mission etc.
+We wanted to facilitate as much as possible the work of the programmer, so we decided to develop a graphical editor, fully described in section \ref{plutoGraphicalEditor}.
+Thanks to this editor the programmer can create an application, by simply graphically connecting the functional blocks.
+He is not forced to use all the blocks provided by the editor and can connect only the blocks he needs according to the functionality he wants for the specific application.
 
-We wanted to facilitate as much as possible the work of the programmer, so we decided to develop a graphical editor (see~\ref{editor}) through which the programmer  can create its application, connecting the functional blocks; he is not forced to use all the blocks provided by the editor and can connect only the blocks he needs according to the functionality he wants for the specific application.
+We created the whole model for our programming abstraction, choosing the Java programming language to represent all the features we needed, and organizing the system with an MVC pattern.
 
-We created the whole model (see~\ref{dataFlow}) for our programming abstraction, choosing a Java model to represent all the features we needed and enriching our description through Sequence diagrams, Visio diagrams and Pseudo-code representation of the model.
+We also developed the final user interface, the Pluto Main Application, shown in section \ref{plutoMainApp}, to make the final user able to fully exploit the applications created with Pluto programming framework.
+With the Pluto Main Application, the user can assign the sensing tasks to the drones, sending them in the environment.
 
-The editor and the model are strictly connected; the programmer can create its graphical schema through the graphical editor, and then the editor generates the Java code according to the model created.
+The Editor, the Main Application and the Java model are strictly connected:
+the programmer creates the graphical model of the application through the Graphical Editor, then the Editor generates the code according to the Java model and finally the user uses the Main Application to define the sensing tasks for the created application.
 
-We also developed the final user interface(see \ref{interface}) to make the user able to fully exploit the applications created with Pluto programming framework, simply asking him what he wants the drones to do and where.
+
 
 \section{Outline}
 
 This document is structured in a way that you can easily follow the proceedings and the reasoning behind our contribution.
 
-In this chapter, we have given the general context and the general goals of the work.
+In this chapter, we have given the general context and the general goals of the work together with a brief description of our work.
 
 In Chapter~\ref{cap2} there is a description of the actual state of the art in the context of our work.
 We describe the three main existing approaches for drone programming, the "Swarm-level","Drone-level" and "Team-level" approaches, also proposing existing examples for each one of them.
+\\
 
 Chapter~\ref{cap3} is focused on the problems issued by the indoor context and on the requirements deriving from it.
 The similarities and differences with respect to the outdoor applications are analyzed, in order to derive a new implementation of the system, suitable for the indoor context.
+\\
 
-Chapter~\ref{cap4} presents our solution for the research problems described in~\ref{cap3}, the Pluto programming framework; first, the architecture of the system is analyzed, describing in details each component of framework.
-In this section we describe also the graphical editor and the user interface.
-Then the dataflow model of our framework is presented, using visual diagrams, in order to give a sound representation which is easy to understand.
-The last section of the chapter describes all the steps performed to arrive to the final system, showing all the previous solutions which, once refined, brought us to the development of the Pluto programming framework.
+Chapter~\ref{cap4} presents our solution for the research problems described in~\ref{cap3}, the Pluto programming framework.
+In section \ref{architecture} the architecture of the system is analyzed, describing in details the two components of the Pluto framework:
+the Graphical Editor and the Main Application.
+In section \ref{dataFlow} we present our dataflow model:
+we show the entities of the Java Model and we describe the functionality of each block of the Pluto Graphical Editor.
+The last section of the chapter, the \ref{history}, describes all the steps performed to arrive to the final system, showing all the previously implemented solutions which, once refined, brought us to the development of the Pluto programming framework.
+\\
 
 Chapter~\ref{cap5} shows how the designed choices have been implemented technically, describing all the software and tools used for the development of Pluto programming framework.
-
+\\
 
 Once the solution has been deeply described at design and implementation level, we will show the evaluation and the results of the work.
+\\
 
-Chapter~\ref{cap6} starts with an analysis on the applicability of the Pluto framework (see section \ref{applicability}).
-There is a description of many already existing applications and of three case study, and an analysis on whether they can be developed with Pluto. 
-In section \ref{usability} we propose two exercises to real people, in order to evaluate the effective usability of Pluto.
+Chapter~\ref{cap6} starts with an analysis on the applicability of the Pluto framework:
+there are descriptions of many already existing applications and of the three case study, and an analysis on whether they can be developed with Pluto. 
+In section \ref{usability} we propose two exercises to human testers, in order to evaluate the effective usability of Pluto:
+the first one deals with the Graphical Editor, the second one with the Main Application.
 We also propose a survey to the users and then present the result in a graphical way.
 In section \ref{performance} we measure the software and hardware consumption metrics required by Pluto, presenting the results in a graphical way.
+\\
 
-
-Finally, Chapter~\ref{cap7} draws the conclusion and recaps the results obtained, also showing the possibilities of future works to extend our programming model.
+Finally, Chapter~\ref{cap7} draws the conclusion and recaps the results obtained, also showing the possibilities for future works to extend our programming model.

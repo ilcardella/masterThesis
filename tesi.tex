@@ -2,12 +2,13 @@
 
 \usepackage[dvips]{graphicx}
 \usepackage{tabularx}
-\usepackage{subfigure}
+% \usepackage{subfigure}
+\usepackage{subcaption}
 \usepackage{afterpage}
 \usepackage{amsmath,amssymb}            
 \usepackage{rotating}  
 \usepackage{fancyhdr}  
-\usepackage[scriptsize]{caption}
+\usepackage{caption}%[scriptsize]%
 \usepackage[T1]{fontenc}
 \usepackage[utf8]{inputenc}
 \usepackage[italian, british]{babel}
@@ -18,6 +19,10 @@
 \usepackage{microtype}
 \usepackage{url}
 \usepackage{float}
+\usepackage{tabularx,ragged2e}
+\usepackage{pgfplots}
+\newcolumntype{x}{>{\Centering}X}
+
 
 \definecolor{dkgreen}{rgb}{0,0.6,0}
 \definecolor{gray}{rgb}{0.5,0.5,0.5}
@@ -87,7 +92,6 @@ frame=tb,
 \include{acknowledgements}
 \tableofcontents
 \listoffigures
-\listoftables
 
 \pagestyle{plain}\renewcommand{\chaptermark}[1]{\markboth{\chaptername\ \thechapter.\ #1}{}} 
 \renewcommand{\sectionmark}[1]{\markright{\thesection.\ #1}}         

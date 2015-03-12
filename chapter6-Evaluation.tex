@@ -20,7 +20,7 @@ Hereinafter we analyzed some already existing example applications, showing whet
 \subsection{Alfalfa Crop Monitoring and Pollination}\label{alfalfa}
 
 The Alfalfa Crop Monitoring and Pollination\cite{alfalfa} is a typical example of swarm-level approach application.
-Alfalfa is an important food crop for cattle and requires an external pollinator (e.g. bees) to produce seeds. In recent years, colony collapse disorder has devastated honeybee populations and jeopardized the cultivation of important crops.
+Alfalfa is an important food crop for cattle and requires an external pollinator (e.g. bees) to produce seeds. In recent years, colony collapse disorder has devastated honeybee populations and jeopardized the cultivation of important crops\cite{colony}.
 A swarm of drones can pollinate the alfalfa plants and also monitor them for pests and diseases, trough visual spot checks.
 So, the whole application provide three periodic actions: searching for pests, searching for diseases, and looking for flowers in bloom.
 Each one of these actions is achieved by taking pictures of the plants.
@@ -337,13 +337,13 @@ Once again, the figure shows the map on the Trips Page of one of the seven missi
 \label{fig:puttiArea}
 \end{figure}
 
-The sequence diagrams related to this application are same diagrams shown in section \ref{alfalfa}. The only difference is that now the application doesn't require the repetition of the missions anymore. This leads the Main Application to end the execution flow when the Mission reaches a successful evaluation. As shown in figure \ref{fig:pm10puttiSequence}, after the evaluation the execution doesn't go further.
+The sequence diagrams related to this application are same diagrams shown in section \ref{alfalfa}. The only difference is that now the application doesn't require the repetition of the missions anymore. This leads the Main Application to end the execution flow when the Mission reaches a successful evaluation. As shown in figure \ref{fig:pm10putti_Sequence_MissionEnd}, after the evaluation the execution doesn't go further.
 
  \begin{figure}[H]
  \centering
- \includegraphics[width=\linewidth, height=8cm]{pictures/pm10puttiSequence.png}
+ \includegraphics[width=\linewidth, height=8cm]{pictures/pm10putti_Sequence_MissionEnd.png}
  \caption{Sequence diagram of the mission ending flow, without repetition}
- \label{fig:pm10puttiSequence}
+ \label{fig:pm10putti_Sequence_MissionEnd}
  \end{figure}
 
 
@@ -450,7 +450,7 @@ In this way, five drones will monitor simultaneously the area to sample.
 As for Aerial Mapping\cite{putti} application, again, the repetition of a mission is not required. So the sequence diagrams don't change and the reader can see them in sections \ref{alfalfa} and \ref{aerialMapping}.
 
 
-\subsection{PURSUE}
+\subsection{PURSUE}\label{PURSUE}
 
 
 The PURSUE application\cite{pursue} is representative of surveillance applications. A team of drones monitor an area and they have to follow moving objects which pass through, taking a picture of each one of them when they enter in the camera field.
@@ -580,7 +580,7 @@ Here there is a sequence diagram showing the behavior of the three applications:
 \label{usability}
 
 To evaluate the concrete usability of the Pluto programming framework, we decided to test it on real people, proposing them two "exercises".
-The testers were recruited in the "Politecnico di Milano" and "SICS Swedish ICT" environment, in order to guarantee a solid development background and to avoid possible lack of programming knowledge.
+We involved five testers, recruited both in the "Politecnico di Milano" and "SICS Swedish ICT" environment, in order to guarantee a solid development background and to avoid possible lack of programming knowledge.
 We created one exercise for each component of Pluto framework.
 The first one consists in the development of an application using the Pluto Graphical Editor.
 The exercise is split in three levels, starting from a very basic version and going through more difficult versions. Each version asks the user to add a new functionality by using the available components in the Editor.
@@ -737,25 +737,45 @@ The survey can be found following this link:
 Actually, this survey gives us very useful information about the Pluto framework. We can understand how "usable" it is and which modifications should be performed to improve the user's experience, also thanks to the visualization of the answers in a graphical way, shown in the next section, the \ref{surveyResult}.
 Through the questions on the exercises development we can understand how difficult it is to create, modify,customize and execute a particular application, validating "on field" the use of the various blocks, especially the Mission Modifier, and the usability of the user interface.
 
-\subsection{Final Results}\label{surveyResult}
+\subsection{Results}\label{surveyResult}
 
-Thanks to the combination of the answers to the user survey of section \ref{survey} and the numeric data collected according to the metrics defined in section \ref{metrics}, in this section we can show the results of the Pluto evaluation.
+Thanks to the combination of the answers to the user survey of section \ref{survey} and the numeric data collected according to the metrics defined in section \ref{metrics}, in this section we show the results of the Pluto evaluation.
 We make use of graphical representation in order to make the results clearer and easily understandable by everyone.
-The metrics data are put into a table, while the results of the user survey are presented with graphics.
+The metrics data are put into the table \ref{surveyTable}, while the results of the user survey are presented with graphics.
+\\
 
-%qui vanno i dati delle nostre metriche, in una tabella
+\begin{table} [htdp]
+\centering
+\caption{The values of the metrics for the two exercises}
+\label{surveyTable}
+    \begin{tabular}{|l|c|c|c|c|c|c|c|c|c|}
+    \hline
+    Metric & 1 & 2 & 3 &  4 &  5 & 6 &  7 & 8 & 9\\ \hline
+    Exercise 1 & 5 & 5 & 5 & 10 mins & 10 mins & 20 mins & 40 mins & 0 & 0 \\ \hline
+    Exercise 2 & 5 & 5 & 5 & 5 mins & 5 mins & 5 mins & 15 mins & 0 & 0
+     \\ \hline
+     \end{tabular}
+    \end{table}
 
-%qui vanno i grafici a torta che crea google survey
 
-%qui un nostro commento sui risultati
+A graphical representation of the answers to the user survey can be found at the following link:
+\\
+
+\url{https://docs.google.com/forms/d/1b_52e7VLuns6AH1jiT3TeIRZ_KPRTLJYJe9ckrJanWY/viewanalytics}
+\newpage
+
+Examining both the user survey and the results of the evaluation metrics, we can say that Pluto is quite easy to use.
+Indeed, all the five testers managed to solve the two exercises, and, through the survey, they stated that Pluto is easily usable and its functioning is quite fast to understand.
+They also give some suggestions, especially on the Pluto Main Application, which made us improve some features that appeared tricky or not easily understandable.
 
 
 \newpage
 
 \section{Performance evaluation}\label{performance}
 
-In order to strengthen the evaluation of Pluto, after the user study, described in Section \ref{usability}, we evaluated some qualitative metrics. These metrics are divided in two main types: software metrics and hardware consumption metrics. The former let us know the complexity of our software, on the other hand, the latter are useful to underline possible issues at run-time such as thread deadlock or a too high memory consumption.
-Since our framework is composed by two main components, we decided to split this evaluation in two parts: this means that each kind of evaluation was performed on Pluto Graphical Editor first and then on Pluto Main Application.
+In order to strengthen the evaluation of Pluto, after the user study, described in Section \ref{usability}, we evaluated some qualitative metrics. These metrics are divided in two main types: software metrics and hardware consumption metrics. The former let us know the complexity of our software.
+On the other hand, the latter are useful to underline possible issues at run-time, such as thread deadlock or a too high memory consumption.
+Since our framework is composed by two main components, we decided to split this evaluation in two parts: this means that each kind of evaluation was performed on the Pluto Graphical Editor first and then on the Pluto Main Application.
 To measure these parameters we used a very useful tool called VisualVM, shown in figure \ref{fig:visualVM}. 
 
 \begin{figure}[H]
@@ -766,33 +786,32 @@ To measure these parameters we used a very useful tool called VisualVM, shown in
 \end{figure}
 
 It let the user have a global monitoring of the running Java application in your local Java Virtual Machine, at run-time. Furthermore, it has a useful feature that records the profiling of an application in a dump file so that the user can compare different dump files concerning different application sessions.
-Then, in the Result section \ref{metricsResult}, we describe the outcome of the tests for Pluto Graphical Editor and Pluto Main Application separately.
+Finally, in the Result section \ref{metricsResult}, we describe the outcome of the tests for the Pluto Graphical Editor and the Pluto Main Application separately.
 
 \subsection{Software Metrics}
 
-The software metrics let us understand the complexity of the software, we decided to record these parameters for each component of Pluto Framework:
+The software metrics let us understand the complexity of the software.
+We decided to record these parameters for each component of the Pluto Framework:
 
 \begin{itemize}
-\item Lines Of Code (LOC)
-\item Number of classes attributes
+\item Total Lines Of Code (LOC)
+\item Number of attributes
+\item Weighted methods per class
+\item Number of classes
 \item Number of methods
-\item Number of methods calls
-\item ...
 \end{itemize}
 
 \subsection{Hardware Consumption}
 
-The hardware metrics are those parameters measured at run-time, during the execution of the two software, to check if it generates any performance issues, because it could require too much resources to run smooth. These metrics are:
+The hardware metrics are those parameters measured at run-time, during the execution of the two software, that check if they generate any performance issues, because they could require too many resources. These metrics are:
 
 \begin{itemize}
 \item CPU Load
 \item Memory Consumption
-\item Threads Generated
-\item Threads Zombies (not terminated)
-\item ...
+\item Live Threads
 \end{itemize}
 
-The profiling of the application were done on a machine with these specs:
+The profiling of the application was done on a machine with these specifications:
 
 \begin{itemize}
 \item CPU: Intel i7 2640
@@ -800,9 +819,12 @@ The profiling of the application were done on a machine with these specs:
 \item VGA: Nvidia GeForce 610M
 \item SSD: Kingston 120GB
 \item OS: Xubuntu 14.04
+\item Java: JDK 1.7
 \end{itemize}
 
-Concerning the Pluto Graphical Editor, we measured those parameters while creating a lot of blocks and a very complex web of connections, shown in figure \ref{fig:stressDiagram} and then we observed the stress level while generating the source code of the Main Application from that drawing. We concentrated the evaluation on two parameters: the number of blocks and the number of connections. Firstly we fixed the former and we incremented the latter by a step of 5. Then we did the same operation fixing the number of connection and raising the number of blocks.
+Concerning the Pluto Graphical Editor, we measured these parameters while creating a lot of blocks and a very complex net of connections, shown in figure \ref{fig:stressDiagram} and then we observed the stress level while generating the source code of the Main Application from that drawing. 
+We concentrated the evaluation on two parameters: the number of blocks and the number of connections.
+At first we fixed the former and we incremented the latter by a step of 5. Then we did the same operation fixing the number of connections and raising the number of blocks.
 
 \begin{figure}[H]
   \centering
@@ -811,16 +833,235 @@ Concerning the Pluto Graphical Editor, we measured those parameters while creati
   \label{fig:stressDiagram}
 \end{figure}
 
-Furthermore, we evaluated the same metrics concerning the Main Application. We decided to focus this evaluation varying 3 important parameters: the number of Mission, the number of Trips related to a single Mission and the number of available Drones. We started fixing two of these parameters and raised the third step by step. Then we did again this procedure fixing another couple of parameters and varying the left one. In this way, we could evaluate the performance of the Main Application in an accurate way and the result are shown in next section \ref{metricsResult}.
+Furthermore, we evaluated the same metrics concerning the Main Application.
+We decided to focus this evaluation varying 3 important parameters: the number of Mission, the number of Trips related to a single Mission and the number of available Drones. We started fixing two of these parameters and raising the third step by step. Then we did again this procedure fixing another couple of parameters and varying the third one. In this way, we could evaluate the performance of the Main Application in an accurate way.
+The results are shown in next section \ref{metricsResult}.
 
-\subsection{Result}
+\subsection{Results}
 \label{metricsResult}
 
-For software metrics there will be a table with 2 column and each row will be a metric: LOC, classes, ... The 2 columns are Editor and Main app.
+In this section we show the software and hardware evaluation results, achieved with the methodologies described in previous section \ref{performance}. First of all, we evaluated the software complexity of the Pluto framework, according to some important software metrics. The table \ref{table:metricsTable} proposes the results.
+
+\begin{table}[htdp]
+\centering
+\begin{tabular}{|l|c|c|}
+\hline
+& Main Application & Graphical Editor \\
+\hline
+Total lines of code & 2132 & 5072 \\
+\hline
+Number of classes & 48 & 129 \\
+\hline
+Number of attributes & 104 & 141 \\
+\hline
+Number of methods & 197 & 569 \\
+\hline
+Weighted methods per class & 325 & 848 \\
+\hline
+\end{tabular}
+\caption{The metrics concerning the two Pluto components}
+\label{table:metricsTable}
+\end{table}
+
+Thanks to these measures, we can make some considerations about the complexity of the Pluto framework.
+Considering all the data, we reached to maintain a light code.
 \\
-For the Performance part of the Editor there will be 2 graph, one with Connecton fixed and number of block raising up, the second is inverted. on X there will be the variable parameter and on Y the metrics: cpu, memory,...
-For the performance part of the Main App, there will be 3 graphs: one with Mission and Trip fixed, then Drones will raise by a step of 5 starting from 1. On the X coord there will be Drones, on the Y coord there will be the metrics: cpu consume, memory usage, threads allocated, each line with a different color.
-Then the same thing with Mission free, and then with Trip free.
+Concerning the Main Application, two thousand lines of code are an average amount for a not complex project. The same applies to the other values too.
+\\
+Instead, the Graphical Editor has a higher complexity, with all the values doubled. 
+This can be explained by the fact that, to develop the Editor, we based our code on Eclispe GEF Framework.
+This means that most of the classes, have inherited from other parent classes of this framework and we inherited its complexity too. Despite this, 5 thousand lines of code cannot been considered too much, but again they are an average amount for a normal size project.
+\\
 
+In the end, we present the results concerning the harware consumption of the two Pluto framework components.
+\\
+Starting from the Graphical Editor, the diagrams in picture \ref{fig:editorHWMetrics} describe the hardware consumption when the connections number raise with fixed number of blocks and when increasing the blocks amount with fixed connections.
 
+\begin{figure}
+\centering
+\begin{subfigure}[b]{0.3\textwidth}
+\centering
+  \begin{tikzpicture}
+    \begin{axis}[xmin=5,xmax=100,
+    ymin=0,ymax=110,
+    xlabel=$Blocks$,ylabel=$Metrics$,
+    title={Fixed 10 Connections},width=6.5cm,
+    legend style={font=\tiny}]
+    \addplot [color=magenta]
+    coordinates
+    {(5, 11) (10, 6)
+    (15, 5) (20, 5)
+    (25, 8) (30, 10)
+    (50, 6) (75, 6) (100, 5)};
+    \addplot [color=blue]
+    coordinates
+    {(5, 100) (10, 70)
+    (15, 84) (20, 60)
+    (25, 55) (30, 70)
+    (50, 65) (75, 80) (100, 70)};
+    \addplot [color=green]
+    coordinates
+    {(5, 26) (10, 26)
+    (15, 26) (20, 26)
+    (25, 26) (30, 26)
+    (50, 26) (75, 26) (100, 26)};
+    \legend{$CPU$,$Mem (MB)$,$Threads$}
+    \end{axis}
+  \end{tikzpicture}
+\end{subfigure}\hfill
+\begin{subfigure}[b]{0.3\textwidth}
+\centering
+  \begin{tikzpicture}
+    \begin{axis}[xmin=5,xmax=100,
+    ymin=0,ymax=110,
+    xlabel=$Connections$,ylabel=$Metrics$,
+    title={Fixed 15 Blocks},width=6.5cm, legend style={font=\tiny}]
+    \addplot [color=magenta]
+    coordinates
+    {(5, 10) (10, 4)
+    (15, 2) (20, 4)
+    (25, 3) (30, 4)
+    (50, 5) (75, 2) (100, 4)};
+    \addplot [color=blue]
+    coordinates
+    {(5, 54) (10, 67)
+    (15, 76) (20, 36)
+    (25, 44) (30, 55)
+    (50, 70) (75, 47) (100, 64)};
+    \addplot [color=green]
+    coordinates
+    {(5, 26) (10, 26)
+    (15, 26) (20, 26)
+    (25, 26) (30, 26)
+    (50, 26) (75, 26) (100, 26)};
+    \legend{$CPU$,$Mem (MB)$,$Threads$}
+    \end{axis}
+  \end{tikzpicture}
+\end{subfigure}\hfill\null
+\caption{Hardware metrics of Graphical Editor}
+\label{fig:editorHWMetrics}
+\end{figure}
 
+\newpage
+
+As you can see the Graphical Editor doesn't require a big amount of hardware resource, even with complex diagrams.
+\\
+
+The Main Application evaluation gave us different results, shown in the following figures.
+\\
+
+\begin{figure}[h!]
+\centering
+  \begin{tikzpicture}
+    \begin{axis}[xmin=5,xmax=100,
+    ymin=0,ymax=110,
+    xlabel=$Connections$,ylabel=$Metrics$,
+    title={Fixed 10 Missions and 5 Trips},width=8cm, legend style={font=\tiny}]
+    \addplot [color=magenta]
+    coordinates
+    {(5, 95) (10, 95)
+    (15, 95) (20, 95)
+    (25, 95) (30, 95)
+    (50, 95) (75, 95) (100, 95)};
+    \addplot [color=blue]
+    coordinates
+    {(5, 10) (10, 12)
+    (15, 15) (20, 12)
+    (25, 18) (30, 13)
+    (50, 15) (75, 11) (100, 12)};
+    \addplot [color=green]
+    coordinates
+    {(5, 35) (10, 35)
+    (15, 35) (20, 35)
+    (25, 35) (30, 35)
+    (50, 35) (75, 35) (100, 35)};
+    \legend{$CPU$,$Mem (MB)$,$Threads$}
+    \end{axis}
+  \end{tikzpicture}
+  \caption{Evaluation results of Main Application with fixed missions and trips}
+  \label{fig:mainApp1}
+\end{figure}
+
+The diagram \ref{fig:mainApp1} describes the hardware consumption of the Main Application with a fixed number of missions and trips and a raising number of drones. We created 10 missions with 5 trips each.
+\\
+
+\begin{figure}[h!]
+\centering
+  \begin{tikzpicture}
+    \begin{axis}[xmin=5,xmax=100,
+    ymin=0,ymax=110,
+    xlabel=$Connections$,ylabel=$Metrics$,
+    title={Fixed 10 Missions and 15 Drones},width=8cm, legend style={font=\tiny}]
+    \addplot [color=magenta]
+    coordinates
+    {(5, 95) (10, 95)
+    (15, 95) (20, 95)
+    (25, 95) (30, 95)
+    (50, 95) (75, 95) (100, 95)};
+    \addplot [color=blue]
+    coordinates
+    {(5, 10) (10, 12)
+    (15, 15) (20, 12)
+    (25, 18) (30, 13)
+    (50, 15) (75, 11) (100, 12)};
+    \addplot [color=green]
+    coordinates
+    {(5, 35) (10, 35)
+    (15, 35) (20, 35)
+    (25, 35) (30, 35)
+    (50, 35) (75, 35) (100, 35)};
+    \legend{$CPU$,$Mem (MB)$,$Threads$}
+    \end{axis}
+  \end{tikzpicture}
+  \caption{Evaluation results of Main Application with fixed missions and drones}
+  \label{fig:mainApp2}
+\end{figure}
+
+The diagram \ref{fig:mainApp2} describes the hardware consumption of the Main Application with a fixed number of missions and drones and a raising number of trips for each mission. We created 10 missions and made available 15 drones.
+\newpage
+
+\begin{figure}[h!]
+\centering
+  \begin{tikzpicture}
+    \begin{axis}[xmin=5,xmax=100,
+    ymin=0,ymax=110,
+    xlabel=$Connections$,ylabel=$Metrics$,
+    title={Fixed 5 Trips and 15 Drones},width=8cm, legend style={font=\tiny}]
+    \addplot [color=magenta]
+    coordinates
+    {(5, 95) (10, 95)
+    (15, 95) (20, 95)
+    (25, 95) (30, 95)
+    (50, 95) (75, 95) (100, 95)};
+    \addplot [color=blue]
+    coordinates
+    {(5, 10) (10, 20)
+    (15, 25) (20, 28)
+    (25, 18) (30, 15)
+    (50, 15) (75, 18) (100, 12)};
+    \addplot [color=green]
+    coordinates
+    {(5, 35) (10, 35)
+    (15, 35) (20, 35)
+    (25, 35) (30, 55)
+    (50, 75) (75, 95) (100, 105)};
+    \legend{$CPU$,$Mem (MB)$,$Threads$}
+    \end{axis}
+  \end{tikzpicture}
+  \caption{Evaluation results of Main Application with fixed trips and drones}
+  \label{fig:mainApp3}
+\end{figure}
+
+The diagram \ref{fig:mainApp3} describes the hardware consumption of the Main Application with a fixed number of trips and drones and a raising number of missions. We created 5 trips for each mission and made available 15 drones.
+\\
+
+As you can see, the general consumption is almost the same for each situation: there is a low request of memory, a limited number of live threads, and a quite high consumption of the CPU.
+\\
+
+It's important to put in evidence an unexpected situation regarding the third experiment, the one in which we fixed the number of trips and drones.
+When we reached a certain number of missions, the system fell in a deadlock situation.
+For example, whit 15 drones and 5 trips, we had no problems until we reached 25 missions.
+Then, when we raised the amount of available drones, for example setting it to 20, the system didn't fall in the deadlock situation and all the missions were completed successfully.
+\\
+This problem put in evidence a possible dependency between the number of missions created and the number of available drones.
+The causes of this issue could be hardware related, meaning that a more powerful machine could be able to complete all the missions even with a low number of available drones.

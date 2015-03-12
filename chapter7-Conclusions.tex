@@ -1,9 +1,66 @@
 \chapter{Conclusions and future works}
 \label{cap7}
 
-
-
 %Si mostrano le prospettive future di ricerca nell'area dove si \`e svolto il lavoro. Talvolta questa sezione pu\`o essere l'ultima sottosezione della precedente. Nelle conclusioni si deve richiamare l'area, lo scopo della tesi, cosa \`e stato fatto,come si valuta quello che si \`e fatto e si enfatizzano le prospettive future per mostrare come andare avanti nell'area di studio.
+
+\section{Conclusions}
+
+We have developed the Pluto Programming Framework, a system which allows to build indoor applications by simply graphically connecting blocks.
+
+Each one of these blocks, described in section \ref{dataFlow}, contains the implementation of a specific functionality.
+
+So the programmer can build an application just deciding which features he needs and consequently connecting the right blocks.
+
+The final user decides the sensing tasks that have to be performed by the drones thanks to the user interface.
+
+The system takes care of assigning the drones to each sensing task, and this really simplify the work for the final user, which has only to decide a list of sensing tasks without dealing with the drones dispatching. 
+
+The main innovations with respect to the actual state of the art, fully described in chapter \ref{cap2}, are represented by the indoor context and the graphical editor.
+
+Indeed, there exist systems similar to Pluto, but they all manage outdoor applications, where the GPS can be used for localization and big drones for actuation of the sensing tasks.
+
+Furthermore, the building of applications through connection of blocks really simplifies the development process, still allowing the programmer to insert custom code.
+
+In chapter \ref{cap6} we fully evaluated Pluto, confronting it with other similar systems, trying to apply it to existing applications, proposing its use to real people and asking them for feedback through a survey, and finally measuring its performance, through bot hardware and software metrics.
+
+We state that Pluto is a useful programming abstraction, which allows the development of a great variety of applications in a simple and fast way.
+As any other system, Pluto has limits, both for its implementation and for technological issues, which we show in the next section.
+
+\newpage
+
+\section{Pluto limits and future works}
+
+The PURSUE application, described in section \ref{PURSUE}, put in evidence the Pluto main limitation: the immediate execution of actions in response to instantaneous events .
+\\
+
+As already explained in chapter \ref{cap4}, the Pluto system allows the drones to perform their actions only at the end of the trip, that is a movement from a point A to a pint B in the environment.
+For example, if the Drone has to take a picture in a specific location, it will fly from the ground station to that location and then take the picture.
+\\
+
+There is no way to actively performing some action, reacting on events:
+so, as already explained, this is the problem of the PURSUE application, which requires to actively follow a moving object when it enters in the camera range.
+\\
+
+This is an hint for the future expansion of Pluto, in order to manage also this kind of applications.
+
+As already explained in chapter \ref{cap3}, the actuation in indoor contexts is tricky because of the localization problem.
+We showed some IPS methods, but still they are not as efficient and standardized as GPS.
+They introduce latency in the localization mechanism and their precision is lowered by physical obstacles, roofs and ceilings.
+\\
+
+In this direction, research and future studies will certainly find a better indoor localization method, and Pluto will take advantages from it.
+Indeed the actuation tasks performed by the drones completely relies and depends on a localization base: indeed, in order to send a drone in a specific location to take a picture we need a method to precisely indicate that location.
+\\
+
+Research and future studies will also find a way to improve the capacity of the nano-drones batteries. 
+Nowadays their duration is approximately of 7 minutes, with a recharge time of 20 minutes.
+This is a great limitation, because the programmer is forced to develop applications where the sensing tasks must be performed within this limited amount of time.
+\\
+
+Finding a solution to the limitation of the instantaneous actuation, together with new technological discoveries that will improve the drones battery duration and find a good and stable indoor localization method can greatly enrich the Pluto programming framework.
+\\
+
+With these future improvement the Pluto programming framework will be able to manage almost every kind of drones application.
 
 
 

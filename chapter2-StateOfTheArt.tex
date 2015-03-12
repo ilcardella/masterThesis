@@ -1,8 +1,9 @@
 \chapter{State of the art}
 \label{cap2}
 
-In the last years, the drone technology is expanding rapidly;especially the aerial drones, which are often used as toys controlled by joystick  or to make aerial videos through mounted cameras, there exist also aquatic and terrestrial drones, which can be used for many applications. 
-For example, through aquatic drones the submarine network infrastructure could be managed more efficiently, and through terrestrial drones some emergency situations, like fires, can be managed without involving human life.
+In the last years, the drone technology is expanding rapidly;especially the aerial drones, which are often used as toys controlled by joystick  or to make aerial videos through mounted cameras.
+There exist also aquatic and terrestrial drones, which can be used for many applications. 
+For example, through aquatic drones the submarine network infrastructure\cite{submarine} could be managed more efficiently, and through terrestrial drones some emergency situations, like fires, can be managed without involving human life.
 
 Basically, the mobile sensing through drones represents a technological revolution, opening the way for many applications which could not have been developed with the traditional technologies.
 Actually, there are a lot of fields where this new technology could be applied, improving performance and reducing costs:
@@ -33,7 +34,7 @@ The former is focused on the programming of an every single drone, while the sec
 In the Drone-level approach, the programmer must manage the single drone, taking care of giving a list of instructions that the drone will perform sequentially.
 This approach may be suitable for applications where there is a single drone performing some actions, like searching for a lost object and bringing it back to the user.But scaling the application to a number of drones makes programmer to deal with  concurrency and parallelism. Moreover, battery and crashes/failures should be managed manually for every drone. Finally, timing constraints and a dynamic load balance drastically increase the complexity of the programming. For these reasons drone-level approach is not suitable for a large number of drones.
 
-A concrete example of the application of the Drone-level approach is the so called Robot Create(fig.~\ref{fig:irobot}), a hobbyist robot manufactured by iRobot that was introduced in 2007 and based on their Roomba vacuum cleaning platform. The iRobot Create is explicitly designed for robotics development and improves the experience beyond simply hacking the Roomba. 
+A concrete example of the application of the Drone-level approach is the so called Robot Create(fig.~\ref{fig:irobot}), a hobbyist robot manufactured by iRobot\cite{irobot} that was introduced in 2007 and based on their Roomba vacuum cleaning platform. The iRobot Create is explicitly designed for robotics development and improves the experience beyond simply hacking the Roomba. 
 Since the built-in serial port supports the transmission of sensor data and can receive actuation commands, any embedded computer that supports serial communication can be used as the control system.
 A number of robot interface server / simulators support the iRobot Create. Most notably, the Player Project has long included a device interface for the Roomba, and developed a Create interface in Player 2.1. The Universal Real-time Behavior Interface (URBI) environment also contains a Create interface.
 This robot is designed for a single execution of a single task without being connected with other robots. Moreover, the design does not imply the collaboration with other robots.
@@ -47,7 +48,7 @@ This robot is designed for a single execution of a single task without being con
 
 \section{Swarm-level approach}\label{swarmLevel}
 
-The Swarm-level approach is more suitable for applications where a number of drones are supposed to perform the same actions. Indeed the programmer can give a set of basic rules that each drone in the swarm can follow.
+The Swarm-level approach\cite{swarm} is more suitable for applications where a number of drones are supposed to perform the same actions. Indeed the programmer can give a set of basic rules that each drone in the swarm can follow.
 It is important to underline that, in swarm-level approach, there is no possibility to have a shared state between drones; each drone execute the actions specified by the programmer on his own local state.
 It enables the scaling of the approach, but it's not suitable for applications that require the drones to explicitly coordinate.
 For example, the swarm-level approach could be applied in an application where many drones take objects at different locations and bring them to the final user, without considering any time or space coordination between them; each drone will simply bring the object back to the user when found.  
@@ -154,7 +155,7 @@ For example, a swarm of lightweight scout robots might search a disaster area an
 
 \section {Team-level approach}\label{teamlevel}
 
-In this section we describe the team-level programming approach, which allows the user to express a list of sensing tasks to be performed by the system, without dealing with the management of the single drone and with complex programming tasks such as concurrent programming and parallel execution; the user can also require a layer of coordination, defining constraints in space and time for the tasks' execution, and the system will follow these constraints choosing the actions for each drone at run-time, in order to collaboratively accomplish all the tasks.
+In this section we describe the team-level programming approach\cite{voltron}, which allows the user to express a list of sensing tasks to be performed by the system, without dealing with the management of the single drone and with complex programming tasks such as concurrent programming and parallel execution; the user can also require a layer of coordination, defining constraints in space and time for the tasks' execution, and the system will follow these constraints choosing the actions for each drone at run-time, in order to collaboratively accomplish all the tasks.
 This run-time drones management makes the whole system scalable, since one can add as many drones as he wants, and also fault tolerant, because it can easily manage crashes or exceptions.
 So, the main advantage of using the team-level approach is that the user can simply specify a list of tasks to be performed,together with constraints in space and time for the execution, not caring about the dispatching and coordination of the drones; this is also a limitation, because one cannot develop applications which require explicit communication between drones.
 So, the team-level approach is most suitable for applications involving tasks that could be also performed by a single drone, but require a large number of drones to be completed faster and/or to operate in a big area.
