@@ -5,8 +5,8 @@
 
 \section {Indoor context and requirements}
 
-The goal of our work is to develop a programming framework to help programmers in creating applications for indoor usage of swarm of drones; for example, drones can find a lost item in a house, or bring objects in hospitals and warehouses.
-Besides of localization problem, indoor context also leads to the limits of the size of the drone. As a result, programmer constantly confronts with a limited battery resource and a small weigh the drone can carry out. These problems, as well as their possible solutions, are described in the following section.
+The goal of our work is to develop a programming framework to help programmers in creating applications for indoor usage of swarm of drones. For example, drones can find a lost item in a house, or bring objects in hospitals and warehouses.
+Besides of localization problem, indoor context also leads to the limits of the size of the drone. As a result, programmers constantly confront with a limited battery resource and a small weigh the drone can carry out. These problems, as well as their possible solutions, are described in the following section.
 
 \subsection{Indoor localization}
 
@@ -56,7 +56,13 @@ Since they are low-range effective, each tagged receiver can be identified only 
 
 Received signal strength indication (RSSI) is a measurement of the power level received by sensors.
 Radio waves propagate following the inverse-square law, the distance can be computed considering the signal strengths at the transmitter and receiver.
+\\
+
 As already explained, indoor contexts contains a lot of obstacles, like walls, doors, tables etc., and so the accuracy is lowered by absorption and reflection phenomena; some corrective mechanism must be adopted to lower these phenomena.
+\\
+
+It is important to remember that, since we work on a higher level of abstraction, we don't have to choose a specific IPS method.
+Indeed our programming framework simply utilize an API to make the drone move in the indoor environment, but we are not interested in the implementation of the API and on the particular IPS method.
 
 \newpage
 

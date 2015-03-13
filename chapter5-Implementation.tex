@@ -1,21 +1,33 @@
 \chapter{Implementation}
 \label{cap5}
 
+In this chapter we show how we implemented the Pluto Framework, describing the main elements of the project separately, in order to better understand their behaviors.
+\\
+In figure \ref{fig:finalArchitecture}, we show the final architecture scheme that includes all the parts described in the following sections.
 
+ \begin{figure}[h!]
+ \centering
+ \includegraphics[width=\linewidth]
+ {pictures/Final_Architecture.png}
+ \caption{Pluto architecture representation}
+ \label{fig:finalArchitecture}
+ \end{figure}
 
 \section{Graphical editor}\label{editor}
 
-In order to create the Graphical Editor, described in section \ref{plutoGraphicalEditor}, we have chosen to exploit the GEF (Graphical Editing Framework) project. This framework is a Java technology and it is part of the Eclipse framework developed by IBM.
-It gives developers a full solution for graphical modeling of a Java object model, and it can be used in conjunction with other technologies such as EMF (Eclipse Modeling Framework) or GMF (Graphical Modeling Framework), to enable the creation of a complete graphical modeling suite. This means that Pluto Graphical Editor has been developed with the idea of being an Eclipse Plugin, so the developer should install the Eclipse IDE in order to take advantage of the editor.
+In order to create the Graphical Editor, described in section \ref{plutoGraphicalEditor}, we decided to use the GEF (Graphical Editing Framework) project. This framework is a Java technology and it is part of the Eclipse framework developed by IBM.
+It gives developers a full solution for the  graphical modeling of a Java object model, and it can be used in conjunction with other technologies such as EMF (Eclipse Modeling Framework) or GMF (Graphical Modeling Framework), to enable the creation of a complete graphical modeling suite. 
+This means that the Pluto Graphical Editor has been developed as an Eclipse Plugin, so the developer has to install the Eclipse IDE in order to exploit the editor.
 \\
 
-First of all, we created the Java model classes of the blocks. Each class contains the behavior code of the corresponding block.
+First of all, we created the Java classes of the blocks. Each class contains the code of the corresponding block.
 We defined each block as a rectangle figure, then we added the connection entity in order to enable links between them. All these entities are children of a main container class that represent the diagram itself.
 \\
 
-When the user creates a new rectangle block in the editor area, automatically a relative block entity will be created and added to the diagram container class. The same operation stands for the connections creation.
+When the user creates a new  block in the editor area, a relative block entity is automatically created and added to the diagram container class. The same operation stands for the connections creation.
 
-When the user has drawn the desired graph, with the apposite voice in the context menu, can choose to generate the final code of the Main Application. See section \ref{codeGeneration} for further details.
+After the user draws the desired graph he can choose to generate the final code of the Main Application, through the apposite voice in the context menu.
+See section \ref{codeGeneration} for further details.
 \\
 
 \section{Code generation}\label{codeGeneration}
@@ -24,28 +36,48 @@ Once the programmer has created the graph of the application through the Pluto G
 
 This can be done by right clicking on the graph and choosing the "Generate code" command.
 
-The Editor includes a template of the final Main Application with the most of the code ready to be executed. However this template contains several tags that the generation code will replace with specific lines of code, dependent from the drawn diagram.
+The Editor includes a template of the Main Application, in which  almost all the lines of code are ready to be executed.
+However, this template contains several tags that the generation process will replace with specific lines of code, depending on the drawn graph.
 \\
 
-The generation process consists in the search for this tags inside the template application. For example, there is a tag "<dec>" that is a placeholder for the declaration part of the created blocks. It means that this tag will be replaced with the declarations of the model classes of the respective block.
+The generation process consists in the search for these tags inside the template application.
+For example, there is a "<dec>" tag that is a placeholder for the declaration part of the created blocks. It means that this tag will be replaced with the declarations of the Java classes of the blocks.
 \\
 
-There are also tags that are placeholder for some attributes values. For example the "<tDelay>" tag will be replaced with a "true" or "false" string, depending on the presence of the Clock block in the diagram. This let us to ask for a delay value for the trip, only if the developer inserted a Clock block in the diagram. The same solution was adopted for the "Mission Repeater", "Timer Monitor" and "Priority Manager" blocks.
-For each of them there is a tag that will make the application to ask the user for the respective value, or not.
+There are also tags that are placeholder for attribute values.
+For example the "<tDelay>" tag will be replaced with a "true" or "false" string, depending on the presence of the Clock block in the diagram. 
+This allow us to ask for a delay value for the trip, only if the developer has inserted a Clock block in the diagram. 
+The same solution is adopted for the "Mission Repeater", "Timer Monitor" and "Priority Manager" blocks.
+For each of them, there is a tag that will make the application ask the user for the respective values, if these blocks have been inserted in the graph.
 \\
 
-\subsection{From graph to code}
+\subsection{From graph to code}\label{graphGen}
 
-The main issue in the generation process was to understand how to generate the code from a general diagram. Potentially, a developer could draw a very complex graph with lot of blocks and connections between them. At first, this revealed as an issue to us, because we focused on a graph exploration method that could be too complex. The solution was to adopt a \textit{Publish-Subscribe} design, making use of the \textit{Observer} pattern.
+The main issue in the generation process was to understand how to generate the code from a general diagram. Potentially, a developer could draw a very complex graph with lot of blocks and connections between them.
+At first,  we focused on graph exploration methods, but we immediately noticed that they were too complex.
+So, we decided to adopt a \textit{Publish-Subscribe} design, making use of the \textit{Observer} pattern, shown in figure \ref{fig:observerPatter}.
+
+ \begin{figure}[h!]
+ \includegraphics[width=\linewidth]
+ {pictures/pub_sub.png}
+ \caption{Observer design pattern}
+ \label{fig:observerPatter}
+ \end{figure}
+
+After the generation of the declaration part, we added an "<exe>" tag, that is replaced by the subscription part of the cited pattern. 
+The \textit{Observer} pattern consists in the declaration of some elements as \textit{observers} and of other entities as \textit{observable}. 
+When an observable object change its status, it sends a notification to all its observer entities. 
+These observers will react according to the change of the observable object.
 \\
 
-After the generation of the declaration part, we added a tag "<exe>" that is replaced by the subscription part of the cited patter. The \textit{Observer} pattern consist in declare some elements as observer and then declare other entities as \textit{observable}. Then, when an observable object change its status it can send a notification to all its observer entities. These observers will react in consequence of the change of the observable object.
+In this way, we made each declared block both Observer and Observable. 
+This means that each block observes another block that comes before it, but at the same time, it is observed by other blocks coming after it. 
+The change of status consists in the output of the Mission object.
+When a block ends to perform its operations, it notifies all its observers passing them the Mission entity. 
+Then, all the observers take as an input that mission.
 \\
 
-In this way, we made each declared block both Observer and Observable. This means that each blocks observes another block that comes before it, but at the same time, another block will observe the first one. The change of status consist in the output of the Mission object. When a block ends its operations, notifies all its observers passing them the Mission entity. Then the observers will take as an input that mission and so on.
-\\
-
-This mechanism let us to describe the execution flow of a virtually very complex diagram besides those that are more simple.
+This mechanism let us describe the execution flow of a virtually very complex diagram besides those that are more simple.
 
 
 \section{Object-oriented approach}\label{oomodel}
@@ -76,14 +108,28 @@ A view requests information from the model that it uses to generate an output re
 
 \section{Runtime Management}\label{runtimeMng}
 
+Figure 	\ref{fig:threads} shows as the Main Application manages the mission execution with a parallel programming architecture. 
+Indeed when the user starts the execution, the system launches each mission in a new thread, in order to guarantee a reliable parallel execution.
+\\
 
+Then each mission starts its flow among the blocks, thanks to the Observer design pattern, described in section \ref{graphGen}.
+When the mission enters in a new block, the application launches a new thread, in order to run the mission management code of the block.
+We need this new thread because there is the possibility that two or more parallel blocks have to manage the same mission entity at the same time.
+\\
 
+Therefore, when the mission reaches the "Trip Launcher" block, the system starts the trip.
+Doing this, it creates a new thread, to manage the trip execution till its end.
+\\
 
+As said, each mission and each trip created by the user, have a respective thread that deal with the execution of the entity from the beginning to the end. In this way, the blocks that need to monitor these entities can observe the status of the threads, in order to know if the trip/mission is still running or has already completed.
+\\
 
-% Description of the management of threads and log procedures
-
-
-
+ \begin{figure}[h!]
+ \includegraphics[width=\linewidth]
+ {pictures/threads.png}
+ \caption{Example of thread concurrency}
+ \label{fig:threads}
+ \end{figure}
 
 \section{User interface}\label{interface}
 

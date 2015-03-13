@@ -9,11 +9,11 @@ We have developed the Pluto Programming Framework, a system which allows to buil
 
 Each one of these blocks, described in section \ref{dataFlow}, contains the implementation of a specific functionality.
 
-So the programmer can build an application just deciding which features he needs and consequently connecting the right blocks.
+So the programmer can build an application just deciding which features he needs and consequently connecting the right blocks, using the editor shown in section \ref{plutoGraphicalEditor}.
 
-The final user decides the sensing tasks that have to be performed by the drones thanks to the user interface.
+The final user decides the sensing tasks that have to be performed by the drones thanks to the user interface, fully described in section \ref{plutoMainApp}.
 
-The system takes care of assigning the drones to each sensing task, and this really simplify the work for the final user, which has only to decide a list of sensing tasks without dealing with the drones dispatching. 
+The system takes care of assigning the drones to each sensing task, greatly simplifying the work of both the programmer and the final user, which has only to decide a list of sensing tasks without dealing with the drones dispatching. 
 
 The main innovations with respect to the actual state of the art, fully described in chapter \ref{cap2}, are represented by the indoor context and the graphical editor.
 
@@ -24,16 +24,25 @@ Furthermore, the building of applications through connection of blocks really si
 In chapter \ref{cap6} we fully evaluated Pluto, confronting it with other similar systems, trying to apply it to existing applications, proposing its use to real people and asking them for feedback through a survey, and finally measuring its performance, through bot hardware and software metrics.
 
 We state that Pluto is a useful programming abstraction, which allows the development of a great variety of applications in a simple and fast way.
-As any other system, Pluto has limits, both for its implementation and for technological issues, which we show in the next section.
+As any other system, Pluto has its limits, both for its implementation and for technological issues, which we show in the next section.
 
 \newpage
 
 \section{Pluto limits and future works}
 
-The PURSUE application, described in section \ref{PURSUE}, put in evidence the Pluto main limitation: the immediate execution of actions in response to instantaneous events .
+In this section we show the limits of the Pluto programming framework.
+
+There are two type of limits:
+the limits in the implementation can possibly be overcome by modifying the source code and/or adding new features, or changing the whole model of the system.
+The technological limits cannot be overcome in the present, and only research and studies can find a way to improve or find new technologies which would solve these problems.
+
+
+\subsection{Implementation limits}
+
+The PURSUE application, described in section \ref{PURSUE}, put in evidence the Pluto main limitation: the immediate execution of actions in response to instantaneous events.
 \\
 
-As already explained in chapter \ref{cap4}, the Pluto system allows the drones to perform their actions only at the end of the trip, that is a movement from a point A to a pint B in the environment.
+As already explained in chapter \ref{cap4}, the Pluto system allows the drones to perform their actions only at the end of the trip, that is a movement from a point A to a point B in the environment.
 For example, if the Drone has to take a picture in a specific location, it will fly from the ground station to that location and then take the picture.
 \\
 
@@ -42,6 +51,8 @@ so, as already explained, this is the problem of the PURSUE application, which r
 \\
 
 This is an hint for the future expansion of Pluto, in order to manage also this kind of applications.
+
+\subsection{Technological limits}
 
 As already explained in chapter \ref{cap3}, the actuation in indoor contexts is tricky because of the localization problem.
 We showed some IPS methods, but still they are not as efficient and standardized as GPS.
@@ -56,11 +67,13 @@ Research and future studies will also find a way to improve the capacity of the 
 Nowadays their duration is approximately of 7 minutes, with a recharge time of 20 minutes.
 This is a great limitation, because the programmer is forced to develop applications where the sensing tasks must be performed within this limited amount of time.
 \\
-
-Finding a solution to the limitation of the instantaneous actuation, together with new technological discoveries that will improve the drones battery duration and find a good and stable indoor localization method can greatly enrich the Pluto programming framework.
+\\
 \\
 
-With these future improvement the Pluto programming framework will be able to manage almost every kind of drones application.
+Finding a solution to the limitation of the instantaneous actuation, together with new technological discoveries that will improve the drones battery duration and find a good and stable indoor localization method, can greatly enrich the Pluto programming framework.
+\\
+
+With these future improvements the Pluto programming framework will be able to manage almost every kind of drones application.
 
 
 
