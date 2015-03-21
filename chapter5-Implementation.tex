@@ -4,9 +4,9 @@
 In this chapter we show how we implemented the Pluto Framework, describing the main elements of the project separately, in order to better understand their behaviors.
 \\
 In figure \ref{fig:finalArchitecture}, we show the final architecture scheme that includes all the parts described in the following sections.
+\\
 
- \begin{figure}[h!]
- \centering
+ \begin{figure}
  \includegraphics[width=\linewidth]
  {pictures/Final_Architecture.png}
  \caption{Pluto architecture representation}
@@ -56,13 +56,15 @@ For each of them, there is a tag that will make the application ask the user for
 The main issue in the generation process was to understand how to generate the code from a general diagram. Potentially, a developer could draw a very complex graph with lot of blocks and connections between them.
 At first,  we focused on graph exploration methods, but we immediately noticed that they were too complex.
 So, we decided to adopt a \textit{Publish-Subscribe} design, making use of the \textit{Observer} pattern, shown in figure \ref{fig:observerPatter}.
+\\
 
- \begin{figure}[h!]
- \includegraphics[width=\linewidth]
- {pictures/pub_sub.png}
- \caption{Observer design pattern}
- \label{fig:observerPatter}
- \end{figure}
+% Diagramma della generazione pub sub %
+% \begin{figure}
+% \includegraphics[width=\linewidth]
+% {pictures/pub_sub.png}
+% \caption{Observer design pattern}
+% \label{fig:observerPatter}
+% \end{figure}
 
 After the generation of the declaration part, we added an "<exe>" tag, that is replaced by the subscription part of the cited pattern. 
 The \textit{Observer} pattern consists in the declaration of some elements as \textit{observers} and of other entities as \textit{observable}. 
@@ -108,7 +110,7 @@ A view requests information from the model that it uses to generate an output re
 
 \section{Runtime Management}\label{runtimeMng}
 
-Figure 	\ref{fig:threads} shows as the Main Application manages the mission execution with a parallel programming architecture. 
+The Main Application manages the mission execution with a parallel programming architecture. 
 Indeed when the user starts the execution, the system launches each mission in a new thread, in order to guarantee a reliable parallel execution.
 \\
 
@@ -124,12 +126,13 @@ Doing this, it creates a new thread, to manage the trip execution till its end.
 As said, each mission and each trip created by the user, have a respective thread that deal with the execution of the entity from the beginning to the end. In this way, the blocks that need to monitor these entities can observe the status of the threads, in order to know if the trip/mission is still running or has already completed.
 \\
 
- \begin{figure}[h!]
- \includegraphics[width=\linewidth]
- {pictures/threads.png}
- \caption{Example of thread concurrency}
- \label{fig:threads}
- \end{figure}
+%Mettere un disegno che fa vedere i thread che runnano in parallelo%
+% \begin{figure}
+% \includegraphics[width=\linewidth]
+% {pictures/threads.png}
+% \caption{Example of thread concurrency}
+% \label{fig:threads}
+% \end{figure}
 
 \section{User interface}\label{interface}
 

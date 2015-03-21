@@ -2,10 +2,40 @@
 
 \addcontentsline{toc}{chapter}{Abstract}
 
-Autonomous drones are performing a revolution in the field of mobile sensing:
-various type of drones are used to perform a great number of applications, since they can carry rich sensor payloads, such as cameras and microphones.
-Often there is a simple abstraction which allows drones navigation: they can be controlled through smartphones and tablets interfaces or by setting waypoints.
-Drones can greatly extend the capabilities of traditional sensing systems while simultaneously reducing cost.
-They can monitor a farmer’s crops, manage parking spaces, or monitor underwater telecommunication systems more practically and/or more cheaply than stationary sensors.
-The great innovation brought by drones is that they offer direct control on where to sample the environment; this was impossible with previous mobile sensing systems that could only passively sample the environment, laying on the mobility of smartphones or vehicles.
-So, the drones can greatly extend the field of mobile sensing, allowing the programmers to create a great number of applications, unthinkable and impossible to develop with the already existing technologies.
+% VERSIONE CARDE 
+Drone-teams programming is rapidly expanding since it allows to automatically perform a lot of useful tasks.
+Existing systems are able to manage a group of drones and dispatching them in the environment. 
+All these systems deal with outdoor applications, where medium/big sized drones collaboratively perform tasks making use of the Global Positioning System (GPS) to navigate in the space.
+Our goal is to fill a gap in the available programming models so that it could be possible to develop a drone application with the concept of Trip. A Trip can be considered as a movement from a source point to a destination.
+Furthermore the second important goal is making the system autonomous while choosing the drone to allocate for each Trips. This means that the user does not need to take this important decision.
+We focused our efforts in the creation of an indoor capable programming framework, this means dealing with many implementation challenges.
+From a technological point of view, GPS cannot be used in indoor contexts, so we need to find an appropriate indoor localization method.
+Then indoor contexts imply small areas which are usually full of people and/or obstacles (think of an house context) hence, drones have to be small, in order to avoid crashes.
+Size limitations result in many problems such as the battery autonomy and the maximum weight transportable.
+We propose the Pluto programming framework as a solution to these problems. It consists in two main components: the Graphical Editor and the Main Application. With the former a programmer can build an application by simply connecting blocks.
+Each block implements a precise functionality, for example there is one that choose the drones for the sensing tasks, one that manages the priority of each sensing tasks etc.
+Then the developer can generate the source code  of the second main component of Pluto, from the built graph. The final user will use this generated Pluto Main Application to specify and execute the sensing tasks.
+We fully evaluated the Pluto programming framework by proposing its use to real testers and asking them for a feedback. Moreover we measured its software and hardware performances and also tried to implement some existing applications with it.
+After the evaluation we noticed that, even if with some limits, Pluto could be useful to simplify the developing of drone-teams applications.
+
+
+
+% ----------------------- PARTE VECCHIA --------------------------------
+% Drone-teams programming is rapidly expanding since it allows to automatically perform a lot of useful tasks.
+% Existing systems are able to manage a group of drones, dispatching them in the environment. 
+% All these systems deal with outdoor applications, where medium/big sized drones collaboratively perform tasks making use of the Global Positioning System (GPS) to navigate in the space.
+% We want to develop a team-level programming framework for indoor applications.
+% Dealing with an indoor context means dealing with many limitations, both in the system implementation and in the technologies to be used.
+% From a technological point of view, GPS cannot be used in indoor contexts, so we had to find an indoor localization method.
+% Indoor contexts imply small areas which are usually full of people and obstacles (think of an house context) hence, drones have to be small, in order to avoid crashes with both human and environmental obstacles.
+% Size limitations result in many problems; the first is battery duration, which can reach a maximum of 10 minutes, having a recharge time of about 20/30 minutes.
+% From an implementation point of view, no one of the existing systems deals with a \textit{Trip} concept, that is nothing but a movement from a point A to a point B in the environment to perform an \textit{Action}.
+% We took into account all these problems and found a solution to them and finally we developed the Pluto programming framework.
+% Pluto has two components: the Graphical Editor and the Main Application.
+% With the former a programmer can build an application by simply connecting blocks.
+% Each block implements a precise functionality, for example there is one that assign the drones to the sensing tasks, one that manage the priority of each sensing task etc.
+% Then the programmer can generate the code from the built graph and the final user can use the Pluto Main Application to decide the sensing tasks to be performed.
+% We fully evaluated the Pluto programming framework by proposing its use to real testers and asking them for a feedback, measuring its software and hardware performances and also trying to build existing applications with it.
+% After the evaluation we noticed that, even if it has some limits, Pluto is a useful programming framework that can be used to develop a lot of drone-teams applications.
+
+

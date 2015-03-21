@@ -1,74 +1,111 @@
 \chapter{Introduction}
 \label{cap1}
 
+Autonomous drones are performing a revolution in the field of mobile sensing: various type of drones are used to perform a great number of applications, since they can carry rich sensor payloads, such as cameras and instruments.
+Often there is a simple abstraction which allows drones navigation: they can be controlled through mobile devices or by setting waypoints from a desktop application.
+The great deal with drones is that they can greatly extend the capabilities of traditional sensing systems while simultaneously reducing cost.
+\\
 
-\section{General context}
+Many drones applications have been developed in the recent years, performing a wide range of different functionality, but they are all suitable for outdoor contexts.
+We aim to create a new programming model for the collaboration of nano-drones, in order to extend the support for the developers who want to create new applications in indoor contexts.
+\\
 
-Autonomous drones are performing a revolution in the field of mobile sensing:
-various type of drones are used to perform a great number of applications, since they can carry rich sensor payloads, such as cameras and microphones.
-Often there is a simple abstraction which allows drones navigation: they can be controlled through smartphones and tablets interfaces or by setting waypoints.
-Drones can greatly extend the capabilities of traditional sensing systems while simultaneously reducing cost.
-They can monitor a farmer’s crops, manage parking spaces, or monitor underwater telecommunication systems more practically and/or more cheaply than stationary sensors.
-The great innovation brought by drones is that they offer direct control on where to sample the environment; this was impossible with previous mobile sensing systems that could only passively sample the environment, laying on the mobility of smartphones or vehicles.
-Many drones applications have been developed in the recent years, performing a wide range of different functionality, but they are all suitable for outdoor contexts and so they use medium/big sized drones.
-We aim to create a general model for the interaction of nano-drones, in order to extend the support for programmers who want to create new applications in indoor contexts.
+Existing frameworks do not let the developer to deal with the concept of \textit{Trip} meant as a single movement of the drones. Then we want to make our framework autonomous while choosing which drone should physically carry out the Trip.
+This brought us to the creation of a new programming framework with the goal to fill these lacks.
+\\
+
+Dealing with an indoor context means facing with many limitations, both in the system implementation and in the technologies to be used.
+From a implementation point of view, GPS cannot be used in indoor contexts. Furthermore it imply moving in small areas which are usually full of people and obstacles (think of an house context) hence, drones have to be small, in order to avoid crashes with both human and environmental obstacles.
+Size limitations result in other problems such as the battery duration and the maximum transportable weight.
+So we need to give a contribution to the actual state of the art in order to derive a new programming system crossing all the previous requirements.
 
 
 \section{Brief description of the work}
 
-In the beginning we developed three applications case study, shown in section ~\ref{applicability}, suitable for indoor contexts whose sensing tasks are performed by teams of nano-drones.
-We noticed that these applications had many common features, so we decided to create a general programming model which could be used to build a great variety of applications.
-Each of these features is represented by a block, each one concerning with a specific task of the work: there is a block which assigns a drone to an object to deliver, one that send the drones to sense the environment etc.
+Imagine a medical context where the nurses' duty is to deliver, every day at the same hour, the patients' daily medicines.
+A drone could achieve this task flying room by room and leaving the pills to the relative patient's desk. 
+It would be way better if a group of drones could manage these tasks simultaneously.
 \\
 
-We wanted to facilitate as much as possible the work of the programmer, so we decided to develop a graphical editor, fully described in section \ref{plutoGraphicalEditor}.
-Thanks to this editor the programmer can create an application, by simply graphically connecting the functional blocks.
-He is not forced to use all the blocks provided by the editor and can connect only the blocks he needs according to the functionality he wants for the specific application.
+In order to create an application that could carry out this task a developer could program the drones individually, making use of a specific API to command them. 
+However, it could use a more clever programming framework to express how the drones should behave to accomplish these tasks.
+Chapter \ref{cap2} illustrates in details the possible ways to achieve this goal.
+Instead of using a \textit{Drone Oriented} approach, the developer could use either a \textit{Swam Oriented} or a \textit{Team Level} approach. 
+There are several available frameworks such as Karma\cite{karma} and Voltron\cite{voltron}.
+\\
 
-We created the whole model for our programming abstraction, choosing the Java programming language to represent all the features we needed, and organizing the system with an MVC pattern.
+Our work discerns from these solutions basing itself on two main concepts: the creation of both Mission and Trip entities and the drone allocation transparency. 
+No other framework allows the user to define the idea of a Trip as a movement from point A to point B to accomplish an action, and the important decision of choosing which drone to assign to a given Trip is also in charge of the system.
+The second feature allows the system to manage the failed trips in the same way.
+For example, when a drone crashes, the system choose a new drone to complete the interrupted Trip without the intervention of the developer or of the final user.
+\\
 
-We also developed the final user interface, the Pluto Main Application, shown in section \ref{plutoMainApp}, to make the final user able to fully exploit the applications created with Pluto programming framework.
-With the Pluto Main Application, the user can assign the sensing tasks to the drones, sending them in the environment.
+In order to define the sensing tasks, we developed the Main Application, fully described in section \ref{plutoMainApp} that allows  the user to choose the \textit{Actions} to perform and where they must be performed, thanks to a map. 
+An Action could be the taking of a photo, a measurement of some parameters or a custom task expressed by the developer.
+\\
 
-The Editor, the Main Application and the Java model are strictly connected:
-the programmer creates the graphical model of the application through the Graphical Editor, then the Editor generates the code according to the Java model and finally the user uses the Main Application to define the sensing tasks for the created application.
+We wanted to facilitate as much as possible the work of the programmer, so we decided to create the Graphical Editor, fully described in section \ref{plutoGraphicalEditor}.
+Thanks to this editor, the programmer can develop its application by drawing functional blocks and then connecting them with arrows.
+\\
+Each block represent a feature: there is a block which assigns a drone to a trip, one that sends the drones to the target location, etc.
+The developer can connect the blocks needed according to the requirements of the specific application.
+From the drawn graph the programmer can generate the source code of the Main Application mentioned before. This source code is dependent on the graph and add to the Main Application all the features expressed by the chosen blocks.
+\\
 
-
+Finally we evaluated the Pluto framework under different points of view, as described in chapter \ref{cap6}. 
+First of all, we chose some already existing applications and tried to develop them with Pluto.
+Then we evaluated the framework usability, proposing some exercises to real testers and then analyzing their results and tips.
+Finally we focused out attention on the software and hardware metrics such as the code complexity and the CPU consumption. 
+The results convinced us about Pluto capability to simplify the duties of a developer in implementing a drone application.
+\\
 
 \section{Outline}
 
-This document is structured in a way that you can easily follow the proceedings and the reasoning behind our contribution.
+This document is structured in a way that the reader can easily follow the proceedings and the reasoning behind our contribution.
 
 In this chapter, we have given the general context and the general goals of the work together with a brief description of our work.
+\\
 
 In Chapter~\ref{cap2} there is a description of the actual state of the art in the context of our work.
-We describe the three main existing approaches for drone programming, the "Swarm-level","Drone-level" and "Team-level" approaches, also proposing existing examples for each one of them.
+In sections \ref{droneLevel}, \ref{swarmLevel} and \ref{teamlevel} we show the three main existing approaches for drone programming, the "Swarm-level","Drone-level" and "Team-level" respectively, also proposing existing examples for each one of them.
+We show that no one of these approaches is suitable for our system, since we need the concepts of missions and trips.
+A mission is a list of sensing tasks to be performed sequentially and a trip is a movement from a point A to a point B in the environment to perform an action.
+Then, in section \ref{dataflow}, we describe the dataflow programming method, that we adopted for the Pluto Graphical Editor, providing two existing examples of it.
+Also in this case, we show that we need a different approach, since we need to re-use blocks and the existing solutions don't allow us to do this.
+Finally, in section \ref{advancement}, we show our advancement over the existing state of the art.
 \\
 
 Chapter~\ref{cap3} is focused on the problems issued by the indoor context and on the requirements deriving from it.
-The similarities and differences with respect to the outdoor applications are analyzed, in order to derive a new implementation of the system, suitable for the indoor context.
+In section \ref{motivating}, we show a motivating example application, in order to better explain the requirements and problems deriving from our work.
+In section \ref{teamlevelproblems} we show the implementation problems deriving from using a Team-level approach for our system, also proposing the solutions to fix them.
+Finally, in section \ref{challenges} we show the technological limitations affecting our system, such as the indoor localization and nano-drone batteries problems.
 \\
 
-Chapter~\ref{cap4} presents our solution for the research problems described inchapter ~\ref{cap3}, the Pluto programming framework.
-In section \ref{architecture} the architecture of the system is analyzed, describing in details the two components of the Pluto framework:
-the Graphical Editor and the Main Application.
-In section \ref{dataFlow} we present our dataflow model:
-we show the entities of the Java Model and we describe the functionality of each block of the Pluto Graphical Editor.
+Chapter~\ref{cap4} presents our solution for the research problems described in chapter ~\ref{cap3}, the Pluto programming framework.
+In section \ref{dataFlow} we present our programming model:
+we show the entities of our Java Model and the relationships between them.
+We also describe the blocks architecture of the Pluto Programming Framework, which is shown in section \ref{architecture}.
+In section \ref{descriptionOfModel} we describe in details the functionality of the available blocks of the Pluto Graphical Editor, that are the basic elements that the programmer can connect to graphically build an application.
+In section \ref{architecture} we describe in details the two components of the Pluto framework:
+the Graphical Editor, that is used by the programmer to graphically build an application and the Main Application, that is used by the final user to specify the sensing tasks to be performed.
 The last section of the chapter, the \ref{history}, describes all the steps performed to arrive to the final system, showing all the previously implemented solutions which, once refined, brought us to the development of the Pluto programming framework.
 \\
 
 Chapter~\ref{cap5} shows how the designed choices have been implemented technically, describing all the software and tools used for the development of Pluto programming framework.
+In section \ref{editor} we describe the GEF framework, which we used to implement the Pluto Graphical Editor.
+In section \ref{codeGeneration} we show the code generation process that creates a Java application from the graph built with the Pluto Graphical Editor.
+In section \ref{oomodel} we describe the whole Object-Oriented model of the Pluto framework.
+In section \ref{runtimeMng} we describe the parallel architecture of the Pluto framework and the management of all the needed threads.
+In section \ref{interface} we describe the SWING tool, which we used to develop the Pluto Main Application.
+Finally, in section \ref{crazyflie} we describe the Crazyflie nano-quadcopter, which we used to perform the sensing tasks of our prototype applications.
 \\
 
-Once the solution has been deeply described at design and implementation level, we will show the evaluation and the results of the work.
-\\
-
-Chapter~\ref{cap6} starts with an analysis on the applicability of the Pluto framework:
-there are descriptions of many already existing applications and of the three case study, and an analysis on whether they can be developed with Pluto. 
-In section \ref{usability} we propose two exercises to human testers, in order to evaluate the effective usability of Pluto:
+Chapter~\ref{cap6} starts with an analysis on the applicability of the Pluto framework.
+In section \ref{applicability} we describe four already existing applications and three case study, and we discuss on whether they can be developed or not with Pluto. 
+In section \ref{usability} we propose two exercises to real testers, in order to test "on the field" the effective usability of Pluto:
 the first one deals with the Graphical Editor, the second one with the Main Application.
-We also propose a survey to the users and then present the result in a graphical way.
-In section \ref{performance} we measure the software and hardware consumption metrics required by Pluto, presenting the results in a graphical way.
+We also propose a survey to the users and then present the result in a graphical way, in order to have opinions on the framework and possibly to improve it with the suggestions of the testers.
+In section \ref{performance} we measure the software and hardware consumption metrics required by Pluto, in order to evaluate the effective impact of Pluto on an ordinary computing machine.
 \\
 
 Finally, Chapter~\ref{cap7} draws the conclusion and recaps the results obtained, also showing the possibilities for future works to extend our programming model.

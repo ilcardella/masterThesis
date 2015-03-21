@@ -39,7 +39,7 @@ Thanks to the \textit{Take photo} action, already implemented in Pluto, the dron
 \\
 
 As already explained, a Mission object contains a list of trips to be executed.
-Inside the Mission entity, these trips are performed sequentially, in general each one by a different Drone, as already explained in section \ref{entities}.
+Inside the Mission entity, these trips are performed sequentially, in general each one by a different Drone, as already explained in section \ref{dataFlow}.
 So, if the user wants to send more than one drone simultaneously on the same location, he has to create more than one Mission.
 Indeed missions are executed in parallel, so if the user wants to simultaneously send 3 drones on the same location, he simply has to create three missions.
 Then,  since each Mission has its own Trips Page, he has to choose the same locations on the maps of the three Trip pages.
@@ -72,7 +72,7 @@ For example, if the timer has expired then it will propagate the Timer Monitor i
 
 After the GateFIFO block there is a bifurcation:
 if the Mission is completed, it is sent to the MissionEvaluator, otherwise there are some trips of the mission that must be executed again, and so the Mission is sent to the DroneAllocator, which will assign new drones to these trips.
-The full explanation of the functionality of each block can be found in section \ref{blocks}.
+The full explanation of the functionality of each block can be found in section \ref{descriptionOfModel}.
 \\
 
 The following is the code of the Evaluator needed for the development of the Alfalfa\cite{alfalfa} application:
@@ -264,7 +264,7 @@ For example, if the timer has expired then it will propagate the Timer Monitor i
 
 After the GateFIFO block there is a bifurcation:
 if the Mission is completed, it is sent to the MissionEvaluator, otherwise there are some trips of the mission that must be executed again, and so the Mission is sent to the DroneAllocator.
-The full explanation of the functionality of each block can be found in section \ref{blocks}.
+The full explanation of the functionality of each block can be found in section \ref{descriptionOfModel}.
 \\
 
 
@@ -342,12 +342,12 @@ The only difference is that now the application doesn't require the repetition o
 This leads the Main Application to end the execution flow when the Mission reaches a successful evaluation.
 As shown in figure \ref{fig:pm10putti_Sequence_MissionEnd}, after the evaluation the execution doesn't go further.
 
- \begin{figure}[H]
- \centering
- \includegraphics[width=\linewidth, height=8cm]{pictures/pm10putti_Sequence_MissionEnd.png}
- \caption{Sequence diagram of the mission ending flow, without repetition}
- \label{fig:pm10putti_Sequence_MissionEnd}
- \end{figure}
+% \begin{figure}[H]
+% \centering
+% \includegraphics[width=\linewidth, height=8cm]{pictures/pm10putti_Sequence_MissionEnd.png}
+% \caption{Sequence diagram of the mission ending flow, without repetition}
+% \label{fig:pm10putti_Sequence_MissionEnd}
+% \end{figure}
 
 
 \subsection{PM10}
@@ -392,7 +392,7 @@ For example, if the timer has expired then it will propagate the Timer Monitor i
 
 After the GateFIFO block there is a bifurcation:
 if the Mission is completed, it is sent to the MissionEvaluator, otherwise there are some trips of the mission that must be executed again, and so the Mission is sent to the DroneAllocator.
-The full explanation of the functionality of each block can be found in section \ref{blocks}.
+The full explanation of the functionality of each block can be found in section \ref{descriptionOfModel}.
 \\
 
 Below there is our implementation of a possible Evaluator algorithm:
@@ -446,7 +446,7 @@ In this way, five drones will monitor simultaneously the area to sample.
 \begin{figure}[H]
 \centering
 \includegraphics[width=\linewidth, height=8cm]{pictures/pm10Area.png}
-\caption{The archaeological site on the map}
+\caption{The area to sample on the map}
 \label{fig:pm10Area}
 \end{figure}
 
@@ -597,7 +597,7 @@ After the execution of the exercises, we asked the users to leave a feedback, pr
 \subsection{Proposed exercises}
 \label{exercise}
 
-We give the user a complete and sound explanation of the Pluto programming framework, showing how the graphical editor works (shown in section \ref{plutoGraphicalEditor}) and giving him the list of the available entities (shown in section \ref{entities}) and of the implemented blocks (shown in section \ref{blocks}), together with an explanation of the meaning and functionality of each one.
+We give the user a complete and sound explanation of the Pluto programming framework, showing how the graphical editor works (shown in section \ref{plutoGraphicalEditor}) and giving him the list of the available entities (shown in section \ref{dataFlow}) and of the implemented blocks (shown in section \ref{blocks}), together with an explanation of the meaning and functionality of each one.
 The same explanations are given for all the components of the Pluto User Application (shown in section \ref{plutoMainApp}).
 
 \subsubsection{First Exercise}
