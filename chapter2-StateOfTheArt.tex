@@ -75,10 +75,6 @@ The whole functioning of ROS, shown in fig.\ref{fig:ros}, is based on \textit{No
 a node can send messages publishing them on a particular \textit{Topic}, and nodes which are interested in a particular topic simply subscribe to it; publishers and subscribers don't know each others' existence.
 The publish-subscribe topic based communication model is very flexible, but is not suitable for synchronous exchanges, because of its broadcast functioning; for this reasons ROS provides also \textit{Services}, which are composed by a name and two messages, one for the request and one for the response.
 
-
-
-
-
 \begin{figure}[htbp]
   \centering
   \includegraphics[width=\linewidth]{pictures/ros.jpg}
@@ -216,7 +212,7 @@ A block is connected to another when it has a dependency on the result of the ma
 This paradigm present some limits of expression.
 The main one is that each implementation of this paradigm is specific for the context where it is used. This means that there are no general frameworks that can be used in more than one context. This is why we created our own dataflow editor, shown in section \ref{plutoGraphicalEditor}.
 
-\subsection{Business Process Modeling Notation}
+\subsection{Business Process Modeling Notation}\label{BPMN}
 
 Business Process Modeling Notation (BPMN) is an example of the power of the dataflow programming paradigm. Its primary goal is to help business users providing a readily understandable notation, filling the gap between the business process design and the final process implementation.
 \\
@@ -224,12 +220,12 @@ Business Process Modeling Notation (BPMN) is an example of the power of the data
 BPMN defines a diagram that contains graphical models of the business process operations. A Business Process Model, is nothing but a graph where nodes represent graphical models representing the operations, and edges are the flow controls that define their order of performance. An example is shown in figure \ref{fig:bpmn}.
 \\
 
- \begin{figure}[htbp]
-   \centering
-   \includegraphics[width=\linewidth]{pictures/bpmn.png}
-   \caption{Example of a BPMN diagram}
-   \label{fig:bpmn}
- \end{figure}
+% \begin{figure}[htbp]
+%   \centering
+%   \includegraphics[width=\linewidth]{pictures/bpmn.png}
+%   \caption{Example of a BPMN diagram}
+%   \label{fig:bpmn}
+% \end{figure}
 
 There are different kinds of elements in a diagram:
 
@@ -240,64 +236,36 @@ There are different kinds of elements in a diagram:
 \item{\textit{Artifacts}: they are useful to extend the basic notation adding new ways to describes context based information}
 \end{itemize}
 
-\subsection{Node-RED}
+\subsection{Node-RED}\label{NodeRed}
 
 Node-RED is an example of the dataflow paradigm applied to the \textit{Internet of Things} world.
 It is a browser-based editor that let the developer wire together different nodes with directed edges.
 Each node provides a different feature or a different management of the input data.
 All features are web-based functionality, such as receiving an HTTP request or a \textit{Javascript} snippet.
 In this context, a diagram represents the back-end of the web application and When the graph is completed, the user can deploy it with a single-click in the runtime environment.
-\\
-
 The light-weight runtime is built on \textit{Node.js}, taking full advantage of its event-driven, non-blocking model. This makes it ideal to run at the edge of the network on low-cost hardware as well as in the cloud.
 \\
 
-In figure \ref{fig:nodeRed} we show an example web application.
-\\
+In figure \ref{fig:nodeRed} we show an example web application:
 
- \begin{figure}[htbp]
-   \centering
-   \includegraphics[width=\linewidth]{pictures/nodeRed.png}
-   \caption{Example of a nodeRED application}
-   \label{fig:nodeRed}
- \end{figure}
+
+% \begin{figure}[htbp]
+%   \centering
+%   \includegraphics[width=\linewidth]{pictures/nodeRed.png}
+%   \caption{Example of a nodeRED application}
+%   \label{fig:nodeRed}
+% \end{figure}
 
 The yellow node makes a GET request to the UK electric company website.
-\\
+
 The response data follow the edges and pass through the orange node, which lets the developer write its custom Javascript code inside it. 
 In this case, the custom code takes the payload data in input and put them on the third output, formatting them in readable way. 
 Through the first two outputs, the block sends only debug strings that go to the green nodes.
-\\
 In the end the blue node will send a tweet containing the data received as input.
 \\
 
-
-\section{Advancement over State of the Art}\label{advancement}
-
-In this chapter we have described the actual state of the art in the field of drone-programming.
-
-We have shown the three main existing approaches for developing drone-based applications and the power of expression of the dataflow programming paradigm.
-
-Since the approaches we mentioned in this chapter are designed in a way that is impossible to describe an application through the concepts of missions and trips, we give our contribution to the state of the art creating a new framework based on these entities.
-A \textit{Mission} is nothing but a list of sensing tasks to be performed in the environment.
-Each one of these sensing tasks is a \textit{Trip}, that is a movement from a point A to a point B to perform an action.
-
-Neither the drone-level nor the swarm-level approaches are suitable for our goal. 
-The former because we do not want the user to deal with the coding of each drone separately with an external API.
-The latter because we want to avoid the complexity to create a communication network protocol between drones and because it would be difficult to maintain the status of the missions and trips entities among the swarm. Moreover we also need to address  time and space constraints, which cannot be expressed with this approach.
-
-The most suitable approach for our framework is the team-level model, but we need to apply some modifications to it, in order to make it suitable for our work.
-So, we should add the concepts of missions and trips. 
-The central brain controls the team of drones according to the mission structure and so according to the sequence of trips contained in it. Executing the trips one by one.
-\\
-
-Another very important feature of our work is the transparent dispatching of drones:
-the central brain takes care of assigning the drones to the sensing tasks to be performed, managing also the drones failures, without involving the programmer.
-\\
-
-Regarding the dataflow programming, we need a new framework that allows the user to design the behavior of the central brain taking care of the missions execution, from the beginning to the end. 
-This modeling tool helps the developer to add the features needed by the application simply drawing the proper nodes in the dataflow graph. 
-This part of the project is fully described in Section \ref{plutoGraphicalEditor}.
+In this Chapter we have described the actual state of the art in the field of drone programming and dataflow programming.
+We needed to overcome the limits of the actual state of the art by performing some modifications to the existing solutions, which we show in Section \ref{teamlevelproblems}.
 
 
 

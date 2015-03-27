@@ -6,59 +6,40 @@ We chose the Team Level approach, which we described in Section ~\ref{teamlevel}
 As we have shown in Section~\ref{teamlevelproblems}, the Team-Level approach is the most suitable approach for the kind of applications that can be developed with our framework.
 The most important advantage of this approach is the reduced complexity given to the final user, while expressing the sensing tasks.
 There is no need to describe how the drones should execute them.
-These details are chosen by the Ground Control Station whose duty is to assign the right drone to the right task and check that each drone take its mission to the end with a successful status.
-In this chapter we describe the whole programming model of our system.
+These details are chosen by the Ground Control Station whose duty is to assign the right drone to the related task and check that each drone takes its mission to the end with a successful status.
+In this chapter we describe the whole programming model of our system as a solution for the problems shown in Chapter \ref{cap3}.
 
 
-\section{Programming model}\label{dataFlow}
+\section{Programming model}\label{programmingModel}
 
-Through our programming system, the user specifies a list of sensing tasks to be performed by the drones.
-The \textit{Mission} entity is nothing but this list of sensing tasks.
-Each one of the sensing tasks is represented by a \textit{Trip} entity.
-So, each Mission contains a list of Trips.
-A Trip is a path between a start location and a target location.
-The Trip is performed by a Drone which carries out an Action, for example it can bring an Item to a person, or take a photo or measure temperature at a particular location.
-It is important to underline that, inside each Mission entity, the trips are executed sequentially, in general by different drones.
-The missions instead are executed in parallel.
+Through our programming model, the user is able to specify a list of sensing tasks that drones can perform.\\
+Each one of the sensing tasks is represented by the \textit{Trip} entity that is the representation of a physical movement of the drone from a source location to a target one. The Trip always ends with an \textit{Action}, that is the physical representation of the task. For example the drone can move an \textit{Item}, take a photo or measure the temperature.
+\\
+Then, we decided to create a container entity called \textit{Mission} that includes the list of tasks that drones should accomplish. This means that each Mission contains a list of Trips.
+\\
+It is important to underline that, inside each Mission entity, the trips are executed sequentially, one by one. The missions instead are executed in parallel.
+\\
 
-
-So, as already said, we identified the following entities:
+So, to summarize, we identified the following entities:
 
 \begin{itemize}
 \itemsep2pt
 \item{
-Mission: a list of Trips(sensing tasks) to be performed sequentially
+\textbf{Mission}: a list of trips(sensing tasks) to be performed sequentially.
 }
 \item{
-Trip: a Drone movement from a point A to a point B to perform an Action
+\textbf{Trip}: a Drone movement from a point A to a point B to perform an Action.
 }
 \item{
-Drone: the executor of the Trips
+\textbf{Drone}: the physical executor of the Trip and the Action.
 }
 \item{
-Action: the type of task to be performed by the Drone: "Take Photo", "Pick Item", "Release Item" and "Measure"
+\textbf{Action}: the type of task to be performed by the Drone: "Take Photo", "Pick Item", "Release Item", "Measure", etc.
 }
 \item{
-Item: the object carried by the Drone, only used in case of "Pick Item" and "Release Item" Actions
+\textbf{Item}: the entity that represents the object carried by the Drone, only used in case of "Pick Item" and "Release Item" Actions.
 }
 \end{itemize}
-
-
-As shown in figure~\ref{fig:EntityRelationship}, the Mission entity, in addition to the set of Trips, contains another important attribute that is the Status: it describes how the Mission is executing.
-For example, if one of the trips inside the Mission is executing, the Mission status will be "RUNNING".
-If one of the trips in the list is failed, for example because the drone performing it has crashed, the Mission status will be "FAILED".
-
-The Trip entity has a Status attribute too and furthermore it contains the Drone and the Action entities.
-The values of the Status attribute are similar to the Mission status one.
-If the Trip is being executed by a drone its status is "EXECUTING", if the drone performing it has crashed the trip status is "FAILED", if the trip is waiting to be executed its status is "WAITING".
-Of course it also contains the coordinates of the source and target locations.
-
-The Drones are described by a unique ID and by the Action they have to perform in the environment.
-
-In addition to the four basic Actions, We also offer a very important feature, the \textit{Custom Action}: it allows the programmer to implement a new Action, different from the ones we provided, in order to allow the drones to perform new features.
-
-
-\newpage
 
 \begin{figure}[htb]
   \centering
@@ -68,159 +49,238 @@ In addition to the four basic Actions, We also offer a very important feature, t
   \label{fig:EntityRelationship}
 \end{figure}
 
+\newpage
 
-
-\section{Functional blocks}
-\label{descriptionOfModel}
-
-Each diagram created with the Pluto Graphical Editor is made of many functional blocks, each one is implemented with a particular logic; the user can select the blocks needed for his particular application and connect them through simple links, as explained in section~\ref{plutoGraphicalEditor}.
-In the figure~\ref{fig:BlocksDiagram}, an example application is showed, which contains some of the implemented blocks.
-Again, the user is not forced to insert all the blocks, he can choose only the blocks needed for his particular application.
-If you compare this figure with figure~\ref{fig:GraphicalEditor}, you can see that this one is based on the the same drawing but with additional features provided by new blocks.
+\underline{Mission}
 \\
 
-\begin{figure}[htb]
-  \centering
-  \includegraphics[width=\linewidth]{pictures/BlocksDiagram.png}
-  \caption{An example Pluto application}
-  \label{fig:BlocksDiagram}
-\end{figure}
+As shown in figure \ref{fig:EntityRelationship}, the Mission entity, in addition to the set of Trips, contains other important attributes that describe the mission itself:
 
+\begin{itemize}
+\item{\textbf{Name}: the name given by the user while creating the mission}
+\item{\textbf{Status}: describes how the Mission is being executed. For example, it is set to "RUNNING" while the drone is carrying out a Trip, or "FAILED" when a trip fails after a crash of the related drone}
+\item{\textbf{Trips}: the list of trips to be executed sequentially}
+\item{\textbf{Completed Trips}: the trips completed successfully}
+\item{\textbf{Evaluator}: the reference to the Evaluator entity. It is optional, see the end of this Section for a brief description}
+\item{\textbf{Repeat}: states if the Mission must be repeated after its completion. It is optional, see the Mission Repeater description in Section \ref{functionalBlocks}}
+\item{\textbf{Safe Time}: contains the maximum amount of time within each trip inside the Mission must be completed. It is optional, see the Timer Monitor description in Section \ref{functionalBlocks}}
+\end{itemize}
 
-Here we provide a detailed description of each functional block available in the Pluto Graphical Editor:
+\underline{Trip}
+\\
+
+Regarding the Trip entity, it contains several parameters too and furthermore it contains the Drone and the Action entities references.
+
+\begin{itemize}
+\item{\textbf{Name}: the name that identifies the Trip}
+\item{\textbf{Status}: describes how the Trip is being executed. For example, it is set to "EXECUTING" while the drone is carrying out the Trip, or "FAILED" when a crash happens while a drone is executing this Trip}
+\item{\textbf{Source Location}: the starting point of the movement represented by the Trip}
+\item{\textbf{Target Location}: the target point of the movement represented by the trip}
+\item{\textbf{Delay}: the amount of time that the trip must wait before starting.  It is optional, see the Clock description in Section \ref{functionalBlocks}}
+\item{\textbf{Priority}: states the priority level of the Trip.  It is optional, see the Priority Manager description in Section \ref{functionalBlocks}}
+\item{\textbf{Start Time}: contains the timestamp of the moment in which the drone assigned to this Trip starts the flight.}
+\item{\textbf{Item}: the Item entity reference representing the item that the assigned drone bring. It is optional, based on the Action entity.}
+\item{\textbf{Action}: the Action entity reference that describe the task to accomplish after the target location is reached.}
+\item{\textbf{Drone}: the Drone entity reference that represent the physical drone assigned to the Trip.}
+\end{itemize}
+
+\underline{Drone}
+\\
+
+Another important entity in the programming model is the Drone. It represents the physical drone that performs the assigned Trip. It has some important parameters:
+
+\begin{itemize}
+\item{\textbf{ID}: it is a unique ID to distinguish each Drone}
+\item{\textbf{Status}: states if the drone is "FREE" and available for a trip or if it is "BUSY" because it is flying.}
+\item{\textbf{Shape Category}: this parameter lets the system know if a drone is able to accomplish certain Action or move certain kind of Items.}
+\item{\textbf{Battery Level}: contains the battery level of the Drone.}
+\item{\textbf{Home Location}: contains the coordinates of the home location.}
+\item{\textbf{Current Location}: contains the coordinates of the current location of the Drone. The system uses this parameter to localize the drone when needed.}
+\end{itemize}
+
+\underline{Action}
+\\
+
+The Action entity describes the tasks that the drones must perform at the end of their respective trips.
+We decided to create four basic actions that explain themselves: "Measure", "Take photo", "Pick item" and "Release Item". 
+Moreover we added a "Custom Action" which enables the developer to define a personal implementation of a new Action depending on the application requisites.
+The developer can add this implementation after the code generation phase, explained in Section \ref{codeGeneration}, by writing his custom algorithm directly in the code.
+\\
+
+\underline{Evaluator}
+\\
+
+In figure \ref{fig:EntityRelationship}, inside the Mission object, there is a reference to the Evaluator entity. 
+The Evaluator is the entity whose duty is to evaluate the outcomes of the actions performed inside a Mission.
+\\
+This means that some trips can be completed successfully but the Action done at the end can return a bad result. Therefore these actions should be repeated and so the related trips. This feature is provided by a functional block described in next Section \ref{functionalBlocks}.
+\\
+We decided to decouple this mechanism from our system, so that the developer is able to include its personal implementation of the evaluation algorithm in our framework. 
+In Section \ref{codeGeneration} we describe this process in a more detailed way.
+\\
+
+\section{Functional blocks}
+\label{functionalBlocks}
+
+As already said in Section \ref{teamlevelproblems}, we decided to create a new dataflow programming framework that allows the user to design the behavior of the system while taking care of the missions execution.
+\\
+
+This framework consists in a modeling tool that allows the developer to add the application requested features by drawing the proper nodes in an editor area.
+\\
+Each diagram created with this tool is made of many functional blocks, each one including a particular logic.
+The user can select the blocks needed for his particular application and connect them through simple connection elements.
+The graphical editor is fully described in Section \ref{plutoGraphicalEditor}.
+\\
+
+Here we provide a detailed description of each functional block available in the editor:
 \\
 
 \underline{Mission Creator block}
 \\
 
-input: a list of Trips
+Input: a list of Trips
 
-output: a Mission object
+Output: a Mission object
 \\
 
-The Mission Creator block receives as input the trips that the user wants to be performed by the drones, then it creates a Mission including all these trips and returns that Mission object.
-This block is the starting point of each Pluto-developed application.
+The Mission Creator block receives as an input the trips that the user wants to be performed by the drones, then it creates a Mission container including all these trips and returns that new Mission object.
+This block is the starting point of each Pluto-developed application because it creates the Mission object that passes through into all the blocks of the graph.
 \\
-
-
 
 \underline{Clock block}
 \\
 
-input: a Mission object
+Input: a Mission object
 
-output: a Mission object
+Output: a Mission object
 \\
 
-The Clock block checks the delay attribute of each Trip of a Mission: if it's not equal to zero, it makes the Trip wait for the amount of time set by the user in the Mission creation step, and finally returns the Mission Object.
-If the programmer puts the Clock block in the graph of the application, the Pluto Main application shown in section \ref{plutoMainApp} will show an extra widow.
-On the Trips Page,after the final user drags and drops on the map the action to perform and the Priority panel is shown, the user will be asked to set a delay for the Trip.
-This block has to be put between the Mission Creator and the Drone Allocator blocks.
+The Clock block checks the delay attribute (Figure \ref{fig:EntityRelationship}) of the next Trip to be executed in the Mission. If it is greater than zero, it makes the Trip waiting for that amount of time, and finally returns the Mission Object. Of course delaying the execution of the next Trip, stops the Mission execution too, because as said in Section \ref{programmingModel}, the trips are executed sequentially.
+\\
+If the programmer puts the Clock block in the graph, the Main Application will ask the user, during the Mission definition phase, the amount of time of the delay.
+\\
+This block could be used in an application where the user wants to measure the temperatures in a location every 10 minutes. He has to set a delay of 10 minutes in every Trip, so that they will wait for that time before starting.
+\\
+Usually, this block is put between the Mission Creator and the Drone Allocator blocks, in order to wait for the delay time before allocating a drone to the Trip.
 \\
 
 \underline{Drone Allocator block}
 \\
 
-input: a Mission object
+Input: a Mission object
 
-output: a Mission object
+Output: a Mission object
 \\
 
-The DroneAllocator block chooses the appropriate Drone to be assigned to each Trip, basing on the availability of the drones and their capability to perform the desired action.
-The output of the DroneAllocator is always sent to the TripLauncher, while its input can arrive from a variety of blocks, depending on the features of the considered application.
+The Drone Allocator block allocates the proper Drone to the next Trip of the Mission taken as input.
+It bases its choice on the availability of the drones and their capability to perform the desired action.
+\\
+This block can be implemented with different policies. Indeed, this choice is nothing but an optimization problem and the developer can choose a custom algorithm. 
+We intentionally decoupled this problem from the system implementation, in a way that it is possible for the developer to change the policy as he wishes.
+\\
+This block is usually put before the Trip Launcher, because an assigned drone is essential for the Trip execution.
+For example it could be put between the Clock and the Trip Launcher blocks in order to assign a Drone to the next Trip after the delay.
 \\
 
 \underline{Trip Launcher block}
 \\
 
-input: a Mission object
+Input: a Mission object
 
-output: a Mission object
+Output: a Mission object
 \\
 
-The TripLauncher block takes the next Trip to be performed from the Mission object, and launches it.
-The assigned drone will fly to the target location and execute the defined Action.
-This block receives the input Mission from the DroneAllocator block, ans sends its output to the TripMonitor.
-If the application contains the TimerMonitor block, the TripLauncher's output will be also sent to it.
+The Trip Launcher block takes the next Trip to be performed from the Mission, checks if it has an allocated Drone and then starts its execution.
+The assigned drone fly to the target location and execute the defined Action.
+Usually this block is drawn right after the Drone Allocator and is fundamental in order to start the execution of the trips of the Mission.
 \\
 
 \underline{Trip Monitor block}
 \\
 
-input: a Mission object
+Input: a Mission object
 
-output: a Mission object
+Output: a Mission object
 \\
 
-The TripMonitor block checks the status of the Trip that is running in that moment.
-It changes the status of the Trip and of the Mission in the appropriate way, depending on whether the Trip is failed or complete.
-This block receives the input Mission from the TripLauncher, and its output can be sent to the GateFIFO, the MissionEvaluator or the DroneAllocator blocks, depending on the features of the particular application.
+The Trip Monitor block continuously checks the status of the Trip that is running in that moment. As said in Section \ref{programmingModel}, the system executes the trips sequentially, so only one trip at a time is executing and is monitored by this block. 
 \\
-
-
+We need to monitor the running trips because a flying drone could crash or  its battery could become empty before ending the Trip. 
+In this way we can guarantee the correct completion of the Mission even if a failure happens.
+\\
+Depending on whether the Trip is failed or completed, this block changes its status parameter in the appropriate way.
+Of course, the Mission that contains that Trip will change its status,accordingly.
+The Trip Monitor is put after the Trip Launcher because it needs to monitor a Trip that has already started its execution.
+\\
 
 \underline{Mission Repeater block}
 \\
 
-input: a Mission object
+Input: a Mission object
 
-output: a Mission object
+Output: a Mission object
 \\
 
-The MissionRepeater block verifies if the \textit{repeat} attribute of the input Mission is set to true.
-If so, it set the Mission status to STANDBY and the status of all the Trips of that mission to WAITING and inserts again them in the List of Trips to be executed.
-This block is put between the MissionEvaluator and the DroneAllocator.
+This block takes as input only a completed Mission object.
 \\
-
-\underline{Gate FIFO block}
+So when a completed Mission arrive to the Mission Repeater, the block verifies if the \textit{Repeat} attribute (Figure \ref{fig:EntityRelationship}) of the Mission is true.
+if so, this block moves the list of the completed trips into the list of trips to be executed.
+Then resets the status of the Mission itself and the status of all the trips to execute again.
 \\
-
-input: a Mission object
-
-output: a Mission object
+This block could be useful if a Mission should be repeated over and over.
+For example in a surveillance application it lets the drones monitor the neighborhood without stopping when the mission ends.
 \\
-
-The GateFIFO block is used when two or more blocks works in parallel, and only one instance of the executing Mission must propagate.
-Among the multiple input connections of the GateFIFO block, it propagates only the one that completed its task for first.
-That's why the FIFO acronym is used, since the first Mission instance that arrive is the only one that propagates in the graph.
-This block receives the input Mission from one of the blocks connected to it and can send its output to the MissionEvaluator, MissionRepeater or DroneAllocator blocks, depending on the particular application.
+In order to emulate this behavior without the block, the user should create a new identical Mission every time the previous one ends.
 \\
-
-\underline{Gate Funnel block}
-\\
-
-input: a Mission object
-
-output: a Mission object
-\\
-
-This block is similar to the GateFIFO, but this gate wait for all the Mission instances it has in input to complete.
-So if before this gate, there are 4 blocks in parallel, the propagation of the Mission is activated only when all the 4 instances arrive.
+This block is usually put after the Trip Monitor and before the Drone Allocator, because a Mission can be completed only after it pass through the Trip Monitor and the trips' status must be set to "WAITING" before the allocation of the drones.
 \\
 
 \underline{Mission Evaluator block}
 \\
 
-input: a Mission object
+Input: a Mission object
 
-output: a Mission object
+Output: a Mission object
 \\
 
-The MissionEvaluator block can read and write data carried by the drones, and basing on them can perform various actions specific for the application developed.
-It receives the input Mission from the GateFIFO or TripMonitor blocks and can send the output to the DroneAllocator or MissionRepeater blocks, depending on the particular application.
+The Mission Evaluator block, as the Mission Repeater, takes as input only a completed Mission.
+Its task is to evaluate all the actions done by the drones at the end of the trips.
+Since the Mission arrive to this block only at the end of its lifecycle, all the trips are already executed and all the actions are already performed.
+\\
+The evaluation consists in invoking the \textit{Evaluator} entity which is referenced inside the Mission object (Figure \ref{fig:EntityRelationship}).
+\\
+If the evaluation returns a failed result, it means that some actions should be repeated and then the related trips too. 
+The block finds these trips and put them in the list of trips to execute.
+After that, it changes the status of the Mission because it is not Completed anymore since it has still some trips to complete.
+\\
+This block could be used in an application that apply the photogrammetry technique in order to get an orthophoto of a geographical location.
+Therefore the actions would be taking photos in different coordinates and the evaluation would consist in trying to get the orthophoto from those simple photos. 
+If some photos are not good enough the evaluation would fail and the related trips and actions will be repeated.
+\\
+Usually this block is put after the Trip Monitor and before the Drone Allocator for the same reasons explained in the Mission Repeater block.
 \\
 
-\underline{Mission Modifier block}\label{mm}
+\underline{Mission Modifier block}\label{missionModifier}
 \\
 
-input: a Mission object
+Input: a Mission object
 
-output: a Mission object
+Output: a Mission object
 \\
 
-The MissionModifier block allows the programmer to create new custom blocks.
-As shown in figure~\ref{fig:missionmodifier}, in the editor, he can inserts his custom code in this block using the appropriate option in the context menu.
-This block can be put in every point of the Pluto Editor graph, depending on the particular feature it implements.
+The Mission Modifier block allows the programmer to express new features not implemented yet by other functional blocks.
+It allows the developer to create a brand new block with a specific feature.
+\\
+This feature must be expressed with a code snippet that the developer can write directly in the editor.
+\\
+For example imagine a programmer that needs a new feature that change some parameters of the Mission after the assignment of the Drone, but before the Trip starts. 
+He could insert the Mission Modifier block between the Drone Allocator and the Trip Launcher blocks. Then he could open the window, shown in figure \ref{fig:missionmodifier} by clicking on the proper menu entry called "Write Custom Code".
+\\
+Inside this window, the programmer can write the code snippet that describes the features requested by the new functional block. So following the example, here he will change the parameters of Mission.
+\\
+In the end, we strongly recommend to rename the Mission Modifier block with a meaningful name that describes the implemented new feature.
+\\
+This block can be put in every point of the Pluto Editor graph, depending on the particular feature it provides. The inserted code will be executed by the system when the Mission object reach this block, following the graph flow.
 \\
 
 \begin{figure}[H]
@@ -231,66 +291,114 @@ This block can be put in every point of the Pluto Editor graph, depending on the
   \label{fig:missionmodifier}
 \end{figure}
 
+\newpage
+
 \underline{PriorityManager block}
 \\
 
-input: a Mission object
+Input: a Mission object
 
-output: a Mission object
+Output: a Mission object
 \\
-
-The Priority Manager block raise the priority of the first Trip of the Mission passed in input.
-This block can be considered as a particular case of Mission Modifier. 
-This block can receive the input from the GateFIFO or Trip Monitor blocks, and sends the output to the Drone Allocator.
+This block accepts as input only Failed missions.
+Then the Priority Manager takes the first Trip in the list and increments its priority.
+After that it sends the same Mission object as an output to the next blocks.
+\\
+This block is useful in order to not stop the execution flow of a Mission in case a Trip fails.
+Normally, without this feature, if the Trip Monitor finds out that the monitored Trip has failed, it sets the Mission to "FAILED" too and stops the execution flow.
+\\
+Instead this block raises the priority of the failed Trip and changes the status of the Mission from "FAILED" to "STANDBY", as if the failure has never happened.
+\\
+Then to restart the execution flow of the Mission, we need a connection from the Priority Manager to the Drone Allocator.
 \\
 
 \underline{Timer Monitor block}
 \\
 
-input: a Mission object
+Input: a Mission object
 
-output: a Mission object
+Output: a Mission object
 \\
 
-The TimerMonitor block takes the input mission and waits for the completion of the current running Trip. If the Trip doesn't end before the fail-safe time, it will set the status of the Trip and of the Mission both to FAILED, then it will put the mission as output.
-This block can be considered as a particular case of MissionModifier.
-It's always put between the TripLauncher and the GateFIFO blocks.
+The Timer Monitor block is an accessory block of the Trip Monitor.
+It adds a time constraint check to the Trip Monitor supervision. 
+It IS useless to use a Timer Monitor without the Trip Monitor, they should be used in parallel.
+\\
+This means that while the Trip Monitor monitors the Trip execution, the Timer Monitor supervises the same Trip execution, ensuring that the execution time will not exceed the amount of time set in the "Safe Time" Mission's parameter (Figure \ref{fig:EntityRelationship}).
+\\
+As for the Trip Monitor, the developer should put the Timer Monitor after the Trip Launcher.
+Therefore the Trip Launcher has at least two output connections, one that goes to the Trip Monitor and the other one that goes to the Timer Monitor.
+\\
+Adding this block in parallel with the Trip Monitor we are cloning the Mission object which goes into the two blocks at the same time. This is why we need the Gate blocks described further.
+\\
+There are several applications that could request the feature introduced by the Timer Monitor. 
+Indeed it can be used to consider a Trip as failed if its execution exceeds the Safe Time amount.
+For example we could consider a drone as crashed if the Trip takes more than 20 minutes to complete.
 \\
 
-
-\underline{Start block}
-\\
-State the beginning of the diagram
+\underline{Gate FIFO block}
 \\
 
-\underline{End block}
+Input: a Mission object
+
+Output: a Mission object
 \\
-State the end of the diagram, where the completed missions will go into.
+
+The GateFIFO block is used when two or more blocks works in parallel, and only one instance of the cloned Mission object must propagates.
+This block must be put right after these parallel blocks in order to reunite the cloned objects.
+\\
+For example when the developer inserts in the graph either the Trip Monitor and the Timer Monitor in parallel. In this case the Mission object will be cloned and the two block will receive the same Mission object. Then the GateFIFO connected after them to both the blocks will bring back together the Mission instances.
+\\
+The GateFIFO usually has more than one incoming connections and it propagates only the first Mission object that comes from one of them.
+That's why the FIFO acronym is used, since the first Mission instance that arrive is the only one that propagates in the graph.
 \\
 
+\underline{Gate Funnel block}
+\\
 
-\section{Toolchain}\label{architecture}
+Input: a Mission object
 
-Pluto programming framework consists in two main components:
+Output: a Mission object
+\\
+
+This block is similar to the GateFIFO, but its implementation logic is different.
+It waits for a Mission instance coming from each incoming connections. Only after all of them have come, then it will merge them in one single instance and propagates it.
+For example if before this gate, there are 4 blocks in parallel, the propagation of the Mission is activated only when all the 4 instances arrive.
+\\
+
+In the figure \ref{fig:BlocksDiagram}, we show an example application, which contains most of the above described blocks. The pentagons represent the mission object and the different colors stand for the status of the Mission in that particular flow position. For example after the Mission Creator every Mission is always \textit{Unexecuted}.
+The Start and End blocks states the beginning and the ending of the mission flow.
+\\
+
+\begin{figure}[htb]
+  \centering
+  \includegraphics[width=\linewidth]{pictures/BlocksDiagram.png}
+  \caption{An example Pluto application}
+  \label{fig:BlocksDiagram}
+\end{figure}
+
+\section{Toolchain}\label{toolchain}
+
+The Pluto programming framework consists in two main components:
 \begin{itemize}
 \item Pluto Graphical Editor.
 \item Pluto Main Application.
 \end{itemize}
-The former is used by the first actor of the Pluto life-cycle: a developer. The latter is used by a final user whose duty is to insert the sensing task and start their execution.
-As you can see in figure \ref{fig:lifeCycle}, Pluto Graphical Editor lets the developer to creates a scenario based on the Team Level approach as we show in Section ~\ref{plutoGraphicalEditor}. After that, the Pluto Main Application is generated based on the diagram created in the previous step, so that the final user needs only to insert the sensing task and wait for their accomplishment.
+The former is used by the first actor of the Pluto life-cycle: a developer. The latter is used by a final user whose duty is to insert the sensing tasks and to start their execution.
+As you can see in figure \ref{fig:lifeCycle}, the Pluto Graphical Editor lets the developer to creates a scenario based on the Team Level approach as we show in Section ~\ref{plutoGraphicalEditor}. After that, the Pluto Main Application is generated based on the diagram created in the previous step. Then the developer can personalize some feature adding his personal code so that the final user needs only to insert the sensing tasks and wait for their accomplishment.
 
 \begin{figure}[htb]
   \centering
   \includegraphics[width=\linewidth]{pictures/lifeCycle.png}
-  \caption{A complete life cycle of the application}
+  \caption{Working with the Pluto framework}
   \label{fig:lifeCycle}
 \end{figure}
 
 \subsection{Pluto Graphical Editor}
 \label{plutoGraphicalEditor}
 
-We created a Graphical Editor in order to give freedom to the developer while designing the final app. The provided tools can be used to link together different kind of blocks, each one with a predefined and implemented logic.
-When the Editor starts, it shows three main sections: the Palette that contains all the tools available to create a fully functional diagram; the Editor space, where the user can move, link, manage all the created entities; last but not least is the outline with a tree-view of the blocks created by the developer in the editor space.
+We created a Graphical Editor in order to give freedom to the developer while designing the final app. The provided tools can be used to link together different functional blocks, each one with a predefined and implemented logic.
+When the Editor starts, it shows three main sections: the Palette (letter A in figure \ref{fig:GraphicalEditor}) that contains all the tools available to create a fully functional diagram; the Editor space (letter B in figure \ref{fig:GraphicalEditor}) where the user can move, link and manage all the created entities; last but not least is the Outline (letter C in figure \ref{fig:GraphicalEditor}) with a tree-view of the blocks created by the developer in the editor space.
 
 \begin{figure}[htb]
   \centering
@@ -299,17 +407,33 @@ When the Editor starts, it shows three main sections: the Palette that contains 
   \label{fig:GraphicalEditor}
 \end{figure}
 
-The developer can choose among several types of pre-created blocks, each one containing a certain logic, explained in section~\ref{descriptionOfModel}. Creating a block in the editor space can be done simply with a drag and drop gesture or clicking on the desired entity and then clicking on the chosen location in the editor. Then the user can connect blocks each other using the Connection tool in the Palette section.
-Apart from the standard functionality, such as Undo, Save, and Load, the Context Menu provides a command to generate a source-code of the Main Application based on the designed diagram. Toolbar provides Undo/Redo, Delete, and Magnify commands.
-To understand better Pluto Graphical Editor, it's worth to spend a word on the meaning of creating a diagram: each block in the Diagram is black box which is intended to manage a Mission entity. It takes a Mission as an input, works with it and sends it out as an output. The connections among blocks represents the path that the Mission entity will follow after going out from a block. Each block could have multiple outgoing and incoming connections.
-In the end, on the editor, the developer will have a set of blocks linked together with a set of connections. This drawing can be interpreted as the behavior of the Main Application in managing the missions. For example we designed a sketch of a possible diagram, as shown in figure ~\ref{fig:GraphicalEditor}. This design is very simple and could be a first skeleton for a more complex application, by simply adding new blocks.
-Besides of simplicity, our editor is very flexible as well, since it provides a Mission Modifier block whose implementation logic can be written directly in the Editor right-clicking on the block and choosing the option "Write Custom Code". This will be explained better in section~\ref{descriptionOfModel}
+The developer can choose among several types of pre-created blocks, each one containing a certain logic, as explained in section \ref{functionalBlocks}. 
+\\
+Creating a block in the editor space can be done simply with a drag and drop gesture or clicking on the desired entity and then clicking on the chosen location in the editor. Then the user can connect blocks with each other using the Connection tool in the Palette section.
+\\
+The Connection is a directed arch that defines the direction of the execution flow in the graph. This means that the Mission object traveling among the functional blocks can only move in the direction pointed out by the arrow.
+\\
+ 
+Apart from the standard functionality, such as Undo, Save, and Load, the Context Menu provides a command to generate the source-code of the Main Application, based on the designed diagram. The Toolbar provides Undo/Redo, Delete, and Magnify commands (letter D in in figure \ref{fig:GraphicalEditor}).
+\\
+
+To better understand the Pluto Graphical Editor, it's worth to spend a word on the meaning of creating a diagram: each block in the Diagram is black box which is intended to manage a Mission entity. It takes a Mission as an input, works with it and sends it out as an output. The connections among blocks represents the path that the Mission entity will follow after going out from a block. Each block could have multiple outgoing and incoming connections.
+\\
+
+In the end, in the editor area, the developer will have a set of blocks linked together with a set of connections. This drawing can be interpreted as the behavior of the Main Application in managing the missions.
+For example the figure \ref{fig:GraphicalEditor} represents a possible diagram that can handle the example described in Section \ref{motivating} of the Drug Distribution application.
+\\
+In this case the graph includes only the basic features: the creation of the mission, the drone assignation, the trips starting and their monitoring. It would be possible to add other blocks in order to define more features for the application.
+\\
+
+Besides simplicity, our editor is very flexible as well, since it provides the Mission Modifier block whose implementation logic can be written directly in the Editor right-clicking on the block and choosing the option "Write Custom Code", as explained in Section \ref{functionalBlocks}.
 
 \subsection{Pluto Main Application}
 \label{plutoMainApp}
 
-The Pluto Main Application is the final application that act as a Ground Control Station, managing all the drones and the missions. In this section we explain how it works.
-Everything starts in the Mission Page where the user can define the tasks that will be carried out by the drones. After clicking to the "Add Mission" button the user is asked to set a name for the mission.
+The Pluto Main Application is the final application that acts as a Ground Control Station, managing all the drones and the missions. In this Section we explain how it works and how can be used.
+\\
+Everything starts in the Mission Page where the user can define the tasks that will be carried out by the drones. After clicking to the "Add Mission" button the user is asked to set a name for the Mission.
 
 \begin{figure}[H]
   \centering
@@ -318,8 +442,11 @@ Everything starts in the Mission Page where the user can define the tasks that w
   \label{fig:MissionPage}
 \end{figure}
 
-
-After that a Mission entity is created, but by now it doesn't contain any information about what has to be done. To add this information the user has to double-click on the mission in the main list or click on the "Set Trips" button. A new window will appear, as shown in figure  ~\ref{fig:TripsPage}, and the user can add Trips entity to the related Mission. A Trip is nothing but a movement from point A to point B inside our indoor context. Trips are the basic entities that constitute a single Mission. The single Trip contains information about the Action to execute once point B is reached. Furthermore the Trip has a reference of the drone assigned to it, but we will talk about this in section \ref{dataFlow}.
+After that a Mission entity is created, but by now it doesn't contain any information about the task to do. To add this information the user has to double-click on the mission in the main list or click on the "Set Trips" button.
+\\
+A new window will appear, as shown in figure \ref{fig:TripsPage}, and the user can add new Trip entities to the related Mission. As explained in Section \ref{programmingModel}, a Trip is nothing but a movement from point A to point B inside our indoor context. Trips are the basic entities that constitute a single Mission. The single Trip contains information about the Action to execute once point B is reached.
+\\
+In order to add a new Trip the user may drag and drop the desired Action from the upper list (letter A in figure \ref{fig:TripsPage}) to the map displayed below (letter B in figure \ref{fig:TripsPage}). The added trips are shown on the right in a proper list (letter C in figure \ref{fig:TripsPage}).
 
 \begin{figure}[H]
   \centering
@@ -328,10 +455,19 @@ After that a Mission entity is created, but by now it doesn't contain any inform
   \label{fig:TripsPage}
 \end{figure}
 
-So after all the Trips are added to a single Mission the user can create more Mission entities  or pass to the Monitor Page with the corresponding button.
-The Monitor Page, shown in figure ~\ref{fig:MonitorPage}, is the window where the user can obtain information about the running missions, at run-time. On the top, there is a table where each row is assigned to a Mission, each column will display the information about the current Trip that is executing and the Drone that has been assigned to that Trip.
-Below the table there is a console where log messages are printed during the execution of each missions. In this way the user can obtain run-time information about the status of the entire system. 
-Of course the Start button will start the execution of the created missions, while the Stop button will prompt the user to a behaviour choice: "RTL" or "Land". The first will make all drones to return to the home location instantly, while the second option will make all drones to land in their current locations. After the Stop command, the missions status will be preserved and could be continued in the future.
+So after all the Trips are added to the Mission, the user can close the Trips page and then is able to create more Mission entities.
+\\
+Finally he can pass to the Monitor Page with the corresponding button.
+The Monitor Page, shown in figure \ref{fig:MonitorPage}, is the window where the user can obtain information about the running missions, at run-time.
+\\
+On the top, there is a table (letter A in figure \ref{fig:MonitorPage}) where each row is assigned to a Mission, each column will display the information about the current Trip that is executing and the Drone that has been assigned to that Trip.
+\\
+Below the table there is a console (letter B in figure \ref{fig:TripsPage}) where log messages are printed during the execution of each missions. In this way the user can obtain run-time information about the status of the entire system.
+\\
+
+Of course the Start button will start the execution of the created missions, while the Stop button will prompt the user to a choice: "RTL" or "Land". The first is the Return To Launch and it will make all drones to return to the home location instantly.
+\\
+While the second option will make all drones to land in their current locations. After the Stop command, the missions status will be preserved and could be continued in the future.
 
 \begin{figure}[H]
   \centering
@@ -340,13 +476,36 @@ Of course the Start button will start the execution of the created missions, whi
   \label{fig:MonitorPage}
 \end{figure}
 
-\section{Design choices}\label{history}
+\section{Navigation System}\label{navigationSystem}
+
+An important component inside the Main Application is the Navigation System. More precisely, it is the conjunction point between the Main Application and the drones team. 
+\\
+This component makes use of the chosen localization API to obtain precise coordinates for each drone. Then it sends commands to them accordingly to their trips information.
+\\
+These API depends on the technologies chosen to localize the drones in the indoor context, described in Chapter \ref{cap3}.
+\\ 
+
+We decided to decouple the implementation of the Navigation System from the Main Applicaiton so that the developer is free to use his preferred technology. This can be achieved by adding the chosen API in the Navigation System component without modifying other parts of the Main Application.
+\\
+This choice derived from the conclusions obtained in Chapter \ref{cap3}, where we discussed about some possible ways to enable the indoor localization.
+\\
+
+The Navigation System, as said, is the internal component that directly communicates with the drones team. This means that besides the localization API, it makes use of specific drone libraries too.
+In Section \ref{crazyflie} we will give a brief explanation about the Crazyflie quadcopters API.
+\\
+
+\section{Design Choices}\label{history}
 
 In this section we describe our previously developed solutions, which we refined many times in order to obtain the final working version of the Pluto programming framework; this is done by using a top-down approach, starting from the final implementation to the very first one.
 
 \subsection{Solution without Trip entity}
 
-In the version precedent to the final solution presented in section~\ref{dataFlow}, we did not have a concept of Trip, and Mission was the main concept the whole model was based on. The following diagrams shows this in the particular case of the Timer feature, which contains also a "Switch source-target" block. Later, this block was included in the logic of the Trip.
+In the version precedent to the final solution presented in Section \ref{programmingModel}, we did not have a concept of Trip, and the Mission was the main concept the whole model was based on. 
+Figure \ref{fig:noTrip} shows this in the particular case of the Timer feature, which contains also a "Switch source-target" block. 
+This block was in charge to make the Drone perform also the return journey, from the destination to the home location.
+This is done inside the same Trip entity, simply switching its \textit{sourceLocation} and \textit{targetLocation} attributes.
+Later this block was eliminated, since we decided to decouple the two journeys.
+It is sufficient to create a new Trip entity for the return journey.
 
 \begin{figure}[H]
   \centering
@@ -355,31 +514,17 @@ In the version precedent to the final solution presented in section~\ref{dataFlo
   \label{fig:noTrip}
 \end{figure}
 
-After analyzing the model, we realized that we needed the concept of Trip, because the final user must have control on the single Trip of a drone, in order to decide which action the drone must perform, and to have an opportunity to control the Trip such as delay, stop, or delete, without deleting or stop the whole Mission. With this precedent solution it is not possible, because having only the entire  Mission to manage, the user can no control the single Trip, and if he/she wants to delete only a part of the Mission he cannot do so, and he/she is forced to delete and build again the whole Mission.
+After analyzing the model, we realized that we needed the concept of Trip, because the final user must have control on the single Trip of a drone, in order to decide which action the drone must perform, and to have an opportunity to control the Trip attributes such as delay, stop, or delete, without deleting or stop the whole Mission. 
+With this solution it was not possible, because having only the entire Mission to manage, the user cannot control the single Trip, and if he/she wants to delete only a part of the Mission he cannot do so, and he/she is forced to delete and build again the whole Mission.
 
-\subsection{Solution without the DroneAllocator}
+\subsection{Solution without the DroneAllocator and MissionModifier}
 
+This solution made use of the "Drone Updater" block instead of the DroneAllocator. 
+This block managed the assignment of a Drone to a Mission(there was not the Trip concept yet), but only under certain conditions.
+Indeed the "Drone Updater" was used only if the system had to assign another drone to a Mission, for example because of a failure of the precedent assigned Drone.
+This happened because the MissionCreator managed the first assignment of a Drone to the Mission, so we did not need the DroneUpdater for the first assignment of a Drone to a Mission.
+Furthermore, there was not the MissionModifier block, but only the PriorityManager case, shown in figure \ref{fig:noMM}, so the programmer could not insert his custom code in the application.
 
-This solution instead of the DroneAllocator block, used the "Drone Updater" one. This block managed the assignment of the Drone to a Mission, only in special conditions. This means that, generally, there were no need of this block unless the developer put some special block such as the old TimerMonitor or the old DelayMonitor.
-In this solution, the MissionCreator managed the assignment of a Drone to the Mission. This is the reason why we didn't need the DroneUpdater in normal conditions.
-As said, there were also the "Delay Monitor" and "Timer Monitor" blocks, instead of the Clock block.
-These blocks managed the delayed missions(fig.~\ref{fig:delayMonitor}) and the missions with an associated timer(fig.~\ref{fig:noClock}), respectively.
-There wasn't the MissionModifier block, but only the "Priority Manager" one, so the programmer couldn't insert blocks(fig.~\ref{fig:noMM}) with custom code.
-
-\begin{figure}[H]
-  \centering
-  \includegraphics[width=\linewidth]{pictures/NoClock.png}
-  \caption{Solution with the TimerMonitor}
-  \label{fig:noClock}
-\end{figure}
-
-
-\begin{figure}[H]
-  \centering
-  \includegraphics[width=\linewidth]{pictures/DelayMonitor.png}
-  \caption{Solution with the DelayMonitor}
-  \label{fig:delayMonitor}
-\end{figure}
 
 \begin{figure}[H]
   \centering
@@ -388,6 +533,7 @@ There wasn't the MissionModifier block, but only the "Priority Manager" one, so 
   \label{fig:noMM}
 \end{figure}
 
-Actually we decided to put the DroneAllocator block because weneed to separate the creation of a Mission Object from the assignment of a Drone to it; in this way we could also remove the DroneUpdater block, because now we have an apposite block which manage only the assignment of Drones, so there is no more need to distinguish between the normal assignment and the special assignment(in the case of delayed trip).
-Also the DelayMonitor and TimerMonitor blocks were useless, because there is no need to distinguish between a delay and a timer, so a single Clock block can manage these cases both.
-In this solution only the PriorityManager block existed, but we decided to create a MissionModifier block in which the user can put his own code he needs for a particular application, so the PriorityManger block can be seen as a particular case of the MissionModifier one.
+We decided to create the DroneAllocator block because we needed to separate the creation of a Mission Object from the assignment of a Drone to it.
+So, the MissionCreator should only create a Mission entity and the DroneAllocator should take care of the drones dispatching.
+In this way we could also remove the "Drone Updater" block, because now we have a specific block which manage only the assignment of drones, so there is no more need to distinguish between the first assignment of a Drone to a Mission and the "special assignment" in case of a failure.
+We also decided to create a MissionModifier block in which the user can put his own code to customize the application.

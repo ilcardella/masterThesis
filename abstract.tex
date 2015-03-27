@@ -2,21 +2,28 @@
 
 \addcontentsline{toc}{chapter}{Abstract}
 
-% VERSIONE CARDE 
 Drone-teams programming is rapidly expanding since it allows to automatically perform a lot of useful tasks.
 Existing systems are able to manage a group of drones and dispatching them in the environment. 
 All these systems deal with outdoor applications, where medium/big sized drones collaboratively perform tasks making use of the Global Positioning System (GPS) to navigate in the space.
-Our goal is to fill a gap in the available programming models so that it could be possible to develop a drone application with the concept of Trip. A Trip can be considered as a movement from a source point to a destination.
-Furthermore the second important goal is making the system autonomous while choosing the drone to allocate for each Trips. This means that the user does not need to take this important decision.
-We focused our efforts in the creation of an indoor capable programming framework, this means dealing with many implementation challenges.
+We want to deal with the indoor context, and no one of the existing system is fully suitable for it.
+Indeed, the indoor context implies applications with different requirements compared to the outdoor ones:
+there is need for a small number of drones(5/10), each one performing a different action independently from the others, while in the outdoor environment generally there is need for a large number of drones to perform the same action.
+We formalize this problem with the concept of \textit{Trip}, that is nothing but a movement of a drone from a point A to a point B at the end of which an action (picture,measurement etc.) is performed. 
+No one of the existing systems provides the concept of Trip.
+Furthermore the second important goal is to make the system autonomous in the choice of the drone to allocate for each Trip. 
+This means that the user does not need to take this important decision.
 From a technological point of view, GPS cannot be used in indoor contexts, so we need to find an appropriate indoor localization method.
 Then indoor contexts imply small areas which are usually full of people and/or obstacles (think of an house context) hence, drones have to be small, in order to avoid crashes.
-Size limitations result in many problems such as the battery autonomy and the maximum weight transportable.
-We propose the Pluto programming framework as a solution to these problems. It consists in two main components: the Graphical Editor and the Main Application. With the former a programmer can build an application by simply connecting blocks.
-Each block implements a precise functionality, for example there is one that choose the drones for the sensing tasks, one that manages the priority of each sensing tasks etc.
-Then the developer can generate the source code  of the second main component of Pluto, from the built graph. The final user will use this generated Pluto Main Application to specify and execute the sensing tasks.
-We fully evaluated the Pluto programming framework by proposing its use to real testers and asking them for a feedback. Moreover we measured its software and hardware performances and also tried to implement some existing applications with it.
-After the evaluation we noticed that, even if with some limits, Pluto could be useful to simplify the developing of drone-teams applications.
+Size limitations result in many problems such as the short battery autonomy and the maximum weight transportable.
+We propose the Pluto programming framework as a solution to these problems. 
+It consists of two main components: the Graphical Editor and the Main Application.
+With the former a programmer can build an application by simply connecting blocks.
+Each block implements a precise functionality, for example there is one that chooses the drones to assign to each sensing task, one that manages the priority of the sensing tasks etc.
+Then, the developer can generate, from the graph built with the Pluto Graphical Editor, the source code of the second main component, the Pluto Main Application.
+The final user uses this generated Pluto Main Application to specify and execute the sensing tasks.
+We fully evaluated the Pluto programming framework by proposing its use to real testers and asking them for a feedback. 
+Moreover we measured its software and hardware performances and also tried to implement some existing applications with it.
+After the evaluation we noticed that, even if it has some limits, Pluto is useful to simplify the developing of drone-teams applications.
 
 
 

@@ -42,28 +42,37 @@ The development of this application made us to face some problems, both in the i
 
 \section{Drone programming}\label{teamlevelproblems}
 
-Using a Team level approach, that we described in Section \ref{teamlevel}, entails some problems. 
-The user can neither address individual drones nor express actions that involve direct interactions between drones, such as those required to pass an object between them.
+Since the approaches for programming drones we described in chapter \ref{cap2} are designed in a way that is impossible to describe an application through the concepts of Mission and Trip, we give our contribution to the state of the art creating a new framework based on these entities.
+A \textit{Mission} is nothing but a list of sensing tasks to be performed sequentially in the environment.
+Each one of these sensing tasks is a \textit{Trip}, that is a movement from a point A to a point B to perform an Action.
+
+Neither the Drone-level nor the swarm-level approaches, described in Sections \ref{droneLevel} and \ref{swarmLevel} respectively, are suitable for our goal. 
+The former because we do not want the user to deal with the coding of each drone separately with an external API.
+The latter because we want to avoid the complexity to create a communication network protocol between drones and because it would be difficult to maintain the status of the missions and trips entities among the swarm. Moreover we also need to address  time and space constraints, which cannot be expressed with this approach.
+\\
+
+The most suitable approach for our framework is the Team-level model, described in Section \ref{teamlevel}, but we need to apply some modifications to it, in order to make it suitable for our work.
+Using a Team level approach entails some problems:
+the user can neither address individual drones nor express actions that involve direct interactions between drones, such as those required to pass an object between them.
 This is the main limitation of the approach, but it does not directly affect the development of our DD application, described in Section \ref{motivating}.
-\\
-
-On the contrary, we have to modify the Team-level approach in order to make each drone deliver the box of medicines to its assigned patient independently from the other drones. So we need the concept of \textit{Trip}.
+So we have to modify the Team-level approach in order to make each drone deliver the box of medicine to its assigned patient, independently from the other drones. 
+So we need the concept of \textit{Trip}.
 A \textit{Trip} is nothing but a movement from a point A to a point B in the environment to perform an action.
-In this way, we can tell each drone to go to the precise location of its assigned patient, making the trip of each drone independent from the others.
-The concept of \textit{Trip} is a fundamental feature of our model, and it's shown in details in Section \ref{dataFlow}.
+In this way, we can tell each drone to go to the precise location of its assigned patient, making the Trip of each Drone independent from the others.
+The concept of \textit{Trip} is a fundamental feature of our model, and it is fully described in Section \ref{programmingModel}.
 \\
 
-Another problem of the Team-level approach is that, having a single brain which manages all the application logic and the dispatching of drones, the system get a single point of failure, so, if the central brain breaks then the whole system will crash.
+Another very important feature of our system is the transparent dispatching of drones:
+the central brain takes care of assigning the drones to the sensing tasks to be performed, managing also the drones failures, without involving the programmer.
+\\
+
+Another problem of the Team-level approach is that, having a single brain which manages all the application logic and the dispatching of drones, the system get a single point of failure, so, if the central brain breaks then the whole system crashes.
 This problem can be fixed or at least weakened by applying some dependable systems methods, improving reliability of the central brain, reducing its rate of failure etc.
 \\
 
 Even though team-level approach has his own limitations, other approaches we discussed in section \ref{cap2} are less suitable.
 Indeed, the Drone-oriented approach, described in section \ref{droneLevel}, has the problem that the programmer has to manage individually the drone's movements and the interactions with other drones: he must code a list of instructions and commands that the drone will perform sequentially. This can only be achieved with the exploiting of specific API of each drones.
-\\
-
 In the case of multiple drones,the programmer should deal with difficult programming tasks, like concurrency and parallelism, and it should also manage the drone batteries discharge and their crashes/failures.
-\\
-
 Adding one or more drones to the system could complicate a lot the programming task. The programmer should also deal with timing constraints and he should balance the load between drones in a dynamic way.
 Is clear that the drone-level approach is most suitable for applications involving only a few drones.
 \\
@@ -71,6 +80,13 @@ Is clear that the drone-level approach is most suitable for applications involvi
 On the other hand, the Swarm-level approach, described in section \ref{swarmLevel}, is more suitable for applications where there’s need of a lot of drones performing the same actions.
 Indeed the programmer can give a set of basic rules that each drone should follow. It is important to underline that, in swarm-level approach, there is no possibility to have a shared state between drones; each one execute the actions specified by the programmer on his own local state. This means that this approach is very easy to scale up adding new drones, but it’s not suitable for applications that require the drones to explicitly coordinate.
 \\
+
+Regarding the dataflow programming, we need a new framework that allows the user to design the behavior of the central brain taking care of the missions execution, from the beginning to the end. 
+This modeling tool helps the developer to add the features needed by the application simply drawing the proper nodes in the dataflow graph. 
+The BPMN and Node-RED dataflow models, described in Sections \ref{BPMN} and \ref{NodeRed} respectively, are too general for our system, since they allow to model almost every kind of project.
+They offer a great number of components, but we only need basic components for our editor, like rectangles and arrows.
+So we decided to develop our own dataflow model, offering only the functionality and components needed for our programming framework.
+This part of the project is fully described in Section \ref{plutoGraphicalEditor}.
 
 \section {Implementation challenges}\label{challenges}
 
@@ -133,11 +149,4 @@ Almost every kind of micro-drone has serious stability issues, and a lot of rese
 Micro-drones are obviously more fragile than the big ones, so a crash with humans or obstacles can definitely destroy the drone or make it seriously damaged. This is the price to be paid for having little drones that can operate in small indoor contexts.
 
 Finally, the use of small drones means that only small objects can be taken, so the applications developed with Pluto framework must take this into account.
-For example, a pair of keys can be brought to a person, not a book nor a pair of shoes. 
-
-
-
-
-
-
-
+For example, a pair of keys can be brought to a person, not a book nor a pair of shoes.
