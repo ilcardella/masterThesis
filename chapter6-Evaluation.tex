@@ -250,10 +250,10 @@ In this case the MissionEvaluator block analyzes the drones data at the end of t
 
 It is important to underline that, using the Pluto framework, it is not possible to obtain the very same behavior of the original application.
 Indeed, two consecutive photos must be taken within a time constraint.
+Since each photo is taken by the Drone at the end of its assigned Trip, there should be a way to define a time constraint between the execution of two trips.
 This cannot be fulfilled with Pluto, since the TimerMonitor block deals with a time interval that starts when the drone leaves the base station, ensuring that it will take the picture before the time interval expires.
-So, there is no way to state a time constraint between two consecutive photos.
+So, there is no way to state a time constraint between two consecutive photos with Pluto.
 \\
-
 
 Concerning the code of the Evaluator block needed for the development of the Aerial Mapping\cite{putti} application, as for the previous application, we can find each photo taken during the missions in the "dataMap" parameter, that is an hashmap that create a relation between a Trip and the photo taken through its Action.
 First of all, the ortophotos are stitched together to obtain the final ortophoto, trough the \textit{stitch} function.
@@ -349,20 +349,26 @@ So the drones build a spatial profile of pollution concentration and compute gra
 Finally the drones are sent along this gradients to sample the pollution concentration, in order to improve the spatial profile representation.
 Any two consecutive samples must be gathered within a given time bound, otherwise the system will take care of speeding up the execution.
 
+Regarding the Pluto graph needed for this application, it is very similar to the Alfalfa\cite{alfalfa} application one, shown in figure \ref{fig:alfalfaGraph}.
+The only difference is the absence of the MissionRepeater block, since this application does not need the drones to repeat their tasks continuously.
+So, in the graph of the "Aerial mapping of archaeological sites" application the MissionEvaluator block is directly connected to the DroneAllocator.
+\\
 
-
+The flow of the Mission entity on the graph is the same of the Alfalfa\cite{alfalfa} application, and is fully described in section \ref{alfalfa}.
+The data collected by the drones are not photos anymore, but a \textit{pollutionQuantity} value which indicates the percentage of pollution in that area.
+In this case the Mission Evaluator block takes care of confronting \textit{pollutionQuantity} variables are confronted and the gradients between areas of higher concentration are computed.
+So new drones are sent along this gradients, improving the spatial profile.
+\\
 
 For the measurements of pollution quantity, the \textit{Measure} action can be used.
 \\
 
-The spatial grid must be manually built by the user, organizing the Trips of each Mission on the map he's provided with.
+The spatial grid must be manually built by the user, organizing the Trips of each Mission on the map he is provided with.
 \\
 
-The data collected by the drones are not photos anymore, but a \textit{pollutionQuantity} value which indicates the percentage of pollution in that area.
-\\
 
-Then, thanks to the Mission Evaluator blocks, the \textit{pollutionQuantity} variables are confronted and the gradients between areas of higher concentration are computed.
-So new drones will be sent along this gradients, improving the spatial profile.
+
+
 \\
 
 As for the Aerial Mapping application, shown in section \ref{aerialMapping}, Pluto cannot fulfill the time constraint between two consecutive pollution samples.
@@ -426,7 +432,7 @@ In this way, five drones will monitor simultaneously the area to sample.
 \end{figure}
 
 As for the Aerial Mapping\cite{putti} application, the repetition of missions is not required.
-So the sequence diagrams don't change and the reader can see them in sections \ref{alfalfa} and \ref{aerialMapping}.
+So the sequence diagrams do not change and the reader can see them in sections \ref{alfalfa} and \ref{aerialMapping}.
 
 
 \subsection{PURSUE}\label{PURSUE}
