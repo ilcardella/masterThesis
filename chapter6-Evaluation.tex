@@ -82,9 +82,7 @@ The TripMonitor changes the status of the executing Trip depending on the outcom
 if the Drone accomplishes to find the lost object, the Trip status is set to COMPLETED, otherwise, for example if the Drone crashes, the Trip status is set to FAILED.
 
 After the first Trip, the Mission entity goes again to the DroneAllocator, in order to execute also the other trips in the Mission, that is to say in order to send drones in the other specified locations to look for the object.
-
-
-\newpage
+\\
 
 \textbf{Warehouse item-finder (WIF)}
 \\
@@ -270,7 +268,6 @@ Inside the Mission entity, these trips are performed sequentially, in general ea
 So, if the user wants to send more than one drone simultaneously on the same location, he has to create more than one Mission.
 Indeed missions are executed in parallel, so if the user wants to simultaneously send 3 drones on the same location, he simply has to create three missions.
 Then,  since each Mission has its own Trips Page, he has to choose the same locations on the maps of the three Trip pages.
-\\
 
 To further clarify the development of the Alfalfa\cite{alfalfa} application with Pluto, we now show a real execution of the Alfalfa application in a concrete scenario:
 imagine we want to simultaneously send three drones to monitor the plants distributed in a circular area.
@@ -278,35 +275,37 @@ So, we create three Mission entities, and, for each of them, we drag and drop th
 The figure \ref{fig:alfalfaArea} represents the trips of one of the three Missions.
 Each one of the three missions has its own map where the user distribute the trips to perform.
 Then, when the missions start, the drones will take photos over these spots and, in case of bloom, new Trips will be created to Pollinate the area.
+\\
 
-\begin{figure}[H]
+\begin{figure}[h!]
   \centering
-  \includegraphics[width=\linewidth]{pictures/alfalfaArea.png}
+  \includegraphics[width=\linewidth,height=9cm]{pictures/alfalfaArea.png}
   \caption{The circular area to monitor}
   \label{fig:alfalfaArea}
 \end{figure}
 
+\newpage
 
 To describe in a detailed way the execution flow, we now show the sequence diagrams of the Pluto Main Application behavior:
 \\
 
-\begin{figure}[H]
+\begin{figure}[h]
   \centering
   \includegraphics[width=\linewidth]{pictures/Alfalfa_Sequence_MissionStart.png}
   \caption{Sequence diagram of a starting mission}
   \label{fig:alfalfaSequence1}
 \end{figure}
 
-In figure \ref{fig:alfalfaSequence1} we show the first calls after the user clicks on the Start button in the Monitor Page.
-The Main Application receives the start command from the user, then activates the Engine entity. Now, a new Thread is created and started for each missions. The status of the Missions are sent to the Pluto Main Application and showed to the final user, through the \textit{log()} function.
-\\
-
-\begin{figure}[H]
+\begin{figure}[h!]
   \centering
   \includegraphics[width=\linewidth]{pictures/Alfalfa_Sequence_MissionExecution.png}
   \caption{Sequence diagram of the mission execution flow}
   \label{fig:alfalfaSequence2}
 \end{figure}
+
+In figure \ref{fig:alfalfaSequence1} we show the first calls after the user clicks on the Start button in the Monitor Page.
+The Main Application receives the start command from the user, then activates the Engine entity. Now, a new Thread is created and started for each missions. The status of the Missions are sent to the Pluto Main Application and showed to the final user, through the \textit{log()} function.
+\\
 
 In figure \ref{fig:alfalfaSequence2} the Mission Execution is shown.
 The \textit{Mission Thread} entity manages the Mission flow through all the blocks and the execution of the logic inside them.
@@ -317,7 +316,7 @@ Finally, the completed Trip is removed from the list of trips to be executed and
 Otherwise, if the launched Trips was the last one, the Mission status would have been set to COMPLETED.
 \\
 
-\begin{figure}[H]
+\begin{figure}[h!]
   \centering
   \includegraphics[width=\linewidth]{pictures/Alfalfa_Sequence_TripExecution.png}
   \caption{Sequence diagram of the trip execution flow}
@@ -329,7 +328,7 @@ The Drone assigned to the Trip is sent to the established location to take the p
 After that, the resulting photo is written into the Evaluator entity, where the specific algorithm of the application will perform the evaluation, once the mission will be completed.
 \\
 
-\begin{figure}[H]
+\begin{figure}[h!]
   \centering
   \includegraphics[width=\linewidth]{pictures/Alfalfa_Sequence_MissionEnd.png}
   \caption{Sequence diagram of the mission ending flow}
@@ -443,7 +442,7 @@ As usual, the user has to create 7 Mission entities.
 Then, in each Mission's Trips Page, he has to drag and drop the action \textit{Take photo} on the locations forming the site, shown in figure \ref{fig:puttiArea}.
 Once again, the figure shows the map on the Trips Page of one of the seven missions.
 
-\begin{figure}[H]
+\begin{figure}[h!]
 \centering
 \includegraphics[width=\linewidth, height=8cm]{pictures/puttiArea.png}
 \caption{The archaeological site on the map}
@@ -781,8 +780,6 @@ Using our framework, it takes only 5 minutes to define a Mission and execute it.
 Instead, in order to make the same thing using the Crazyflie official API, the tester faced many problems since the beginning.
 \\
 
-\newpage
-
 \section{Performance evaluation}\label{performance}
 
 In order to strengthen the evaluation of Pluto, after the user study, described in Section \ref{usability}, we evaluated some quantitative metrics. These metrics are divided in two main types: software metrics and resources consumption metrics. The former let us know the complexity of our software.
@@ -985,8 +982,6 @@ We noticed that this fluctuation is independent from the Graphical Editor proces
 \\
 We realized that the Graphical Editor does not require an high amount of resources during the generation of the Main Application template code.
 \\
-
-\newpage
 
 Instead, The Main Application evaluation gave us different results, shown in the following figures.
 \\
