@@ -95,12 +95,12 @@ In Figure \ref{fig:observerPattern} there is a sequence diagram that describes h
 The "Observe" message in the sequence is the declaration of a block that wants to observe another block. The "Notify" message represents the notification that a block sends to its observers when it changes its status, or in this case when the block ends the management of the Mission object.
 \\
 
-% \begin{figure}
-% \includegraphics[width=\linewidth]
-% {pictures/pub_sub.png}
-% \caption{Observer design pattern example}
-% \label{fig:observerPattern}
-% \end{figure}
+ \begin{figure}
+ \includegraphics[width=\linewidth]
+ {pictures/pub_sub.png}
+ \caption{Observer design pattern example}
+ \label{fig:observerPattern}
+ \end{figure}
 
 In our specific case, we made each declared block of the Graphical Editor both Observer and Observable. 
 This means that each block observes another block that comes before it, but at the same time, it is observed by other blocks coming after it.
@@ -191,12 +191,12 @@ Indeed, since we used it for the development of many academic projects, we notic
 
 As an illustrative example, figure \ref{fig:tripsPageStructure} shows the structure of the Trips Page:
 
-% \begin{figure}[h!]
-% \includegraphics[width=\linewidth]
-% {pictures/tripsPageStructure.png}
-% \caption{Trips Page structure}
-% \label{fig:tripsPageStructure}
-% \end{figure}
+ \begin{figure}[h!]
+ \includegraphics[width=\linewidth]
+ {pictures/tripsPageStructure.png}
+ \caption{Trips Page structure}
+ \label{fig:tripsPageStructure}
+ \end{figure}
 
 The Trips Page contains 7 components:
 
