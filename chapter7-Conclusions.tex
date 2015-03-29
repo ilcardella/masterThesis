@@ -48,7 +48,7 @@ The Crazyflie nano-quadcopter, which we have used to perform the sensing tasks o
 In Chapter~\ref{cap6} we have described four already existing applications and three case study, and we have discussed on whether they can be developed or not with Pluto. 
 We have proposed two exercises to real testers, in order to test "on the field" the effective usability of Pluto:
 the first one deals with the Graphical Editor, the second one with the Main Application.
-Then we have proposed a third exercise, in which we ask the users to directly use the API of the Crazyflie nano-quadcopter, shown in section \ref{crazyflie}, to make it move from a point A to a point B.
+Then we have proposed a third exercise, in which we ask the users to directly use the API of the Crazyflie nano-quadcopter, shown in Section \ref{crazyflie}, to make it move from a point A to a point B.
 We have also proposed a survey to the users, in order to have opinions on the framework and possibly to improve it with the suggestions of the testers.
 We also have measured the software and hardware consumption metrics required by Pluto, in order to evaluate the effective impact of Pluto on an ordinary computing machine.
 
@@ -56,14 +56,14 @@ We also have measured the software and hardware consumption metrics required by 
 
 \section{Pluto limits and future works}
 
-In this section we show the limits of the Pluto programming framework.
+In this Section we show the limits of the Pluto programming framework.
 
 There are two type of limits:
 the limits in the implementation can possibly be overcome by modifying the source code and/or adding new features, or changing the whole model of the system.
 The technological limits cannot be overcome in the present, and only research and studies can find a way to improve or find new technologies which would solve these problems.
 
 
-The PURSUE application, described in section \ref{PURSUE}, put in evidence the Pluto main limitation: the immediate execution of actions in response to instantaneous events.
+The PURSUE application, described in Section \ref{PURSUE}, put in evidence the Pluto main limitation: the immediate execution of actions in response to instantaneous events.
 
 As already explained in chapter \ref{cap4}, the Pluto system allows the drones to perform their actions only at the end of the Trip, that is a movement from a point A to a point B in the environment.
 For example, if the Drone has to take a picture in a specific location, it flies from the ground station to that location and then it takes the picture.

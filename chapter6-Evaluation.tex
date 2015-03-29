@@ -6,7 +6,7 @@ In Section \ref{applicability} we describe four already existing applications an
 In this way we understand the expressive power of Pluto and the possible limits to overcome.
 In Section \ref{usability} we propose two exercises to real testers, in order to test "on the field" the effective usability of Pluto:
 the first one deals with the Graphical Editor, described in Section \ref{plutoGraphicalEditor}, the second one with the Main Application, described in Section \ref{plutoMainApp}.
-Then we propose a third exercise, in which we ask the users to directly use the API of the Crazyflie nano-quadcopter, shown in section \ref{crazyflie}, to make it move from a point A to a point B.
+Then we propose a third exercise, in which we ask the users to directly use the API of the Crazyflie nano-quadcopter, shown in Section \ref{crazyflie}, to make it move from a point A to a point B.
 We also propose a survey to the users and then present the result in a graphical way, in order to have opinions on the framework and possibly to improve it with the suggestions of the testers.
 In Section \ref{performance} we measure the software and hardware consumption metrics required by Pluto, in order to evaluate the effective impact of Pluto on an ordinary computing machine.
 
@@ -30,9 +30,15 @@ Hereinafter we analyzed some  example applications, showing whether they can be 
 \subsection{Basic applications}
 
 In this Section we describe three applications we developed with the Pluto programming framework.
-They are all represented by the basic Pluto graph of figure \ref{fig:basicGraph}:
+They are all represented by the basic graph of figure \ref{fig:basicGraph}:
 
 % figura basicGraph: il solito grafo con missionCreator, droneAllocator, TripLauncher e TripMonitor, fatto con Visio
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=\linewidth]{pictures/BasicBlocksDiagram.png}
+  \caption{The basic graph pattern of OF, DD and WIF applications}
+  \label{fig:basicGraph}
+\end{figure}
 
 The graph is the same for all the three applications, but of course it assumes a different meaning for each one of them, since each application needs different actions to be performed in the environment.
 These different meanings are explained in the specific parts describing the three applications, shown in the proceedings of this Section.
@@ -115,7 +121,7 @@ After each Trip is COMPLETED, the execution of the flow ends and the Mission sta
 \textbf{Drugs Distribution (DD)}
 \\
 
-The description of the behavior of this application is shown in section \ref{motivating}.
+The description of the behavior of this application is shown in Section \ref{motivating}.
 
 The flow starts with the MissionCreator block, that creates a Mission instance to propagate in the graph.
 In this case there are multiple Mission entities containing multiple trips:
@@ -351,7 +357,7 @@ The only difference is the absence of the MissionRepeater block, since this appl
 So, in the graph of the "Aerial mapping of archaeological sites" application the MissionEvaluator block is directly connected to the DroneAllocator.
 \\
 
-The flow of the Mission entity on the graph is the same of the Alfalfa\cite{alfalfa} application, and is fully described in section \ref{alfalfa}.
+The flow of the Mission entity on the graph is the same of the Alfalfa\cite{alfalfa} application, and is fully described in Section \ref{alfalfa}.
 In this case the MissionEvaluator block analyzes the drones data at the end of the missions, allowing the Main Application to decide if the photos are good enough or if more drones must be sent out to take new pictures in these locations.
 \\
 
@@ -461,14 +467,14 @@ The only difference is the absence of the MissionRepeater block, since this appl
 So, in the graph of the "Aerial mapping of archaeological sites" application the MissionEvaluator block is directly connected to the DroneAllocator.
 \\
 
-The flow of the Mission entity on the graph is the same of the Alfalfa\cite{alfalfa} application, and is fully described in section \ref{alfalfa}.
+The flow of the Mission entity on the graph is the same of the Alfalfa\cite{alfalfa} application, and is fully described in Section \ref{alfalfa}.
 The data collected by the drones are not photos anymore, but a \textit{pollutionQuantity} value which indicates the percentage of pollution in that area.
 In this case the Mission Evaluator block takes care of confronting the \textit{pollutionQuantity} variables and to compute the gradients between areas of higher concentration.
 So new drones are sent along this gradients, improving the spatial profile.
 \\
 
 
-As for the Aerial Mapping application, shown in section \ref{aerialMapping}, Pluto cannot fulfill the time constraint between two consecutive pollution samples.
+As for the Aerial Mapping application, shown in Section \ref{aerialMapping}, Pluto cannot fulfill the time constraint between two consecutive pollution samples.
 As already explained, the timer of Pluto starts when the drone leaves the base station and ensures that it will perform the action within that time interval, but there is no way to constrain the time between two consecutive samples.
 \\
 
@@ -532,7 +538,7 @@ In this way, five drones will monitor simultaneously the area to sample.
 \end{figure}
 
 As for the Aerial Mapping\cite{putti} application, the repetition of missions is not required.
-So the sequence diagrams do not change and the reader can see them in sections \ref{alfalfa} and \ref{aerialMapping}.
+So the sequence diagrams do not change and the reader can see them in Sections \ref{alfalfa} and \ref{aerialMapping}.
 
 
 \subsection{PURSUE}\label{PURSUE}
@@ -570,7 +576,7 @@ The second exercise, instead, asks the user to use the generated code from the p
 
 The application we choose for the exercises is the Drugs Distribution, already described in Section \ref{motivating}, because it's very suitable for the type of evaluation we want to perform.
 Indeed its basic version can be extended with many features, for example using the Mission Modifier block (Section \ref{missionModifier}), and this is exactly our purpose.
-After the execution of the exercises, we asked the users to leave a feedback, proposing them a survey, built according to some metrics that we have defined and that we describe in section \ref{survey}, while the results are shown in section \ref{surveyResult}.
+After the execution of the exercises, we asked the users to leave a feedback, proposing them a survey, built according to some metrics that we have defined and that we describe in Section \ref{survey}, while the results are shown in Section \ref{surveyResult}.
 
 \subsection{Proposed exercises}
 \label{exercise}
@@ -696,7 +702,7 @@ Through metrics 8 and 9, finally, we can understand how easy is to confuse the s
 
 \subsection{Baseline}\label{baseline}
 
-We want to demonstrate the effective usefulness of the Pluto programming framework, so we decide to compare its features with the API of the Crazyflie Nano-quadcopter, which was described in section \ref{crazyflie}.
+We want to demonstrate the effective usefulness of the Pluto programming framework, so we decide to compare its features with the API of the Crazyflie Nano-quadcopter, which was described in Section \ref{crazyflie}.
 
 Actually, the crazyflie is the drone we chose to use for our applications case study, and we want to demonstrate that, without Pluto and using only the Crazyflie API would be more difficult to build the same kind of applications.
 
@@ -726,7 +732,7 @@ Through the questions on the exercises development we can understand how difficu
 
 \subsection{Results}\label{surveyResult}
 
-Thanks to the combination of the answers to the user survey of section \ref{survey} and the numeric data collected according to the metrics defined in section \ref{metrics}, in this section we show the results of the Pluto evaluation.
+Thanks to the combination of the answers to the user survey of Section \ref{survey} and the numeric data collected according to the metrics defined in Section \ref{metrics}, in this Section we show the results of the Pluto evaluation.
 The metrics data are put into the table \ref{surveyTable}.
 \\
 
@@ -794,7 +800,7 @@ To help us in this procedure we used a very useful tool called VisualVM, shown i
 \end{figure}
 
 It let the user have a global monitoring of the running Java application in his local Java Virtual Machine, at run-time. Furthermore, it has a useful feature that records the profiling of an application in a dump file so that the user can compare different dump files concerning different application sessions.
-Finally, in the Result section \ref{metricsResult}, we describe the outcome of the tests for the Pluto Graphical Editor and the Pluto Main Application separately.
+Finally, in the Result Section \ref{metricsResult}, we describe the outcome of the tests for the Pluto Graphical Editor and the Pluto Main Application separately.
 
 \subsection{Software Metrics}
 
@@ -840,7 +846,7 @@ The profiling of the application was done on a machine with these specifications
 Concerning the Pluto Graphical Editor, we measured these parameters while generating the source code of the Main Application from an increasingly more complex drawing. 
 We raised step by step two parameters: the number of blocks and the number of connections.
 At first we fixed the former and we incremented the latter by a step of 5, starting with one connection. Then we did the same operation fixing the number of connections and raising the number of blocks by 5, now starting with 2 blocks.
-A very complex graph used for the editor evaluation is shown in Figure \ref{fig:stressDiagram}.
+A very complex graph used for the editor evaluation is shown in figure \ref{fig:stressDiagram}.
 
 \begin{figure}[H]
   \centering

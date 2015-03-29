@@ -70,14 +70,14 @@ Another problem of the Team-level approach is that, having a single brain which 
 This problem can be fixed or at least weakened by applying some dependable systems methods, improving reliability of the central brain, reducing its rate of failure etc.
 \\
 
-Even though team-level approach has his own limitations, other approaches we discussed in section \ref{cap2} are less suitable.
-Indeed, the Drone-oriented approach, described in section \ref{droneLevel}, has the problem that the programmer has to manage individually the drone's movements and the interactions with other drones: he must code a list of instructions and commands that the drone will perform sequentially. This can only be achieved with the exploiting of specific API of each drones.
+Even though team-level approach has his own limitations, other approaches we discussed in Chapter \ref{cap2} are less suitable.
+Indeed, the Drone-oriented approach, described in Section \ref{droneLevel}, has the problem that the programmer has to manage individually the drone's movements and the interactions with other drones: he must code a list of instructions and commands that the drone will perform sequentially. This can only be achieved with the exploiting of specific API of each drones.
 In the case of multiple drones,the programmer should deal with difficult programming tasks, like concurrency and parallelism, and it should also manage the drone batteries discharge and their crashes/failures.
 Adding one or more drones to the system could complicate a lot the programming task. The programmer should also deal with timing constraints and he should balance the load between drones in a dynamic way.
 Is clear that the drone-level approach is most suitable for applications involving only a few drones.
 \\
 
-On the other hand, the Swarm-level approach, described in section \ref{swarmLevel}, is more suitable for applications where there’s need of a lot of drones performing the same actions.
+On the other hand, the Swarm-level approach, described in Section \ref{swarmLevel}, is more suitable for applications where there’s need of a lot of drones performing the same actions.
 Indeed the programmer can give a set of basic rules that each drone should follow. It is important to underline that, in swarm-level approach, there is no possibility to have a shared state between drones; each one execute the actions specified by the programmer on his own local state. This means that this approach is very easy to scale up adding new drones, but it’s not suitable for applications that require the drones to explicitly coordinate.
 \\
 
@@ -90,7 +90,7 @@ This part of the project is fully described in Section \ref{plutoGraphicalEditor
 
 \section {Implementation challenges}\label{challenges}
 
-The DD application, shown in section \ref{motivating}, makes drone bring medicines to the elders in an hospital, so in an indoor context.
+The DD application, shown in Section \ref{motivating}, makes drone bring medicines to the elders in an hospital, so in an indoor context.
 One big problem is that there is not a stable localization method for the indoor environment.
 Besides of localization problem, indoor context also leads to the limits of the size of the drone.
 As a result, programmers constantly confront with a limited battery resource and a small weigh the drone can carry out. These problems, as well as their possible solutions, are described in the following Section.
@@ -98,7 +98,7 @@ As a result, programmers constantly confront with a limited battery resource and
 \subsection{Indoor localization}\label{indoor}
 
 The main issue that all developers are facing, working on an indoor application for drones, is that they are not able to use the Global Positioning System (GPS); it cannot be used because of walls,roofs or ceilings.
-For this reason Indoor Positioning System(IPS) is widely applied for indoor localization. In this section we will give an overview of existing IPS methods.  
+For this reason Indoor Positioning System(IPS) is widely applied for indoor localization. In this Section we will give an overview of existing IPS methods.  
 \\
 
 An indoor positioning system is a solution to locate objects or people inside a building using radio waves, magnetic fields, acoustic signals, or other information collected from the sensors of mobile devices.

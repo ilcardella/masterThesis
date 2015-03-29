@@ -9,18 +9,18 @@ Basically, the mobile sensing through drones represents a technological revoluti
 Actually, there are a lot of fields where this new technology could be applied, improving performance and reducing costs:
 for example surveillance applications, instructing drones to fly over an area monitoring people, or an application in a domestic context, for example instructing drones to find a lost object or to perform some kind of actions, like bringing some objects to the final user.
 
-In the following section we present three main approaches for programming drones , providing existing examples for each one of them:
+In the following Section we present three main approaches for programming drones , providing existing examples for each one of them:
 
 \begin{itemize}
 \itemsep2pt
 \item{
-\textit{Drone-level approach}, described in section \ref{droneLevel}
+\textit{Drone-level approach}, described in Section \ref{droneLevel}
 }
 \item{
-\textit{Swarm-level approach}, described in section \ref{swarmLevel}
+\textit{Swarm-level approach}, described in Section \ref{swarmLevel}
 }
 \item{
-\textit{Team-level approach}, described in section \ref{teamlevel}
+\textit{Team-level approach}, described in Section \ref{teamlevel}
 }
 \end{itemize}
 
@@ -65,7 +65,7 @@ It is important to underline that, in swarm-level approach, there is no possibil
 It enables the scaling of the approach, but it's not suitable for applications that require the drones to explicitly coordinate.
 For example, the swarm-level approach could be applied in an application where many drones take objects at different locations and bring them to the final user, without considering any time or space coordination between them; each drone will simply bring the object back to the user when found.  
 There are several existing applications using the swarm-level approach, but we decided to describe three of them:
-the Robot Operating System (ROS)\cite{ros}, which provides a Publish/Subscribe coordination layer for decentralized computations, as shown in section \ref{ros}; Karma\cite{karma}, which lets programmers specify modes of operation for the swarm, such as “Monitor” or “Pollinate”(as shown in section \ref{karma}); and Proto\cite{proto}, which lets programmers specify actions in space and time(as shown in section \ref{proto}). 
+the Robot Operating System (ROS)\cite{ros}, which provides a Publish/Subscribe coordination layer for decentralized computations, as shown in Section \ref{ros}; Karma\cite{karma}, which lets programmers specify modes of operation for the swarm, such as “Monitor” or “Pollinate”(as shown in Section \ref{karma}); and Proto\cite{proto}, which lets programmers specify actions in space and time(as shown in Section \ref{proto}). 
 
 \subsection{Robot Operating System}\label{ros}
 
@@ -163,7 +163,7 @@ For example, a swarm of lightweight scout robots might search a disaster area an
 
 \section {Team-level approach}\label{teamlevel}
 
-In this section we describe the team-level programming approach\cite{voltron}, which allows the user to express a list of sensing tasks to be performed by the system, without dealing with the management of the single drone and with complex programming tasks such as concurrent programming and parallel execution; the user can also require a layer of coordination, defining constraints in space and time for the tasks' execution, and the system will follow these constraints choosing the actions for each drone at run-time, in order to collaboratively accomplish all the tasks.
+In this Section we describe the team-level programming approach\cite{voltron}, which allows the user to express a list of sensing tasks to be performed by the system, without dealing with the management of the single drone and with complex programming tasks such as concurrent programming and parallel execution; the user can also require a layer of coordination, defining constraints in space and time for the tasks' execution, and the system will follow these constraints choosing the actions for each drone at run-time, in order to collaboratively accomplish all the tasks.
 This run-time drones management makes the whole system scalable, since one can add as many drones as he wants, and also fault tolerant, because it can easily manage crashes or exceptions.
 So, the main advantage of using the team-level approach is that the user can simply specify a list of tasks to be performed,together with constraints in space and time for the execution, not caring about the dispatching and coordination of the drones; this is also a limitation, because one cannot develop applications which require explicit communication between drones.
 So, the team-level approach is most suitable for applications involving tasks that could be also performed by a single drone, but require a large number of drones to be completed faster and/or to operate in a big area.
@@ -210,7 +210,7 @@ A block is connected to another when it has a dependency on the result of the ma
 \\
 
 This paradigm present some limits of expression.
-The main one is that each implementation of this paradigm is specific for the context where it is used. This means that there are no general frameworks that can be used in more than one context. This is why we created our own dataflow editor, shown in section \ref{plutoGraphicalEditor}.
+The main one is that each implementation of this paradigm is specific for the context where it is used. This means that there are no general frameworks that can be used in more than one context. This is why we created our own dataflow editor, shown in Section \ref{plutoGraphicalEditor}.
 
 \subsection{Business Process Modeling Notation}\label{BPMN}
 

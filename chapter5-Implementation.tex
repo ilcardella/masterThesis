@@ -36,13 +36,13 @@ The third part, the controller, accepts input and converts it to commands for th
 As shown in figure \ref{fig:mvc}, the model part contains all the Java classes of the entities shown in Section \ref{programmingModel}.
 There is a class for the Mission, one for the Trip etc.
 The controller part contains the Java classes of all the blocks of the Graphical Editor shown in Section \ref{functionalBlocks}.
-The controller part also deals with the threads management needed for the execution of both the missions and trips. The thread structure is shown in section \ref{runtimeMng}.
+The controller part also deals with the threads management needed for the execution of both the missions and trips. The thread structure is shown in Section \ref{runtimeMng}.
 The view part contains the Java classes of the three pages of the Main Application shown in Section \ref{plutoMainApp}.
 \\
 
 \section{Graphical editor}\label{editor}
 
-In order to create the Graphical Editor, described in section \ref{plutoGraphicalEditor}, we decided to use the GEF (Graphical Editing Framework) project. This framework is a Java technology and it is part of the Eclipse framework developed by IBM.
+In order to create the Graphical Editor, described in Section \ref{plutoGraphicalEditor}, we decided to use the GEF (Graphical Editing Framework) project. This framework is a Java technology and it is part of the Eclipse framework developed by IBM.
 \\
 
 It gives developers a full solution for the graphical modeling of a Java object model, and it can be used in conjunction with other technologies such as EMF (Eclipse Modeling Framework) or GMF (Graphical Modeling Framework), to enable the creation of a complete graphical modeling suite. 
@@ -68,7 +68,7 @@ Figure \ref{fig:editorExplanation} shows these components: A is the diagram enti
 When the user creates a new  block in the editor area, a relative block entity is automatically created and added to the diagram container class. The same operation stands for the connections creation.
 
 After the user draws the desired graph he can choose to generate the final code of the Main Application, through the apposite voice in the context menu.
-See section \ref{codeGeneration} for further details.
+See Section \ref{codeGeneration} for further details.
 \\
 
 \section{Code generation}\label{codeGeneration}
@@ -185,8 +185,8 @@ from basic widgets like buttons, labels, scrollbars to advanced like trees and t
 Swing itself is written in Java and is part of JFC, Java Foundation Classes: it is a collection of packages for creating full featured desktop applications.
 \\
 
-We used the Swing framework to develop the view part of the MVC pattern shown in section \ref{oomodel},
-We needed to develop the three pages of the Pluto Main Application, already described in section \ref{plutoMainApp}, and we knew that Swing provides all the components that we wanted to put in them.
+We used the Swing framework to develop the view part of the MVC pattern shown in Section \ref{oomodel},
+We needed to develop the three pages of the Pluto Main Application, already described in Section \ref{plutoMainApp}, and we knew that Swing provides all the components that we wanted to put in them.
 Indeed, since we used it for the development of many academic projects, we noticed that it allows to build graphical interface in a very fast and easy way.
 
 As an illustrative example, figure \ref{fig:tripsPageStructure} shows the structure of the Trips Page:
