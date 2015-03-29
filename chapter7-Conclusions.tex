@@ -1,30 +1,56 @@
 \chapter{Conclusions and future works}
 \label{cap7}
 
-%Si mostrano le prospettive future di ricerca nell'area dove si \`e svolto il lavoro. Talvolta questa sezione pu\`o essere l'ultima sottosezione della precedente. Nelle conclusioni si deve richiamare l'area, lo scopo della tesi, cosa \`e stato fatto,come si valuta quello che si \`e fatto e si enfatizzano le prospettive future per mostrare come andare avanti nell'area di studio.
+In this final Chapter we recap the structure of the whole document and the development phases of the Pluto programming framework.
+We also show the limits of Pluto and the possible future works thanks to which these limits could be overcome.
 
 \section{Conclusions}
 
-We have developed the Pluto Programming Framework, a system which allows to build indoor applications by simply graphically connecting blocks.
+We have developed the Pluto programming framework, a system which allows to build nano-drones applications for indoor contexts, simply by graphically connecting blocks.
 
-Each one of these blocks, described in section \ref{programmingModel}, contains the implementation of a specific functionality.
+In this document we have fully described the development process of Pluto and the context surrounding our work:
+\\
 
-So the programmer can build an application just deciding which features he needs and consequently connecting the right blocks, using the editor shown in section \ref{plutoGraphicalEditor}.
+In Chapter \ref{cap1} we have given the general context and the general goals of the work together with a brief description of the Pluto development process.
+\\
 
-The final user decides the sensing tasks that have to be performed by the drones thanks to the user interface, fully described in section \ref{plutoMainApp}.
+In Chapter~\ref{cap2} we have described the three main existing approaches for drone programming, also proposing existing examples for each one of them.
+We have shown that no one of these approaches is suitable for our requirements, since we needed the concepts of \textit{Mission} and \textit{Trip}.
+A Mission is a list of sensing tasks to be performed sequentially and a Trip is a movement from a point A to a point B in the environment to perform an Action.
+We have also described the dataflow programming method, providing two existing examples of it.
+Also in this case, we have shown that we needed a different approach, since we needed to use only a group of basic features for our work, while the existing solutions were too general and contained a lot of complex components.
+\\
 
-The system takes care of assigning the drones to each sensing task, greatly simplifying the work of both the programmer and the final user, which has only to decide a list of sensing tasks without dealing with the drones dispatching. 
+Chapter~\ref{cap3} is focused on the problems stemming from the indoor context and on the requirements deriving from it.
+Starting from a motivating example application, in order to better explain the requirements and problems deriving from our work, we have shown the implementation problems deriving from using a Team-level approach for our system, also proposing the solutions to fix them.
+Finally we have shown the technological limitations affecting our system, such as the indoor localization and nano-drone batteries problems.
+\\
 
-The main innovations with respect to the actual state of the art, fully described in chapter \ref{cap2}, are represented by the indoor context and the graphical editor.
+In Chapter~\ref{cap4} we have presented our solution for the research problems described in Chapter ~\ref{cap3}, the Pluto programming framework.
+We have presented our programming model, that is to say the main entities and the relationships between them.
+We have described the functionality of the blocks of the Pluto Graphical Editor, that are the basic elements that the programmer can connect to graphically build an application.
+We also have described in details the two components of the Pluto framework:
+the Graphical Editor, that is used by the programmer to graphically build an application and the Main Application, that is used by the final user to specify the sensing tasks to be performed.
+We have describe the navigation system, that is the conjunction point between the Main Application and the drones team.
+We finally have shown all the steps performed to arrive to the final system, showing all the previously implemented solutions which, once refined, brought us to the development of the Pluto programming framework.
+\\
 
-Indeed, there exist systems similar to Pluto, but they all manage outdoor applications, where the GPS can be used for localization and big drones for actuation of the sensing tasks.
+In Chapter~\ref{cap5} we have shown how the designed choices have been implemented technically, describing all the software and tools we used for the development of Pluto programming framework.
+We have described:
+The GEF framework, which we have used to implement the Pluto Graphical Editor.
+The code generation process that creates a Java application from the graph built with the Pluto Graphical Editor.
+The Object-Oriented programming model of the Pluto framework.
+The runtime features of Pluto: the parallel architecture and the management of all the needed threads.
+The SWING tool, which we have used to develop the Pluto Main Application.
+The Crazyflie nano-quadcopter, which we have used to perform the sensing tasks of our prototype applications.
+\\
 
-Furthermore, the building of applications through connection of blocks really simplifies the development process, still allowing the programmer to insert custom code.
-
-In chapter \ref{cap6} we fully evaluated Pluto, confronting it with other similar systems, trying to apply it to existing applications, proposing its use to real people and asking them for feedback through a survey, and finally measuring its performance, through bot hardware and software metrics.
-
-We state that Pluto is a useful programming abstraction, which allows the development of a great variety of applications in a simple and fast way.
-As any other system, Pluto has its limits, both for its implementation and for technological issues, which we show in the next section.
+In Chapter~\ref{cap6} we have described four already existing applications and three case study, and we have discussed on whether they can be developed or not with Pluto. 
+We have proposed two exercises to real testers, in order to test "on the field" the effective usability of Pluto:
+the first one deals with the Graphical Editor, the second one with the Main Application.
+Then we have proposed a third exercise, in which we ask the users to directly use the API of the Crazyflie nano-quadcopter, shown in section \ref{crazyflie}, to make it move from a point A to a point B.
+We have also proposed a survey to the users, in order to have opinions on the framework and possibly to improve it with the suggestions of the testers.
+We also have measured the software and hardware consumption metrics required by Pluto, in order to evaluate the effective impact of Pluto on an ordinary computing machine.
 
 \newpage
 
@@ -37,30 +63,26 @@ the limits in the implementation can possibly be overcome by modifying the sourc
 The technological limits cannot be overcome in the present, and only research and studies can find a way to improve or find new technologies which would solve these problems.
 
 
-\subsection{Implementation limits}
-
 The PURSUE application, described in section \ref{PURSUE}, put in evidence the Pluto main limitation: the immediate execution of actions in response to instantaneous events.
-\\
 
-As already explained in chapter \ref{cap4}, the Pluto system allows the drones to perform their actions only at the end of the trip, that is a movement from a point A to a point B in the environment.
-For example, if the Drone has to take a picture in a specific location, it will fly from the ground station to that location and then take the picture.
-\\
+As already explained in chapter \ref{cap4}, the Pluto system allows the drones to perform their actions only at the end of the Trip, that is a movement from a point A to a point B in the environment.
+For example, if the Drone has to take a picture in a specific location, it flies from the ground station to that location and then it takes the picture.
 
-There is no way to actively performing some action, reacting on events:
+There is no way to actively perform actions reacting on events:
 so, as already explained, this is the problem of the PURSUE application, which requires to actively follow a moving object when it enters in the camera range.
-\\
 
 This is an hint for the future expansion of Pluto, in order to manage also this kind of applications.
-
-\subsection{Technological limits}
+\\
 
 As already explained in chapter \ref{cap3}, the actuation in indoor contexts is tricky because of the localization problem.
 We showed some IPS methods, but still they are not as efficient and standardized as GPS.
 They introduce latency in the localization mechanism and their precision is lowered by physical obstacles, roofs and ceilings.
 \\
 
-In this direction, research and future studies will certainly find a better indoor localization method, and Pluto will take advantages from it.
-Indeed the actuation tasks performed by the drones completely relies and depends on a localization base: indeed, in order to send a drone in a specific location to take a picture we need a method to precisely indicate that location.
+In this direction, research and future studies will certainly find a better indoor localization method, and Pluto will take advantage from it, since it has an architecture that is decoupled from the particular localization method.
+So, when this new method will be implemented, it will be easily integrated with Pluto.
+This is an important missing feature, since the actuation tasks performed by the drones completely relies and depends on a localization base:
+in order to send a drone in a specific location to take a picture there is need of a method that precisely indicates that location.
 \\
 
 Research and future studies will also find a way to improve the capacity of the nano-drones batteries. 
@@ -73,4 +95,3 @@ This is a great limitation, because the programmer is forced to develop applicat
 Finding a solution to the limitation of the instantaneous actuation, together with new technological discoveries that will improve the drones battery duration and find a good and stable indoor localization method, can greatly enrich the Pluto programming framework.
 \\
 
-With these future improvements the Pluto programming framework will be able to manage almost every kind of drones application.

@@ -16,11 +16,11 @@ In figure \ref{fig:finalArchitecture}, we show the final architecture scheme tha
 
 We used the Java programming language to implement both the Graphical Editor and the Main Application.
 We made this choice because we are very familiar with Java, since almost every academic project we implemented in these years made use of this Object-Oriented programming language.
-The Object-Oriented approach perfectly suits the Pluto model, since we have different independent entities such Drones,Missions,Trips that interact together in the execution of tasks.
+The Object-Oriented approach perfectly suits the Pluto model, since we have different independent entities such as Drones,Missions and Trips that interact together in the execution of tasks.
 \\
 
 We decided to adopt a Model View Controller(MVC) approach.
-The central component of MVC, the model, captures the behavior of the application in terms of its problem domain, independent of the user interface.
+The central component of MVC, the model, captures the behavior of the application in terms of its problem domain, and it is independent from the user interface.
 The model directly manages the data, logic and rules of the application.
 A view can be any output representation of information, such as a chart or a diagram; multiple views of the same information are possible.
 The third part, the controller, accepts input and converts it to commands for the model or view.
@@ -35,9 +35,9 @@ The third part, the controller, accepts input and converts it to commands for th
 
 As shown in figure \ref{fig:mvc}, the model part contains all the Java classes of the entities shown in Section \ref{programmingModel}.
 There is a class for the Mission, one for the Trip etc.
-The controller part contains the Java classes of all the blocks of the Graphical editor shown in Section \ref{functionalBlocks}.
+The controller part contains the Java classes of all the blocks of the Graphical Editor shown in Section \ref{functionalBlocks}.
 The controller part also deals with the threads management needed for the execution of both the missions and trips. The thread structure is shown in section \ref{runtimeMng}.
-The view part contains the Java classes of the three pages of the Main application shown in Section \ref{plutoMainApp}.
+The view part contains the Java classes of the three pages of the Main Application shown in Section \ref{plutoMainApp}.
 \\
 
 \section{Graphical editor}\label{editor}
@@ -87,57 +87,58 @@ So, we decided to adopt a \textit{Publish-Subscribe} design, making use of the \
  
 The \textit{Observer} pattern consists in the declaration of some elements as \textit{observers} and of other entities as \textit{observable}. 
 When an observable object change its status, it sends a notification to all its observer entities. 
-These observers will react according to the change of the observable object.
+These observers react according to the change of the observable object.
 \\
 
-In Figure \ref{fig:observerPattern} there is a sequence diagram that describes how the observer pattern work with a simple diagram with four blocks (A, B, C and D).
+In Figure \ref{fig:observerPattern} there is a sequence diagram that describes how the observer pattern works with a simple diagram with four blocks (A, B, C and D).
 \\
-The "Observe" message in the sequence is the declaration of a block that wants to observe another block. The "Notify" message represents the notification that a block sends to its observers when it changes its status, or in this case when the blocks ends the management of the Mission object.
+The "Observe" message in the sequence is the declaration of a block that wants to observe another block. The "Notify" message represents the notification that a block sends to its observers when it changes its status, or in this case when the block ends the management of the Mission object.
 \\
 
- \begin{figure}
- \includegraphics[width=\linewidth]
- {pictures/pub_sub.png}
- \caption{Observer design pattern example}
- \label{fig:observerPattern}
- \end{figure}
+% \begin{figure}
+% \includegraphics[width=\linewidth]
+% {pictures/pub_sub.png}
+% \caption{Observer design pattern example}
+% \label{fig:observerPattern}
+% \end{figure}
 
-In our specific case, we made each declared block of the graphical editor both Observer and Observable. 
+In our specific case, we made each declared block of the Graphical Editor both Observer and Observable. 
 This means that each block observes another block that comes before it, but at the same time, it is observed by other blocks coming after it.
 \\
 The change of status consists in the output of the Mission object.
 When a block ends to perform its operations, it notifies all its observers passing them the Mission entity.
 \\
-For example, in figure \ref{fig:observerPattern} the A block observes the D one; the B and C blocks observe the A and the D observes the B and C both.
+For example, in figure \ref{fig:observerPattern} the A block observes the D one; the B and C blocks observe the A and the D observes both the B and C.
 \\
 So, for example, when the A block ends to modify the Mission object it sends it to the B and C blocks at the same time, which are its observers.
 \\
 
-The Editor includes in itself a template model of the Main Application, in which almost all the classes are ready to be executed.
+The Editor includes a template model of the Main Application, in which almost all the classes are ready to be executed.
 \\
-However, this template contains several tags that the generation process will replace with specific lines of code, depending on the drawn graph.
+However, this template contains several tags that the generation process replaces with specific lines of code, depending on the drawn graph.
 \\
-The generation process consists in the search for these tags inside the template application. The tags are:
+The generation process consists in the search for these tags inside the template application. 
+The tags are:
 \\
 
 \begin{itemize}
 \item{\textbf{<dec>}: This tag is the placeholder for the code part where the generator engine puts the declaration and the initialization of the entities represented by each blocks.
 }
-\item{\textbf{<exe>}: This tag is the placeholder for the code part where the generation process declares the Observer pattern. Here the system defines the observers of each blocks depending on the connections in the diagram. 
+\item{\textbf{<exe>}: This tag is the placeholder for the code part where the generation process declares the Observer pattern. Here the system defines the observers of each blocks depending on the connections present in the diagram. 
 }
 \item{\textbf{<tDelay>}: This tag is the placeholder for a boolean attribute. If the diagram includes the Clock block, this tag will be replaced with a "true" value in order to make the Main Application to ask the user for a delay during the Trip definition.
 }
-\item{\textbf{<mRep>}: This tag is the placeholder for a boolean attribute. If the diagram includes the Mission Repeater block, this tag will be replaced with a "true" value in order to make the Main Application to ask the user if he wants the Mission to repeat itself.
+\item{\textbf{<mRep>}: This tag is the placeholder for a boolean attribute. If the diagram includes the Mission Repeater block, this tag is replaced with a "true" value in order to make the Main Application ask the user if he wants the Mission to be repeated.
 }
-\item{\textbf{<tSafe>}: This tag is the placeholder for a boolean attribute. If the diagram includes the Timer Monitor block, this tag will be replaced with a "true" value in order to make the Main Application to ask the user for a maximum safe time during the Mission creation.
+\item{\textbf{<tSafe>}: This tag is the placeholder for a boolean attribute. If the diagram includes the Timer Monitor block, this tag is replaced with a "true" value in order to make the Main Application ask the user for a maximum safe time within each Trip must be completed, during the Mission creation phase.
 }
-\item{\textbf{<tPrt>}: This tag is the placeholder for a boolean attribute. If the diagram includes the Priority Manager block, this tag will be replaced with a "true" value in order to make the Main Application to ask the user for a priority during the Trip definition.
+\item{\textbf{<tPrt>}: This tag is the placeholder for a boolean attribute. If the diagram includes the Priority Manager block, this tag is replaced with a "true" value in order to make the Main Application ask the user for a priority value during the Trip definition.
 }
-\item{\textbf{<num>}: This tag is a placeholder for an integer attribute. If the diagram includes the GateFIFO or GateFunnel blocks, this tag will be replaced by the number of incoming connections of the related Gate block.
+\item{\textbf{<num>}: This tag is a placeholder for an integer attribute. If the diagram includes the GateFIFO or GateFunnel blocks, this tag is replaced by the number of incoming connections of the related Gate block.
 }
-\item{\textbf{<act>}: This tag is not replaced by the generation process but we need them in order to warn the developer where to insert his Custom Action code.
+\item{\textbf{<act>}: This tag is not replaced by the generation process but we need it in order to indicate the developer where to insert his Custom Action code.
 }
-\item{\textbf{<eval>}: This tag is not replaced by the generation process but we need them in order to warn the developer where to insert his custom Evaluator algorithm. 
+\item{\textbf{<eval>}: This tag is not replaced by the generation process but we need them in order to indicate the developer where to insert his custom Evaluator algorithm. 
 }
 \end{itemize}
 
@@ -155,15 +156,16 @@ Indeed when the user starts the execution, the system launches each Mission in a
 \end{figure}
 
 Then each mission starts its flow among the blocks, thanks to the Observer design pattern, described in Section \ref{codeGeneration}.
-When the mission enters in a new block, the application launches a new thread, in order to run the mission management code of the block.
-We need this new thread because there is the possibility that two or more parallel blocks have to manage the same mission entity at the same time.
+When the mission enters in a new block, the application launches a new thread, in order to run the Mission management code of the block.
+We need this new thread because there is the possibility that two or more parallel blocks have to manage the same Mission entity at the same time.
 \\
 
-Therefore, when the mission reaches the "Trip Launcher" block, the system starts the trip.
+Therefore, when the mission reaches the "Trip Launcher" block, the system starts the execution of the first Trip.
 Doing this, it creates a new thread, to manage the trip execution till its end.
 \\
 
-As said, each mission and each trip created by the user, have a respective thread that deal with the execution of the entity from the beginning to the end. In this way, the blocks that need to monitor these entities can observe the status of the threads, in order to know if the trip/mission is still running or has already completed.
+As said, each Mission and Trip created by the user have a respective thread that deal with the execution of the entity from the beginning to the end. 
+In this way, the blocks that need to monitor these entities can observe the status of the threads, in order to know if the Trip/Mission is still running or is already completed.
 \\
 
 It is important to underline that we don't have any synchronization problem among the various threads.
@@ -172,7 +174,8 @@ Indeed, there are no dependencies between missions, since each one of them is ex
 Inside each Mission entity the trips are executed sequentially:
 one trip can start its execution only if the precedent trip in the list has been completed.
 \\
-Given this independence between missions, the system could dispatch them in a multiple machines cluster. In this way each Mission would run on a different environment maximizing the performance and reducing the load on the single machine.
+Given this independence between missions, the system could dispatch them in a multiple machines cluster.
+In this way each Mission can run on a different environment, maximizing the performances and reducing the load of the single machine.
 \\
 
 \section{User interface}\label{interface}
@@ -188,12 +191,12 @@ Indeed, since we used it for the development of many academic projects, we notic
 
 As an illustrative example, figure \ref{fig:tripsPageStructure} shows the structure of the Trips Page:
 
- \begin{figure}[h!]
- \includegraphics[width=\linewidth]
- {pictures/tripsPageStructure.png}
- \caption{Trips Page structure}
- \label{fig:tripsPageStructure}
- \end{figure}
+% \begin{figure}[h!]
+% \includegraphics[width=\linewidth]
+% {pictures/tripsPageStructure.png}
+% \caption{Trips Page structure}
+% \label{fig:tripsPageStructure}
+% \end{figure}
 
 The Trips Page contains 7 components:
 

@@ -1,9 +1,14 @@
 \chapter{Evaluation}
 \label{cap6}
 
-Intro to evaluation, description of the three parts and why they are important/complementary (limitations!)
-
-
+In this Chapter we fully evaluate the Pluto programming framework.
+In Section \ref{applicability} we describe four already existing applications and three case study, and we discuss on whether they can be developed or not with Pluto. 
+In this way we understand the expressive power of Pluto and the possible limits to overcome.
+In Section \ref{usability} we propose two exercises to real testers, in order to test "on the field" the effective usability of Pluto:
+the first one deals with the Graphical Editor, described in Section \ref{plutoGraphicalEditor}, the second one with the Main Application, described in Section \ref{plutoMainApp}.
+Then we propose a third exercise, in which we ask the users to directly use the API of the Crazyflie nano-quadcopter, shown in section \ref{crazyflie}, to make it move from a point A to a point B.
+We also propose a survey to the users and then present the result in a graphical way, in order to have opinions on the framework and possibly to improve it with the suggestions of the testers.
+In Section \ref{performance} we measure the software and hardware consumption metrics required by Pluto, in order to evaluate the effective impact of Pluto on an ordinary computing machine.
 
 
 \section{Generality}\label{applicability}
@@ -12,8 +17,6 @@ We developed our programming framework thinking about indoor applications utiliz
 Actually, since we work at a sufficiently high level of abstraction, because we can use an API which make the drones navigate in the environment, the model can be extended to almost every kind of drone, aerial terrestrial and aquatic.
 \\
 So, we can say that the Pluto programming framework is "drone independent", and this greatly extends its applicability, including also outdoor, aquatic and terrestrial environments; it is in charge of the programmer to manage the interaction between Pluto and the specific type of drone he wants to use for the particular application he's developing.
-
-Pluto is fully exploited when there is a team of drones to manage (see \ref{fig:WIS} and \ref{fig:DD}), although it perfectly works also in the case of a single drone (see \ref{fig:OF}).
 \\
 
 Since we decided to use a Team-level approach (see \ref{teamlevel}), our model can be used for developing applications where the user can give to the system a set of actions to be performed; the dispatching of these actions is managed by the "central brain", which takes care of assigning the drones to the action and to handle all the exceptions (battery low, crashes etc.). So, the drones are only actuators that perform an action, there is no communication between them, their behavior is monitored and decided by the central brain.
@@ -21,12 +24,113 @@ Since we decided to use a Team-level approach (see \ref{teamlevel}), our model c
 
 Since drones cannot communicate between them, Pluto cannot be used for applications where drones must perform some kind of action requiring explicit communication or data exchange between them; the logic is managed by the central brain, so communication between drones is always mediated by this component; a drone can send data to the central brain, and this could send again that data to another drone.
 \\
-Hereinafter we analyzed some already existing example applications, showing whether they can be managed/developed with the Pluto programming framework or not.
+Hereinafter we analyzed some  example applications, showing whether they can be managed/developed with the Pluto programming framework or not.
 \\
 
-\subsection{Object Finder, Warehouse Item-Finder, Drugs Distribution}
+\subsection{Basic applications}
+
+In this Section we describe three applications we developed with the Pluto programming framework.
+They are all represented by the basic Pluto graph of figure \ref{fig:basicGraph}:
+
+% figura basicGraph: il solito grafo con missionCreator, droneAllocator, TripLauncher e TripMonitor, fatto con Visio
+
+The graph is the same for all the three applications, but of course it assumes a different meaning for each one of them, since each application needs different actions to be performed in the environment.
+These different meanings are explained in the specific parts describing the three applications, shown in the proceedings of this Section.
+The three applications are:
+
+\begin{itemize}
+\item {Object-finder (OF)}
+\item {Warehouse item-finder (WIF)}
+\item {Drugs distribution (DD)}
+\end{itemize}
 
 
+\textbf{Object-finder (OF)}
+\\
+
+This application help users to find various objects, like shoes, keys and books, in a domestic environment.
+The user decides which item wants the drones to look for and the area to be inspected, then
+the main system organizes the team of drones, sending them to the specified locations.
+The drones fly to the assigned locations and, if one of them finds the object it brings it back to the user.
+Figure \ref{fig:OF} shows the basic behavior of the OF application:
+
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=\linewidth]{pictures/OF.png}
+  \caption{The basic functioning of the Object-finder application}
+  \label{fig:OF}
+\end{figure}
+
+
+The flow of figure \ref{fig:basicGraph} starts with the MissionCreator block, that creates a Mission instance to propagate in the graph.
+As already explained, a Mission is nothing but a list of sensing tasks to be performed sequentially.
+Each one of these sensing tasks is a Trip.
+In this case the list of trips contained in the Mission entity is the list of locations where the drones have to look for the lost object.
+
+Then the DroneAllocator block takes care of assigning the right Drone to the first Trip in the list, that is the first location where to look for the object.
+
+Then the Mission entity arrives to the TripLauncher that simply starts the execution of the first Trip and sets its status to RUNNING, sending the drone to actively look for the lost object in that location.
+
+The TripMonitor changes the status of the executing Trip depending on the outcome of the Drone's research:
+if the Drone accomplishes to find the lost object, the Trip status is set to COMPLETED, otherwise, for example if the Drone crashes, the Trip status is set to FAILED.
+
+After the first Trip, the Mission entity goes again to the DroneAllocator, in order to execute also the other trips in the Mission, that is to say in order to send drones in the other specified locations to look for the object.
+
+
+\newpage
+
+\textbf{Warehouse item-finder (WIF)}
+\\
+
+This application help users to manage a warehouse, bringing them a list of needed objects.
+The user creates a list of needed items and writes it on his laptop, then
+the main system organizes the drones and simultaneously send each one of them to take one of the objects of the specified list.
+Finally the drones fly to the assigned objects and bring them back to the user.
+Figure \ref{fig:WIS} shows the basic behavior of the WIF application:
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=\linewidth]{pictures/WIF.png}
+  \caption{The basic functioning of the Warehouse item-finder application}
+  \label{fig:WIS}
+\end{figure}
+
+As always, the flow starts with the MissionCreator block, that creates a Mission instance to propagate in the graph.
+In this case, each Mission entity contains only a Trip to execute:
+each Trip is associated to one of the objects that the drones have to bring to the user.
+As already explained, the Mission entities are executed in parallel, so in this case
+there is one Mission for each object to bring, since the drones have to work simultaneously.
+
+Then the DroneAllocator block takes care of assigning the right Drone to the Trip of each Mission, that is the associated object to pick.
+
+Then the Mission entities arrive to the TripLauncher, that simply starts the execution of each Trip and sets their status to RUNNING, sending each drone to bring its associated object.
+
+The TripMonitor changes the status of the executing trips depending on the outcome of the drones research:
+if the Drone accomplishes to bring the object to the user, the Trip status is set to COMPLETED, otherwise, for example if the Drone crashes, the Trip status is set to FAILED.
+After each Trip is COMPLETED, the execution of the flow ends and the Mission status is set to COMPLETED.
+\\
+
+
+\textbf{Drugs Distribution (DD)}
+\\
+
+The description of the behavior of this application is shown in section \ref{motivating}.
+
+The flow starts with the MissionCreator block, that creates a Mission instance to propagate in the graph.
+In this case there are multiple Mission entities containing multiple trips:
+in this way the drones bring the first group of medicine boxes simultaneously to the patients and, after the boxes are delivered, a second group of boxes can be delivered simultaneously to the other patients, and so on.
+Each Trip is associated to one of the box to bring to the patients.
+
+Then the DroneAllocator block takes care of assigning the right Drone to the first Trip in the list of each Mission, managing the first group of boxes to bring to the first group of patients.
+
+Then the Mission entities arrive to the TripLauncher that simply starts the execution of the first Trip of each Mission and sets their status to RUNNING, sending the drones to bring the first group of boxes.
+
+The TripMonitor changes the status of the executing trips depending on the outcome of the drones actions:
+if the Drone accomplishes to bring the box to the patient, the Trip status is set to COMPLETED, otherwise, for example if the Drone crashes, the Trip status is set to FAILED.
+After the first group of trips, the Mission entities go again to the DroneAllocator, in order to execute also the other trips and deliver the remaining boxes.
+
+\newpage
 
 \subsection{Alfalfa Crop Monitoring and Pollination}\label{alfalfa}
 
@@ -46,6 +150,8 @@ The following Pluto Editor graph describes the behavior of the Alfalfa Crop Moni
   \caption{Pluto graph for the Alfalfa Crop Monitoring and Pollination application}
   \label{fig:alfalfaGraph}
 \end{figure}
+
+\newpage 
 
 Thanks to the \textit{Take photo} action, already implemented in Pluto, the drones are able to perform the monitoring of leaves for pests, diseases and flowers in bloom.
 \\
@@ -238,6 +344,7 @@ An orthophoto is an aerial photo that is geometrically-corrected so that distanc
 Drones are sent to take a series of ortophotos that then will be stitched together to derive a single ortophoto; if the individual pictures do not have sufficient overlap, the resulting orthophoto will show excessive aberrations, and, in that case, the drone is sent out again to take more pictures.
 If the obtained ortophoto is not adequate, the archaeologists should be able to send more drones on that particular area.
 The drones must perform their actions in a limited amount of time, since if too much time pass between two ortophotos, the scene may change.
+\\
 
 Regarding the Pluto graph needed for this application, it is very similar to the Alfalfa\cite{alfalfa} application one, shown in figure \ref{fig:alfalfaGraph}.
 The only difference is the absence of the MissionRepeater block, since this application does not need the drones to repeat their tasks continuously.
@@ -356,14 +463,8 @@ So, in the graph of the "Aerial mapping of archaeological sites" application the
 
 The flow of the Mission entity on the graph is the same of the Alfalfa\cite{alfalfa} application, and is fully described in section \ref{alfalfa}.
 The data collected by the drones are not photos anymore, but a \textit{pollutionQuantity} value which indicates the percentage of pollution in that area.
-In this case the Mission Evaluator block takes care of confronting \textit{pollutionQuantity} variables are confronted and the gradients between areas of higher concentration are computed.
+In this case the Mission Evaluator block takes care of confronting the \textit{pollutionQuantity} variables and to compute the gradients between areas of higher concentration.
 So new drones are sent along this gradients, improving the spatial profile.
-\\
-
-For the measurements of pollution quantity, the \textit{Measure} action can be used.
-\\
-
-The spatial grid must be manually built by the user, organizing the Trips of each Mission on the map he is provided with.
 \\
 
 
@@ -414,6 +515,9 @@ Below there is our implementation of a possible Evaluator algorithm:
 		return result;
 \end{lstlisting}
 
+For the measurements of pollution quantity, the \textit{Measure} action can be used.
+The spatial grid must be manually built by the user, organizing the Trips of each Mission on the map he is provided with.
+\\
 
 Now we show the execution of the PM10 application with Pluto in a particular scenario:
 we have 5 drones and we want to measure the pollution quantity in the area shown in figure \ref{fig:pm10Area} using all of them.
@@ -437,13 +541,13 @@ So the sequence diagrams do not change and the reader can see them in sections \
 The PURSUE application\cite{pursue} is representative of surveillance applications. A team of drones monitor an area and they have to follow moving objects which pass through, taking a picture of each one of them when they enter in the camera field.
 To do so, drones can operate in two distinct modes: when in "patrolling mode" they simply inspect an area, while when an object is found they switch to "pursuing mode" and start to follow the object.
 Since an object could move faster than the drones, no drone can follow it constantly, the system must take care of switching between the real drones in order to constantly follow the target.
-There are time constraints to respect between the detection of a moving object and when its picture is taken and, in case of violations,every tracked object with at least one acquired picture is released from tracking, to regain the drone resources and lower the acquisition latency for the next object.
+There are time constraints to respect between the detection of a moving object and when its picture is taken and, in case of violations, every tracked object with at least one acquired picture is released from tracking, to regain the drone resources and lower the acquisition latency for the next object.
 \\
 
 The PURSUE application represents a limit for the Pluto programming framework.
-Indeed, in our model, the drones perform their action only at the end of the Trip, so it's not possible for them to actively take a picture in the very same moment the moving object enters in the camera field.
-This problem can be lowered by inserting a lot of trips in the area to monitor, with strict time constraints on them, in order to obtain a lot of pictures of the monitored area.
-But in this way, not only it's not sure to capture the moving object, but there will be a lot of useless empty pictures.
+Indeed, in our model, the drones perform their action only at the end of their Trip, so it is not possible for them to actively take a picture in the very same moment the moving object enters in the camera field.
+This problem can be lowered by sending a great number of drones in the area to monitor, with strict time constraints on them, in order to obtain a lot of pictures of the monitored area.
+But in this way, not only it is not sure to capture the moving object, but there would be a lot of useless empty pictures.
 And, above all, there is still no way for the drones to actively follow the moving objects.
 
 We can conclude that the PURSUE application is too "dynamic" for the Pluto programming framework, and this can be an hint for a future expansion of our work.
@@ -451,169 +555,68 @@ We can conclude that the PURSUE application is too "dynamic" for the Pluto progr
 
 \newpage
 
-The applications described above were already developed and tested with other systems, like Karma\cite{karma} and Voltron\cite{voltron}, but we also developed new applications and tested our framework on them:
-the Object-finder (OF), the Warehouse item-finder (WIF) and the Drugs distribution(DD).
-\\
-
-The three applications are modeled by the same Pluto Editor graph, shown in figure \ref{fig:plutoGraph}:
-
-\begin{figure}[H]
-  \centering
-  \includegraphics[width=\linewidth]{pictures/EditorScreen.png}
-  \caption{The Pluto graph of the OF,WIF and DD applications}
-  \label{fig:plutoGraph}
-\end{figure}
-
-In the following sections we describe these applications in details, also using a visual representation of their behavior, and a sequence diagram to make understand better the whole functioning of each one of them.
-
-\newpage
-
-\subsection{Object-finder (OF)}
-
-This application help users to find various objects, like shoes, keys, books, in a domestic fashion:
-
-\begin{itemize}
-\itemsep2pt
-\item{
-the user decides which item wants the drones to look for and the area to be inspected
-}
-\item{
-the main system organizes the team of drones, sending them on the specified locations
-}
-\item{
-the drones fly to the assigned location and, if found, bring the objects back to the user
-}
-\end{itemize}
-
-
-\begin{figure}[H]
-  \centering
-  \includegraphics[width=\linewidth]{pictures/OF.png}
-  \caption{The basic functioning of the Object-finder application}
-  \label{fig:OF}
-\end{figure}
-
-
-
-\newpage
-
-\subsection{Warehouse item-finder (WIF)}
-
-This application help users to manage a warehouse, bringing a list of objects to the them:
-
-\begin{itemize}
-\itemsep2pt
-\item{
-the user makes a list of needed items and writes it on his laptop, tablet or smartphone}
-\item{
-the main system organizes the drones and decide which one will take each item in the list
-}
-\item{
-the drones fly to the assigned objects and bring them back to the user
-}
-
-\end{itemize}
-
-
-\begin{figure}[H]
-  \centering
-  \includegraphics[width=\linewidth]{pictures/WIF.png}
-  \caption{The basic functioning of the Warehouse item-finder application}
-  \label{fig:WIS}
-\end{figure}
-
-
-\newpage
-
-\subsection{Drugs distribution (DD)}\label{dd}
-
-This application help nurses in assisting elder people to take their daily medicines, in an hospice context:
-
-\begin{itemize}
-\itemsep2pt
-\item{
-the nurses prepare some little boxes with each patient’s daily medicine
-}
-\item{
-each drone, at the right time of the day, brings the box to its assigned patient
-}
-\item{
-after carrying out their action, the drones return to the start location
-}
-
-\end{itemize}
-
-
-\begin{figure}[H]
-  \centering
-  \includegraphics[width=\linewidth]{pictures/DD.png}
-  \caption{The basic functioning of the Drugs distribution application}
-  \label{fig:DD}
-\end{figure}
-
-Here there is a sequence diagram showing the behavior of the three applications:
-
-%sequence
-
-\newpage
-
-\section{Usability of the model}
+\section{Usability}
 \label{usability}
 
-To evaluate the concrete usability of the Pluto programming framework, we decided to test it on real people, proposing them two "exercises".
+To evaluate the concrete usability of the Pluto programming framework, we decided to recruit some people and to make them test our framework, proposing them two "exercises".
 We involved five testers, recruited both in the "Politecnico di Milano" and "SICS Swedish ICT" environment, in order to guarantee a solid development background and to avoid possible lack of programming knowledge.
-We created one exercise for each component of Pluto framework.
-The first one consists in the development of an application using the Pluto Graphical Editor.
-The exercise is split in three levels, starting from a very basic version and going through more difficult versions. Each version asks the user to add a new functionality by using the available components in the Editor.
+We created one exercise based on the Graphical Editor and another one based on the Main Application.
+\\
+
+The first exercise is split in three levels, starting from a very basic version and going through more difficult versions. Each version asks the user to add a new functionality by using the available components in the Editor.
+\\
 The second exercise, instead, asks the user to use the generated code from the previous exercise to run the Pluto Main Application, then asks to create some missions and, in the end, to run them.
-The application we choose for the exercises is the Drugs Distribution, already described in section \ref{dd}, because it's very suitable for the type of evaluation we want to perform.
+\\
+
+The application we choose for the exercises is the Drugs Distribution, already described in Section \ref{motivating}, because it's very suitable for the type of evaluation we want to perform.
 Indeed its basic version can be extended with many features, for example using the Mission Modifier block (Section \ref{missionModifier}), and this is exactly our purpose.
-The results are shown in section \ref{surveyResult}.
-After the execution of the exercises, we asked the users to leave a feedback, proposing them a survey, built according to some metrics that we have defined and that we describe in section \ref{survey}.
+After the execution of the exercises, we asked the users to leave a feedback, proposing them a survey, built according to some metrics that we have defined and that we describe in section \ref{survey}, while the results are shown in section \ref{surveyResult}.
 
 \subsection{Proposed exercises}
 \label{exercise}
 
-We give the user a complete and sound explanation of the Pluto programming framework, showing how the graphical editor works (shown in Section \ref{plutoGraphicalEditor}) and giving him the list of the available entities (shown in Section \ref{programmingModel}) and of the implemented blocks (shown in Section \ref{functionalBlocks}), together with an explanation of the meaning and functionality of each one.
-The same explanations are given for all the components of the Pluto User Application (shown in Section \ref{plutoMainApp}).
+We gave to the testers a complete and sound explanation of the Pluto programming framework, showing how the Graphical Editor works (shown in Section \ref{plutoGraphicalEditor}), giving them a description of the involved entities such as the Mission, the Trip, the Drone and the Action (shown in Section \ref{programmingModel}) and the list of the functional blocks (shown in Section \ref{functionalBlocks}), together with an explanation of the meaning and functionality of each one of them.
+\\
+The same explanations were given for the Pluto Main Application too (shown in Section \ref{plutoMainApp}), of course showing them only a summary of its features because our purpose was to evaluate the real usability.
 
 \subsubsection{First Exercise}
 
-The exercise proposes the development of the Drugs Distribution application (shown in section \ref{dd}) in three different versions, increasingly harder to implement:
+The exercise proposes the development of the Drugs Distribution application, introduced in Section \ref{motivating}, in three different versions, increasingly harder to implement:
 
 \begin{itemize}
 \itemsep2pt
 \item{
-\textit{basic version}: we ask the user to implement the basic version of the Drugs Distribution application
+\textit{basic version}: we ask the user to try to implement the Drugs Distribution application without adding new features.
 }
 \item{
-\textit{medium version}: we ask the user to raise the priority of the failed trips and to re-insert them in the queue of next trips to be launched, and to add a delay for the trips.
+\textit{medium version}: we ask the user to make the system raise the priority of the failed trips and then re-inserting them in the queue of next trips to be launched. Moreover the system  should deal with a possible delay on each trip before allocating a drone to it.
 }
 \item{
-\textit{hard version}: we ask the user to add a time constraint within each trip must be completed, that is the same feature implemented by the Timer Monitor block, but using the Mission Modifier block.
+\textit{hard version}: we ask the user to make the system check that each trip concludes its execution before a maximum amount of time. This is the feature introduced by the Timer Monitor functional block, but we wanted the tester to exploit the Editor and to find a way to add this feature with the Mission Modifier block.
 }
 \end{itemize}
 
-To solve the first part of the exercise, the user has to create the graph shown in figure \ref{fig:firstStep}, that represents the very basic scheme of each application, since it uses only the basic blocks.
-Once created the graph, the user has to right click on the panel and choose "generate code" to accomplish the first step of the exercise.
-This is a very easy task to perform, but we think it's useful, because make the user confident with the basic features of Pluto, such as the basic blocks and the code generation mechanism.
+To solve the first part of the exercise, the user has to create the graph shown in figure \ref{fig:firstStep}, that represents the very basic pattern of most applications, since it uses only the basic blocks.
+Once created the graph, the user has to right click on the panel and choose the "Generate code" option to accomplish the first step of the exercise.
+This should be an easy task to perform, but we think it could be useful, because it makes the user confident with the features of the Pluto Graphical Editor, such as the blocks creation and the code generation mechanism.
+\\
 
-
-\begin{figure}[htb]
-  \centering
-  \includegraphics[width=\linewidth]{pictures/EditorScreen.png}
-  \caption{Solution of the first step}
-  \label{fig:firstStep}
-\end{figure}
+% \begin{figure}[htb]
+%   \centering
+%   \includegraphics[width=\linewidth]{pictures/firstStep.png}
+%   \caption{Solution of the first step}
+%   \label{fig:firstStep}
+% \end{figure}
 
 \newpage
 
-To solve the first part of the second step of the exercise, the user has only to understand that the functionality to add is already implemented by the Priority Manager block, so he has only to add this block to the graph in the right point.
-Since we ask him to re-insert the failed trips in the queue of unexecuted trips he has to put the block between the Trip Monitor and the Drone Allocator, as shown in figure \ref{fig:secondStepPriority}.
+To solve the first part of the second step of the exercise, the user has to understand that the functionality to add is already implemented by the Priority Manager block, so the solution is to add this block to the graph in the right point.
+Since we ask him to re-insert the failed trips in the queue of the trips to launch, he has to put the Priority Manager between the Trip Monitor and the Drone Allocator, as in figure \ref{fig:secondStepPriority}.
+\\
 
 \begin{figure}[htb]
   \centering
-  \includegraphics[width=\linewidth,height=7cm]{pictures/secondStep.png}
+  \includegraphics[width=\linewidth,height=8cm]{pictures/secondStep.png}
   \caption{Solution of the second step with Priority Manager}
   \label{fig:secondStepPriority}
 \end{figure}
@@ -621,21 +624,24 @@ Since we ask him to re-insert the failed trips in the queue of unexecuted trips 
 Then to add the Delay feature in the diagram the user needs to do the same thing with the Clock block, that provides the feature to wait for an amount of time, set in the delay attribute of a Trip. This block is taking as input the mission provided by the Trip Monitor and the by the Mission Creator then, after the delay time has passed, gives the mission to the DroneAllocator block, as shown in figure \ref{fig:secondStepClock}.
 
 This is a useful step to compute, because the user learns how to use the connection element, that is a very important feature in the Pluto framework, and also the Priority Manager and Clock blocks.
+\\
 
 \begin{figure}[htb]
   \centering
-  \includegraphics[width=\linewidth,height=7cm]{pictures/secondStepClock.png}
+  \includegraphics[width=\linewidth,height=8cm]{pictures/secondStepClock.png}
   \caption{Solution of the second step with Clock block}
   \label{fig:secondStepClock}
 \end{figure}
 
-\newpage
+For the third step, the user has to implement the feature of the Timer Monitor block but making use of the Mission Modifier block. This is done in order to evaluate the usability of this block, which gives the developer freedom to add new custom features to the application.
+\\
+So, he has to use the Mission Modifier block, through which he can insert his custom code in the diagram flow. He should put it in parallel with the Trip Monitor block, connecting it with a new arch outgoing from the Trip Launcher. This new edge beside the one going to the Trip Monitor will clone the Mission object. So after the two parallel blocks, the user should use one of the Gate blocks provided, as shown in figure \ref{fig:thirdStep}.
+\\
 
-For the third step, the user has to implement the feature of the Timer Monitor block without using it.
-So, he has to use the Mission Modifier block, through which he can insert his code in the application, and put it between the Trip Launcher and GateFIFO blocks, in parallel with the TripMonitor, as shown in figure \ref{fig:thirdStep}.
 This is a very useful step to compute, because the user learns how to use Mission Modifier block, which is an important feature of the Pluto Editor, because it allows the programmer to insert his custom code to characterize the application.
+\\
 
-\begin{figure}[H]
+\begin{figure}[htb]
   \centering
   \includegraphics[width=\linewidth, height=8cm]{pictures/thirdStep.png}
   \caption{Solution of the third step}
@@ -662,9 +668,9 @@ The first step asks every user to create and run the same kind of missions, as d
     \subitem Trip D -> Action: Measure
 \end{itemize}
 
-The location in the map of the Trips was not important while testing, so the tester could decide any place.
-In the second step the users were asked to open the Monitor Page and to start the missions following their execution using the provided table and console.
-The third step of the exercise consists in calling back the Drone with an RTL command.
+The location in the map of the Trips was not important while testing, so the tester could decide any places.
+In the second step the users were asked to open the Monitor Page and to start the missions following their execution using the provided table and the log console inside the page itself.
+The third step of the exercise consists in calling back the Drone with an RTL (Return To Launch) command.
 
 
 \subsection{Evaluation metrics}\label{metrics}
@@ -684,11 +690,11 @@ To concretely evaluate the usability of the Pluto programming framework we defin
 \end{enumerate}
 
 Through metrics 1,2 and 3 we can understand which parts of the exercises are not clear for the user and/or too difficult to implement. 
-Through metrics 4,5,6 and 7 we can understand, once the user has understood how to implement each feature, how much is difficult to solve each part of the exercises by measuring the time required to solve each step.
+Through metrics 4,5,6 and 7 we can understand, once the user has understood how to implement each feature, how much it is difficult to solve each part of the exercises by measuring the time required to solve each step.
 Through metrics 8 and 9, finally, we can understand how easy is to confuse the specifications and how many people couldn't solve any step of the exercises.
 
 
-\subsection{Baseline}
+\subsection{Baseline}\label{baseline}
 
 We want to demonstrate the effective usefulness of the Pluto programming framework, so we decide to compare its features with the API of the Crazyflie Nano-quadcopter, which was described in section \ref{crazyflie}.
 
@@ -709,20 +715,19 @@ Since we want to evaluate the usability of Pluto, we propose a survey to the use
 
 We ask users to tell us how easy was the development of the various steps of the exercises, and to provide us with a feedback on the usability of the editor and the main application underlining any problems found.
 We also ask for suggestions to improve the usability of Pluto.
-
-The survey can be found following this link:
-
-\url{https://docs.google.com/forms/d/1b_52e7VLuns6AH1jiT3TeIRZ_KPRTLJYJe9ckrJanWY/viewform?usp=send_form}
+The survey can be found in the Appendix \ref{appendixA}.
 \\
 
-Actually, this survey gives us very useful information about the Pluto framework. We can understand how "usable" it is and which modifications should be performed to improve the user's experience, also thanks to the visualization of the answers in a graphical way, shown in the next section, the \ref{surveyResult}.
+% \url{https://docs.google.com/forms/d/1b_52e7VLuns6AH1jiT3TeIRZ_KPRTLJYJe9ckrJanWY/viewform?usp=send_form}
+% \\
+
+Actually, this survey gives us very useful information about the Pluto framework. We can understand how "usable" it is and which modifications should be performed to improve the user's experience, also thanks to the visualization of the answers in a graphical way.
 Through the questions on the exercises development we can understand how difficult it is to create, modify,customize and execute a particular application, validating "on field" the use of the various blocks, especially the Mission Modifier, and the usability of the user interface.
 
 \subsection{Results}\label{surveyResult}
 
 Thanks to the combination of the answers to the user survey of section \ref{survey} and the numeric data collected according to the metrics defined in section \ref{metrics}, in this section we show the results of the Pluto evaluation.
-We make use of graphical representation in order to make the results clearer and easily understandable by everyone.
-The metrics data are put into the table \ref{surveyTable}, while the results of the user survey are presented with graphics.
+The metrics data are put into the table \ref{surveyTable}.
 \\
 
 \begin{table} [htdp]
@@ -738,17 +743,37 @@ The metrics data are put into the table \ref{surveyTable}, while the results of 
      \end{tabular}
     \end{table}
 
-
-A graphical representation of the answers to the user survey can be found at the following link:
+As shown in the table above, all the users completed the two proposed exercises.
+Except for the third step of the first exercise, which required to use the Mission Modifier block, the other steps took few minutes to get solved.
+This is a good response on the usability of the framework.
+\\
+Instead, the third step of the first exercise resulted harder than expected. 
+From the testers' comments we understood that this difficulty derives from the lack of knowledge about the way to manage the attributes of the trips and mission entities in the code.
+\\
+We realized that a complete reference of the entities and an example of use of them is essential in order to simplify the developer duties.
 \\
 
-\url{https://docs.google.com/forms/d/1b_52e7VLuns6AH1jiT3TeIRZ_KPRTLJYJe9ckrJanWY/viewanalytics}
-\newpage
+The questions in the survey follow a pattern where, firstly we asked for a difficulty mark for each exercise's step (from "easy" to "very hard" or "not solved") and then we asked for a written comment or an advice about it.
+\\
+Concerning the first exercise, as already highlighted by the above table, the answers on the first two steps are quite similar and the testers answered with "easy" or "normal" grades with few advices.
+\\
+On the other hand, in the third step some testers gave an "hard" grade complaining about the difficulty of dealing with the reset of a Trip or how to understand when a Trip is expired.
+\\
 
-Examining both the user survey and the results of the evaluation metrics, we can say that Pluto is quite easy to use.
-Indeed, all the five testers managed to solve the two exercises, and, through the survey, they stated that Pluto is easily usable and its functioning is quite fast to understand.
-They also give some suggestions, especially on the Pluto Main Application, which made us improve some features that appeared tricky or not easily understandable.
+Regarding the Main Application exercises, all the steps were considered from "very easy" to "normal". 
+The users also gave us some suggestions which made us improve some features that appeared tricky or not easily understandable.
+\\
+A complete description of the answers to the user survey can be found in the Appendix \ref{appendixB}.
+\\
 
+In the end, we focused the evaluation on the baseline described in Section \ref{baseline}.
+We asked the testers to make use of the Crazyflie official API to develop a simple script that makes a drone move from a source to a target location.
+All the testers gave up during this exercise, because it required a good knowledge of the Python language and because it would have taken too much time to complete it.
+\\
+Basing on this result, we can say that the Pluto Main Application really simplifies the duty of a user that needs to define the concept of Trip and Action inside an application.
+Using our framework, it takes only 5 minutes to define a Mission and execute it.
+Instead, in order to make the same thing using the Crazyflie official API, the tester faced many problems since the beginning.
+\\
 
 \newpage
 
@@ -768,13 +793,13 @@ To help us in this procedure we used a very useful tool called VisualVM, shown i
   \label{fig:visualVM}
 \end{figure}
 
-It let the user have a global monitoring of the running Java application in your local Java Virtual Machine, at run-time. Furthermore, it has a useful feature that records the profiling of an application in a dump file so that the user can compare different dump files concerning different application sessions.
+It let the user have a global monitoring of the running Java application in his local Java Virtual Machine, at run-time. Furthermore, it has a useful feature that records the profiling of an application in a dump file so that the user can compare different dump files concerning different application sessions.
 Finally, in the Result section \ref{metricsResult}, we describe the outcome of the tests for the Pluto Graphical Editor and the Pluto Main Application separately.
 
 \subsection{Software Metrics}
 
 The software metrics let us understand the complexity of the software.
-We decided to record this information for each component of the Pluto Framework, because it lets us to understand how much expandable it is and then how much effort a different developer should spend to add new features in the future.
+We decided to record this information for each component of the Pluto Framework, because it allows us to understand how much expandable it is and how much effort a different developer should spend to add new features in the future.
 \\
 
 These parameters are:
@@ -814,7 +839,8 @@ The profiling of the application was done on a machine with these specifications
 
 Concerning the Pluto Graphical Editor, we measured these parameters while generating the source code of the Main Application from an increasingly more complex drawing. 
 We raised step by step two parameters: the number of blocks and the number of connections.
-At first we fixed the former and we incremented the latter by a step of 5, starting from 1 connection. Then we did the same operation fixing the number of connections and raising the number of blocks by 5, now starting from 2 blocks.
+At first we fixed the former and we incremented the latter by a step of 5, starting with one connection. Then we did the same operation fixing the number of connections and raising the number of blocks by 5, now starting with 2 blocks.
+A very complex graph used for the editor evaluation is shown in figure \ref{stressDiagram}.
 
 \begin{figure}[H]
   \centering
@@ -825,14 +851,17 @@ At first we fixed the former and we incremented the latter by a step of 5, start
 
 Furthermore, we evaluated the same metrics concerning the Main Application.
 We decided to focus this evaluation varying 3 important parameters: the number of Mission, the number of Trips related to a single Mission and the number of available Drones. 
-We started fixing the number of missions and trips varying instead the number of drones. Then we fixed the missions and the drones varying the trips. In the end we fixed the trips and the drones varying the number of missions.
+We started fixing the number of missions and trips, while varying the number of available drones. 
+Then we fixed the number of missions and drones, while varying the number of trips. 
+In the end we fixed the number of trips and drones, while varying the number of missions.
 In this way, we could evaluate the performance of the Main Application in an accurate way.
-The results are shown in next section \ref{metricsResult}.
+The results are shown in the next Section \ref{metricsResult}.
 
 \subsection{Results}
 \label{metricsResult}
 
-In this section we show the results of the software and resources consumption evaluation. First of all, we evaluated the software complexity of the Pluto framework, according to some important software metrics. The table \ref{table:metricsTable} proposes the results.
+In this Section we show the results of the software and resources consumption evaluation.
+First of all, we evaluated the software complexity of the Pluto framework, according to some important software metrics. Table \ref{table:metricsTable} proposes the results.
 
 \begin{table}[htdp]
 \centering
@@ -855,30 +884,34 @@ Weighted methods per class & 325 & 848 \\
 \label{table:metricsTable}
 \end{table}
 
-Thanks to these measures, we can make some considerations about the size and the spent effort of the Pluto framework.
+Thanks to these measures, we can make some considerations about the size and the effort	spent in developing the Pluto framework.
 \\
-Concerning the Main Application, these values are dependent from the diagram generation process because the amount of the generated surplus code doesn't exceed the 2-3\% of the total lines of code of the template Main Application. Indeed the generation adds no more than 50 lines.
+Concerning the Main Application, these values depend from the diagram generation process, because the amount of the generated surplus code does not exceed the 2-3\% of the total lines of code of the template Main Application.
+Indeed the generation adds no more than 50 lines.
 \\
 Instead, the Graphical Editor has a higher volume than the Main Application, with all the measured values doubled. 
-This can be explained by the fact that, to develop the Editor, we based our code on Eclispe GEF Framework.
-Then most of the classes, have inherited from other parent classes inside this framework and we inherited its complexity too.
+This can be explained by the fact that, to develop the Editor, we based our code on the Eclispe GEF Framework.
+Most of the classes inherit from other parent classes inside this framework, and we inherited its complexity too.
 \\
-The higher size explains also the time we spent to develop the Graphical Editor and the time needed to add new features during the software revision steps. Indeed we found the GEF framework a bit hard to maintain.
+The higher size explains also the time we spent to develop the Graphical Editor and the time needed to add new features during the software revision steps.
+Indeed we found the GEF framework a bit hard to maintain.
 \\
-% SPIEGARE PERCHè LE LINEE DI CODICE SONO NORMALI
 
-In the end, we present the results concerning the resources consumption of the two Pluto framework components.
+Now we present the results concerning the resources consumption of the two Pluto framework.
 \\
-Starting from the Graphical Editor, the diagrams in picture \ref{fig:editorHWMetrics} describe the resources consumption when the connections number raise with fixed number of blocks and when increasing the blocks amount with fixed connections.
+Starting from the Graphical Editor evaluation, the diagrams in picture \ref{fig:editorHWMetrics} describe the results of the resources consumption during the code generation process.
+The left one represents the results while increasing the blocks amount with fixed connections.
+The right one instead represents the results when the connections number varies with a fixed number of blocks.
+\\
 
-\begin{figure}
+\begin{figure}[h!]
 \centering
 \begin{subfigure}[b]{0.3\textwidth}
 \centering
   \begin{tikzpicture}
     \begin{axis}[xmin=5,xmax=100,
     ymin=0,ymax=110,
-    xlabel=$Blocks$,ylabel=$Metrics$,
+    xlabel=$Blocks$,%ylabel=$Metrics$,
     title={Fixed 10 Connections},width=6.5cm,
     legend style={font=\tiny}]
     \addplot [color=magenta]
@@ -908,7 +941,7 @@ Starting from the Graphical Editor, the diagrams in picture \ref{fig:editorHWMet
   \begin{tikzpicture}
     \begin{axis}[xmin=5,xmax=100,
     ymin=0,ymax=110,
-    xlabel=$Connections$,ylabel=$Metrics$,
+    xlabel=$Connections$,%ylabel=$Metrics$,
     title={Fixed 15 Blocks},width=6.5cm, legend style={font=\tiny}]
     \addplot [color=magenta]
     coordinates
@@ -932,16 +965,24 @@ Starting from the Graphical Editor, the diagrams in picture \ref{fig:editorHWMet
     \end{axis}
   \end{tikzpicture}
 \end{subfigure}\hfill\null
-\caption{Resources consumption metrics of Graphical Editor}
+\caption{Resources consumption of the Graphical Editor}
 \label{fig:editorHWMetrics}
 \end{figure}
 
-\newpage
-
-As you can see the Graphical Editor doesn't require a big amount of hardware resources while generating the code, even with complex diagrams.
+Inside each diagram there are three curves representing the three metrics we measured: the CPU load (magenta), the memory consumption (blue) and the number of active threads (green).
+\\
+The Graphical Editor does not load the CPU more than 10\% while generating the code, even in the case of complex diagrams.
+This can be explained by the fact that the generated code is a little percentage inside the whole Main Application code.
+\\
+The memory consumption is not stable but it waves between 40MB and 70MB.
+We noticed that this fluctuation is independent from the Graphical Editor process, and is due to the Operating System.
+\\
+We realized that the Graphical Editor does not require an high amount of resources during the generation of the Main Application template code.
 \\
 
-The Main Application evaluation gave us different results, shown in the following figures.
+\newpage
+
+Instead, The Main Application evaluation gave us different results, shown in the following figures.
 \\
 
 \begin{figure}[h!]
@@ -949,7 +990,7 @@ The Main Application evaluation gave us different results, shown in the followin
   \begin{tikzpicture}
     \begin{axis}[xmin=5,xmax=100,
     ymin=0,ymax=110,
-    xlabel=$Connections$,ylabel=$Metrics$,
+    xlabel=$Drones$,%ylabel=$Metrics$,
     title={Fixed 10 Missions and 5 Trips},width=8cm, legend style={font=\tiny}]
     \addplot [color=magenta]
     coordinates
@@ -976,7 +1017,10 @@ The Main Application evaluation gave us different results, shown in the followin
   \label{fig:mainApp1}
 \end{figure}
 
-The diagram \ref{fig:mainApp1} describes the resources consumption of the Main Application with a fixed number of missions and trips and a raising number of drones. We created 10 missions with 5 trips each.
+The diagram of figure \ref{fig:mainApp1} describes the resources consumption of the Main Application with a fixed number of missions and trips and a raising number of drones. We created 10 missions with 5 trips each.
+\\
+The CPU load is constantly over 95\% due to the high number of active threads.
+The memory consumption value is even fewer than the one obtained in the test of the Graphical Editor, and the fluctuation is less highlighted.
 \\
 
 \begin{figure}[h!]
@@ -984,7 +1028,7 @@ The diagram \ref{fig:mainApp1} describes the resources consumption of the Main A
   \begin{tikzpicture}
     \begin{axis}[xmin=5,xmax=100,
     ymin=0,ymax=110,
-    xlabel=$Connections$,ylabel=$Metrics$,
+    xlabel=$Trips$,%ylabel=$Metrics$,
     title={Fixed 10 Missions and 15 Drones},width=8cm, legend style={font=\tiny}]
     \addplot [color=magenta]
     coordinates
@@ -1011,15 +1055,18 @@ The diagram \ref{fig:mainApp1} describes the resources consumption of the Main A
   \label{fig:mainApp2}
 \end{figure}
 
-The diagram \ref{fig:mainApp2} describes the resources consumption of the Main Application with a fixed number of missions and drones and a raising number of trips for each mission. We created 10 missions and made available 15 drones.
-\newpage
+The diagram \ref{fig:mainApp2} describes the resources consumption of the Main Application with a fixed number of missions and drones while increasing the number of trips for each mission. 
+We created 10 missions and made available 15 drones.
+\\
+The situation is almost the same of the previous test, represented in figure \ref{fig:mainApp1}.
+\\
 
 \begin{figure}[h!]
 \centering
   \begin{tikzpicture}
     \begin{axis}[xmin=5,xmax=100,
     ymin=0,ymax=110,
-    xlabel=$Connections$,ylabel=$Metrics$,
+    xlabel=$Missions$,%ylabel=$Metrics$,
     title={Fixed 5 Trips and 15 Drones},width=8cm, legend style={font=\tiny}]
     \addplot [color=magenta]
     coordinates
@@ -1048,14 +1095,18 @@ The diagram \ref{fig:mainApp2} describes the resources consumption of the Main A
 
 The diagram \ref{fig:mainApp3} describes the resources consumption of the Main Application with a fixed number of trips and drones and a raising number of missions. We created 5 trips for each mission and made available 15 drones.
 \\
-
-As you can see, the general consumption is almost the same for each situation: there is a low request of memory, a limited number of live threads, and a quite high consumption of the CPU.
+The evident difference from the previous diagrams is that the number of active threads during the execution raises with the increase of the number of missions set by the user. 
+\\
+This can be explained by the fact that each Mission is managed by a dedicated thread.
+in this way if the user creates 100 missions at least 100 threads are created.
+\\
+This behavior lets us think about the possibility to run each mission on a different machine, in order to reduce the threads concurrency and reduce the CPU load.
 \\
 
-It's important to put in evidence an unexpected situation regarding the third experiment, the one in which we fixed the number of trips and drones.
-When we reached a certain number of missions, the system fell in a deadlock situation.
-For example, whit 15 drones and 5 trips, we had no problems until we reached 25 missions.
-Then, when we raised the amount of available drones, for example setting it to 20, the system didn't fall in the deadlock situation and all the missions were completed successfully.
-\\
-This problem put in evidence a possible dependency between the number of missions created and the number of available drones.
-The causes of this issue could be hardware related, meaning that a more powerful machine could be able to complete all the missions even with a low number of available drones.
+% It's important to put in evidence an unexpected situation regarding the third experiment, the one in which we fixed the number of trips and drones.
+% When we reached a certain number of missions, the system fell in a deadlock situation.
+% For example, whit 15 drones and 5 trips, we had no problems until we reached 25 missions.
+% Then, when we raised the amount of available drones, for example setting it to 20, the system didn't fall in the deadlock situation and all the missions were completed successfully.
+% \\
+% This problem put in evidence a possible dependency between the number of missions created and the number of available drones.
+% The causes of this issue could be hardware related, meaning that a more powerful machine could be able to complete all the missions even with a low number of available drones.

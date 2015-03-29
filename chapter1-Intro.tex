@@ -79,7 +79,7 @@ In Sections \ref{droneLevel}, \ref{swarmLevel} and \ref{teamlevel} we describe t
 We show that no one of these approaches is suitable for our requirements, since we need the concepts of missions and trips.
 A mission is a list of sensing tasks to be performed sequentially and a trip is a movement from a point A to a point B in the environment to perform an action.
 Then, in Section \ref{dataflow}, we describe the dataflow programming method, that we adopted for the Pluto Graphical Editor, providing two existing examples of it.
-Also in this case, we show that we need a different approach, since we need to re-use blocks and the existing solutions don't allow us to do this.
+Also in this case, we show that we need a different approach, since we need to use only a group of basic components for our work, while the existing solutions are too general and include a lot of complex components.
 \\
 
 Chapter~\ref{cap3} is focused on the problems stemming from the indoor context and on the requirements deriving from it.
@@ -95,6 +95,7 @@ We also describe the blocks architecture of the Pluto Programming Framework, whi
 In Section \ref{functionalBlocks} we describe in details the functionality of the available blocks of the Pluto Graphical Editor, that are the basic elements that the programmer can connect to graphically build an application.
 In Section \ref{toolchain} we describe in details the two components of the Pluto framework:
 the Graphical Editor, that is used by the programmer to graphically build an application and the Main Application, that is used by the final user to specify the sensing tasks to be performed.
+In Section \ref{navigationSystem} we describe the navigation system, that is the conjunction point between the Main Application and the drones team.
 The last Section of the Chapter, the \ref{history}, describes all the steps performed to arrive to the final system, showing all the previously implemented solutions which, once refined, brought us to the development of the Pluto programming framework.
 \\
 
