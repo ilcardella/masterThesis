@@ -1,12 +1,14 @@
 \chapter{Evaluation}
 \label{cap6}
 
-In this Chapter we fully evaluate the Pluto programming framework.
-In Section \ref{applicability} we describe four already existing applications and three case study, and we discuss on whether they can be developed or not with Pluto. 
+In this Chapter we evaluate the Pluto programming framework.
+In Section \ref{applicability} we describe four already existing applications and three case study;
+we also discuss whether they can be developed or not with Pluto. 
 In this way we understand the expressive power of Pluto and the possible limits to overcome.
-In Section \ref{usability} we propose two exercises to real testers, in order to test "on the field" the effective usability of Pluto:
+In Section \ref{usability} we propose two exercises to real testers, in order to test concretely the effective usability of Pluto:
 the first one deals with the Graphical Editor, described in Section \ref{plutoGraphicalEditor}, the second one with the Main Application, described in Section \ref{plutoMainApp}.
-Then we propose a third exercise, in which we ask the users to directly use the API of the Crazyflie nano-quadcopter, shown in Section \ref{crazyflie}, to make it move from a point A to a point B.
+Then we ask the users to directly use the API of the Crazyflie nano-quadcopter, shown in Section \ref{crazyflie}, to make it move from a point A to a point B.
+In this way, we are able to highlight the advantages of using our framework instead of the Crazyflie API.
 We also propose a survey to the users and then present the result in a graphical way, in order to have opinions on the framework and possibly to improve it with the suggestions of the testers.
 In Section \ref{performance} we measure the software and hardware consumption metrics required by Pluto, in order to evaluate the effective impact of Pluto on an ordinary computing machine.
 
@@ -16,7 +18,7 @@ In Section \ref{performance} we measure the software and hardware consumption me
 We developed our programming framework thinking about indoor applications utilizing nano-drones.
 Actually, since we work at a sufficiently high level of abstraction, because we can use an API which make the drones navigate in the environment, the model can be extended to almost every kind of drone, aerial terrestrial and aquatic.
 \\
-So, we can say that the Pluto programming framework is "drone independent", and this greatly extends its applicability, including also outdoor, aquatic and terrestrial environments; it is in charge of the programmer to manage the interaction between Pluto and the specific type of drone he wants to use for the particular application he's developing.
+So, we can say that the Pluto programming framework is "drone independent", and this greatly extends its applicability, including also outdoor, aquatic and terrestrial environments; it is in charge of the programmer to manage the interaction between Pluto and the specific type of drone he wants to use for the particular application he is developing.
 \\
 
 Since we decided to use a Team-level approach (see \ref{teamlevel}), our model can be used for developing applications where the user can give to the system a set of actions to be performed; the dispatching of these actions is managed by the "central brain", which takes care of assigning the drones to the action and to handle all the exceptions (battery low, crashes etc.). So, the drones are only actuators that perform an action, there is no communication between them, their behavior is monitored and decided by the central brain.
@@ -30,17 +32,16 @@ Hereinafter we analyzed some  example applications, showing whether they can be 
 \subsection{Basic applications}
 
 In this Section we describe three applications we developed with the Pluto programming framework.
-They are all represented by the basic graph of figure \ref{fig:basicGraph}:
+They are all represented by the basic Pluto graph of figure \ref{fig:basicGraph}:
 
-% figura basicGraph: il solito grafo con missionCreator, droneAllocator, TripLauncher e TripMonitor, fatto con Visio
-\begin{figure}[H]
-  \centering
-  \includegraphics[width=\linewidth]{pictures/BasicBlocksDiagram.png}
-  \caption{The basic graph pattern of OF, DD and WIF applications}
-  \label{fig:basicGraph}
-\end{figure}
+ \begin{figure}[H]
+   \centering
+   \includegraphics[width=\linewidth]{pictures/BasicBlocksDiagram.png}
+   \caption{The basic graph pattern of OF, DD and WIF applications}
+   \label{fig:basicGraph}
+ \end{figure}
 
-The graph is the same for all the three applications, but of course it assumes a different meaning for each one of them, since each application needs different actions to be performed in the environment.
+The graph represents the pattern on which all the three applications base their behavior, but of course it assumes a different meaning for each one of them, since each application needs different actions to be performed in the environment.
 These different meanings are explained in the specific parts describing the three applications, shown in the proceedings of this Section.
 The three applications are:
 
@@ -54,7 +55,7 @@ The three applications are:
 \textbf{Object-finder (OF)}
 \\
 
-This application help users to find various objects, like shoes, keys and books, in a domestic environment.
+This application help users find various objects, like shoes, keys and books, in a domestic environment.
 The user decides which item wants the drones to look for and the area to be inspected, then
 the main system organizes the team of drones, sending them to the specified locations.
 The drones fly to the assigned locations and, if one of them finds the object it brings it back to the user.
@@ -79,17 +80,19 @@ Then the DroneAllocator block takes care of assigning the right Drone to the fir
 Then the Mission entity arrives to the TripLauncher that simply starts the execution of the first Trip and sets its status to RUNNING, sending the drone to actively look for the lost object in that location.
 
 The TripMonitor changes the status of the executing Trip depending on the outcome of the Drone's research:
-if the Drone accomplishes to find the lost object, the Trip status is set to COMPLETED, otherwise, for example if the Drone crashes, the Trip status is set to FAILED.
+if the Drone manages to find the lost object, the Trip status is set to COMPLETED, otherwise, for example if the Drone crashes, the Trip status is set to FAILED.
 
 After the first Trip, the Mission entity goes again to the DroneAllocator, in order to execute also the other trips in the Mission, that is to say in order to send drones in the other specified locations to look for the object.
-\\
+
+
+\newpage
 
 \textbf{Warehouse item-finder (WIF)}
 \\
 
-This application help users to manage a warehouse, bringing them a list of needed objects.
+This application help users manage a warehouse, bringing them a list of needed objects.
 The user creates a list of needed items and writes it on his laptop, then
-the main system organizes the drones and simultaneously send each one of them to take one of the objects of the specified list.
+the main system organizes the drones and simultaneously sends each one of them to take one of the objects of the specified list.
 Finally the drones fly to the assigned objects and bring them back to the user.
 Figure \ref{fig:WIS} shows the basic behavior of the WIF application:
 
@@ -105,10 +108,11 @@ In this case, each Mission entity contains only a Trip to execute:
 each Trip is associated to one of the objects that the drones have to bring to the user.
 As already explained, the Mission entities are executed in parallel, so in this case
 there is one Mission for each object to bring, since the drones have to work simultaneously.
+\\
 
 Then the DroneAllocator block takes care of assigning the right Drone to the Trip of each Mission, that is the associated object to pick.
-
 Then the Mission entities arrive to the TripLauncher, that simply starts the execution of each Trip and sets their status to RUNNING, sending each drone to bring its associated object.
+\\
 
 The TripMonitor changes the status of the executing trips depending on the outcome of the drones research:
 if the Drone accomplishes to bring the object to the user, the Trip status is set to COMPLETED, otherwise, for example if the Drone crashes, the Trip status is set to FAILED.
@@ -134,7 +138,13 @@ The TripMonitor changes the status of the executing trips depending on the outco
 if the Drone accomplishes to bring the box to the patient, the Trip status is set to COMPLETED, otherwise, for example if the Drone crashes, the Trip status is set to FAILED.
 After the first group of trips, the Mission entities go again to the DroneAllocator, in order to execute also the other trips and deliver the remaining boxes.
 
-\newpage
+\textbf{Summary}
+
+We built the Pluto programming framework in order to address the problems issued by the indoor context.
+We based the development of Pluto on the three applications described above, which deal with houses, warehouses and hospitals contexts.
+
+Since we wanted to test the generality of our framework, we tried to extend its use also to outdoor applications.
+In the next Sections we describe four outdoor applications, developed with other programming systems, showing all the limits and problems encountered by developing them with Pluto.
 
 \subsection{Alfalfa Crop Monitoring and Pollination}\label{alfalfa}
 
@@ -161,18 +171,19 @@ Thanks to the \textit{Take photo} action, already implemented in Pluto, the dron
 \\
 
 The flow starts with the MissionCreator block, that creates a Mission instance to propagate in the graph.
-As already explained, a Mission is a list of sensing tasks to be executed sequentially.
-Then the DroneAllocator block takes care of assigning the right Drone to the next Trip in the list of trips to be executed of the Mission entity.
-A Trip is nothing but a movement of the Drone from a point A to a point B in the environment, at the end of which the Drone performs an Action.
-Then the Mission entity arrives to the TripLauncher that simply starts the execution of the first Trip and sets the its status to RUNNING.
+In this case, the Mission contains the list of locations where the drones have to take the pictures.
+Then the DroneAllocator block takes care of assigning the right Drone to the next Trip in the list of trips to be executed of each Mission entity, that is the first location where to take the picture.
+Then the Mission entity arrives to the TripLauncher that simply starts the execution of the first Trip and sets its status to RUNNING.
 \\
 
 After the TripLauncher the Mission entity is doubled. One instance goes to the TripMonitor block and the other one to the TimerMonitor.
 The TripMonitor changes the status of the executing Trip depending on the outcome of the Drone's journey:
-if the Drone accomplishes to complete the journey and perform the Action, then the Trip status is set to COMPLETED,
+if the Drone accomplishes to take the picture on its assigned location, then the Trip status is set to COMPLETED,
 if the Drone crashes the Trip status is set to FAILED.
 The time constraints, which are set by the user thanks to the \textit{timer} attribute of the Mission entity, are fulfilled thanks to the TimerMonitor block.
 This block takes care of setting the Mission status to FAILED if one of its Trips is not completed within the timer.
+For example, the user may want the drones to take the pictures within 3 minutes.
+If one Drone takes more than 3 minutes to perform its action, the TimerMonitor sets the Mission status to FAILED.
 \\
 
 The GateFIFO block takes as input two Mission instances, one from the Trip Monitor and the other one from the Timer Monitor.
@@ -181,7 +192,8 @@ For example, if the timer has expired then it propagates the Timer Monitor insta
 \\
 
 After the GateFIFO block there is a bifurcation:
-if the Mission is completed, it is sent to the MissionEvaluator, otherwise there are some trips of the mission that must be executed again, and so the Mission is sent to the DroneAllocator, which will assign new drones to these trips.
+if all the pictures inside the Mission have been taken, the Mission is COMPLETED and it is sent to the MissionEvaluator block.
+Otherwise, some pictures must be taken again, that is to say there are some trips of the Mission that must be executed again, so the Mission is sent to the DroneAllocator block, which assigns new drones to these trips.
 \\
 
 The MissionEvaluator block enables the evaluation of the photos taken by the drones. If the pest and/or disease attributes are true, the system notifies the farmer of the damaged location, adding a log line in the console of the Monitor Page of the Pluto User Interface.
@@ -263,33 +275,31 @@ The Mission status is set to STANDBY because there is at least a new inserted Tr
 \end{lstlisting}
 
 To concretely choose the specific locations to monitor, the user is provided with a map over which he can drag and drop the action \textit{Take photo}.
-As already explained, a Mission object contains a list of trips to be executed.
 Inside the Mission entity, these trips are performed sequentially, in general each one by a different Drone, as already explained in Section \ref{programmingModel}.
 So, if the user wants to send more than one drone simultaneously on the same location, he has to create more than one Mission.
 Indeed missions are executed in parallel, so if the user wants to simultaneously send 3 drones on the same location, he simply has to create three missions.
 Then,  since each Mission has its own Trips Page, he has to choose the same locations on the maps of the three Trip pages.
+\\
 
 To further clarify the development of the Alfalfa\cite{alfalfa} application with Pluto, we now show a real execution of the Alfalfa application in a concrete scenario:
 imagine we want to simultaneously send three drones to monitor the plants distributed in a circular area.
 So, we create three Mission entities, and, for each of them, we drag and drop the action \textit{Take photo} on the map of its Trip page, in order to create the trips composing the circular area, as shown in figure \ref{fig:alfalfaArea}.
 The figure \ref{fig:alfalfaArea} represents the trips of one of the three Missions.
-Each one of the three missions has its own map where the user distribute the trips to perform.
+Each one of the three missions has its own map where the user distributes the trips to perform.
 Then, when the missions start, the drones will take photos over these spots and, in case of bloom, new Trips will be created to Pollinate the area.
-\\
 
 \begin{figure}[h!]
   \centering
-  \includegraphics[width=\linewidth,height=9cm]{pictures/alfalfaArea.png}
+  \includegraphics[width=\linewidth]{pictures/alfalfaArea.png}
   \caption{The circular area to monitor}
   \label{fig:alfalfaArea}
 \end{figure}
 
-\newpage
 
 To describe in a detailed way the execution flow, we now show the sequence diagrams of the Pluto Main Application behavior:
 \\
 
-\begin{figure}[h]
+\begin{figure}[h!]
   \centering
   \includegraphics[width=\linewidth]{pictures/Alfalfa_Sequence_MissionStart.png}
   \caption{Sequence diagram of a starting mission}
@@ -723,9 +733,6 @@ We also ask for suggestions to improve the usability of Pluto.
 The survey can be found in the Appendix \ref{appendixA}.
 \\
 
-% \url{https://docs.google.com/forms/d/1b_52e7VLuns6AH1jiT3TeIRZ_KPRTLJYJe9ckrJanWY/viewform?usp=send_form}
-% \\
-
 Actually, this survey gives us very useful information about the Pluto framework. We can understand how "usable" it is and which modifications should be performed to improve the user's experience, also thanks to the visualization of the answers in a graphical way.
 Through the questions on the exercises development we can understand how difficult it is to create, modify,customize and execute a particular application, validating "on field" the use of the various blocks, especially the Mission Modifier, and the usability of the user interface.
 
@@ -737,7 +744,7 @@ The metrics data are put into the table \ref{surveyTable}.
 
 \begin{table} [htdp]
 \centering
-\caption{The values of the metrics for the two exercises}
+\caption{Results of the Metrics of Section \ref{metrics}}
 \label{surveyTable}
     \begin{tabular}{|l|c|c|c|c|c|c|c|c|c|}
     \hline
@@ -758,16 +765,63 @@ From the testers' comments we understood that this difficulty derives from the l
 We realized that a complete reference of the entities and an example of use of them is essential in order to simplify the developer duties.
 \\
 
-The questions in the survey follow a pattern where, firstly we asked for a difficulty mark for each exercise's step (from "easy" to "very hard" or "not solved") and then we asked for a written comment or an advice about it.
+%inizio
+The questions in the survey follow a pattern where, at first we ask for a difficulty mark for each exercise's step (from "easy" to "very hard" or "not solved") and then we ask for a written comment or an advice about it.
 \\
-Concerning the first exercise, as already highlighted by the above table, the answers on the first two steps are quite similar and the testers answered with "easy" or "normal" grades with few advices.
-\\
-On the other hand, in the third step some testers gave an "hard" grade complaining about the difficulty of dealing with the reset of a Trip or how to understand when a Trip is expired.
+Concerning the first exercise,  the answers to the first two steps are quite similar.
+The testers gave an "easy" or "normal" grade with few advices, as shown in figures \ref{fig:survey2} and \ref{fig:survey3}.
 \\
 
-Regarding the Main Application exercises, all the steps were considered from "very easy" to "normal". 
+ \begin{figure}[H]
+   \centering
+   \includegraphics[width=\linewidth]{pictures/survey2.png}
+   \label{fig:survey2}
+ \end{figure}
+
+ \begin{figure}[H]
+   \centering
+   \includegraphics[width=\linewidth]{pictures/survey3.png}
+   \label{fig:survey3}
+ \end{figure}
+
+On the other hand, in the third step some testers gave an "hard" grade complaining about the difficulty of dealing with the reset of a Trip or how to understand when a Trip is expired, as shown in figure \ref{fig:survey4}.
+
+ \begin{figure}[H]
+   \centering
+   \includegraphics[width=\linewidth]{pictures/survey4.png}
+   \label{fig:survey4}
+ \end{figure}
+
+We also ask the testers to evaluate the general functioning of the editor, asking them to leave a textual feedback to give us suggestions to improve its usability, as shown in figure \ref{fig:survey1}.
+
+ \begin{figure}[H]
+   \centering
+   \includegraphics[width=\linewidth]{pictures/survey1.png}
+   \label{fig:survey1}
+ \end{figure}
+
+Regarding the Main Application exercise, all the steps were considered from "very easy" to "normal", as shown in figures \ref{fig:survey8},\ref{fig:survey9} and \ref{fig:survey10}.
 The users also gave us some suggestions which made us improve some features that appeared tricky or not easily understandable.
 \\
+
+\begin{figure}[H]
+   \centering
+   \includegraphics[width=\linewidth]{pictures/survey8.png}
+   \label{fig:survey8}
+ \end{figure}
+ 
+ \begin{figure}[H]
+   \centering
+   \includegraphics[width=\linewidth]{pictures/survey9.png}
+   \label{fig:survey9}
+ \end{figure}
+ 
+\begin{figure}[H]
+   \centering
+   \includegraphics[width=\linewidth]{pictures/survey10.png}
+   \label{fig:survey10}
+ \end{figure}
+ 
 A complete description of the answers to the user survey can be found in the Appendix \ref{appendixB}.
 \\
 
@@ -779,6 +833,8 @@ Basing on this result, we can say that the Pluto Main Application really simplif
 Using our framework, it takes only 5 minutes to define a Mission and execute it.
 Instead, in order to make the same thing using the Crazyflie official API, the tester faced many problems since the beginning.
 \\
+
+\newpage
 
 \section{Performance evaluation}\label{performance}
 
@@ -983,6 +1039,8 @@ We noticed that this fluctuation is independent from the Graphical Editor proces
 We realized that the Graphical Editor does not require an high amount of resources during the generation of the Main Application template code.
 \\
 
+\newpage
+
 Instead, The Main Application evaluation gave us different results, shown in the following figures.
 \\
 
@@ -1020,7 +1078,9 @@ Instead, The Main Application evaluation gave us different results, shown in the
 
 The diagram of figure \ref{fig:mainApp1} describes the resources consumption of the Main Application with a fixed number of missions and trips and a raising number of drones. We created 10 missions with 5 trips each.
 \\
-The CPU load is constantly over 95\% due to the high number of active threads.
+The CPU load is constantly over 95\%: we suppose that this is caused by the simulation environment we built in order to execute the tests. For example we simulate the Drone flight and the Action execution by pausing the related thread for two seconds. Our believe that this brought the system to require more resources than in a normal situation.
+\\
+
 The memory consumption value is even fewer than the one obtained in the test of the Graphical Editor, and the fluctuation is less highlighted.
 \\
 
@@ -1103,11 +1163,3 @@ in this way if the user creates 100 missions at least 100 threads are created.
 \\
 This behavior lets us think about the possibility to run each mission on a different machine, in order to reduce the threads concurrency and reduce the CPU load.
 \\
-
-% It's important to put in evidence an unexpected situation regarding the third experiment, the one in which we fixed the number of trips and drones.
-% When we reached a certain number of missions, the system fell in a deadlock situation.
-% For example, whit 15 drones and 5 trips, we had no problems until we reached 25 missions.
-% Then, when we raised the amount of available drones, for example setting it to 20, the system didn't fall in the deadlock situation and all the missions were completed successfully.
-% \\
-% This problem put in evidence a possible dependency between the number of missions created and the number of available drones.
-% The causes of this issue could be hardware related, meaning that a more powerful machine could be able to complete all the missions even with a low number of available drones.

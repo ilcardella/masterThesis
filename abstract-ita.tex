@@ -8,19 +8,18 @@ Tutti questi sistemi trattano applicazioni outdoor, nelle quali droni di dimensi
 Noi vogliamo affrontare il contesto indoor, e nessuno dei sistemi esistente è completamente adatto per esso.
 Infatti, il contesto indoor implica lo sviluppo di applicazioni con requisiti differenti rispetto a quello outdoor:
 c'è bisogno di un piccolo numero di droni (5/10), ciascuno che esegua un'azione diversa, indipendentemente da tutti gli altri, mentre in ambiente outdoor generalmente c'è bisogno di un gran numero di droni che eseguano la stessa azione.
-Abbiamo formalizzato questo problema con il concetto di \textit{Trip}, che non è altro che un movimento di un drone da un punto A ad un punto B al termine del quale viene eseguita un'azione (scatto di una foto, misurazione di una grandezza fisica ecc.).
-Nessuno dei sistemi esistenti fornisce il concetto di Trip.
+Per risolvere questo problema proponiamo il concetto di \textit{Trip}, che non è altro che un movimento di un drone da un punto A ad un punto B al termine del quale viene eseguita un'azione (scatto di una foto, misurazione di una grandezza fisica ecc.).
+Nessuno dei modelli di programmazione esistenti fornisce il concetto di Trip.
 Inoltre, il secondo obiettivo importante è quello di rendere il sistema autonomo nella scelta del drone da assegnare ad ogni Trip.
 Ciò significa che l'utente non deve prendere questa importante decisione.
-Da un punto di vista tecnologico, il GPS non può essere utilizzato in contesti indoor, quindi abbiamo bisogno di trovare un metodo di localizzazione indoor appropriato.
-Inoltre, gli ambienti indoor implicano piccole aree che sono di solito piene di persone e / o ostacoli, quindii droni da utilizzare devono essere necessariamente piccoli, per evitare il più possibile le collisioni.
-Queste limitazioni sulle dimensioni dei droni comportano molti problemi come la breve autonomia delle loro batterie e il peso massimo trasportabile.
 Per rispondere a tutti questi problemi, abbiamo sviluppato il framework di programmazione Pluto.
 Pluto ha due componenti principali: il Graphical Editor e la Main Application.
-Con il primo, un programmatore può costruire un'applicazione semplicemente collegando dei blocchi.
+Con il primo, un programmatore può costruire un'applicazione semplicemente collegando dei blocchi funzionali.
 Ogni blocco implementa una funzionalità precisa, per esempio ce n'è uno che sceglie i droni da assegnare a ciascun Trip, un altro che gestisce la priorità dei Trip ecc.
-Quindi, a partire dal grafico costruito con il Pluto Graphical Editor, lo sviluppatore può generare il codice sorgente del secondo componente principale, la Pluto Main Application.
-L'utente finale utilizza questa Main Application per specificare ed eseguire i compiti nell'ambiente.
-Abbiamo ampiamente testato l'utilizzo del framework di programmazione Pluto, proponendone l'uso a dei tester reali e chiedendo loro un feedback.
+Quindi, grazie alla funzionalità di generazione del codice, il Pluto Graphical Editor genera il codice sorgente del secondo componente principale, la Pluto Main Application.
+L'utente finale utilizza questa Main Application per definire ed eseguire i compiti nell'ambiente.
+Il punto di forza del nostro framework è la sua architettura scalabile che lo rende indipendente dalle API di navigazione utilizzate.
+Ciò significa che il sistema è capace di gestire l'invio dei droni e i loro fallimenti indipendentemente dall'algoritmo di navigazione specifico.
+Abbiamo testato l'utilizzo del framework di programmazione Pluto, proponendone l'uso a dei tester reali e chiedendo loro un feedback.
 Inoltre abbiamo misurato le prestazioni software e hardware e abbiamo cercato di implementare alcune applicazioni esistenti con esso.
 Grazie alla fase di valutazione, abbiamo notato che, anche se è caratterizzato da alcuni limiti, Pluto è utile per semplificare lo sviluppo di applicazioni per team di droni.
