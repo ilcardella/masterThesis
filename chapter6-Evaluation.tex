@@ -295,7 +295,7 @@ Then, when the missions start, the drones will take photos over these spots and,
 
 \begin{figure}[h!]
   \centering
-  \includegraphics[width=\linewidth]{pictures/alfalfaArea.png}
+  \includegraphics[width=7cm,height=7cm]{pictures/alfalfaArea.png}
   \caption{The circular area to monitor}
   \label{fig:alfalfaArea}
 \end{figure}
@@ -311,16 +311,16 @@ To describe in a detailed way the execution flow, we now show the sequence diagr
   \label{fig:alfalfaSequence1}
 \end{figure}
 
+In figure \ref{fig:alfalfaSequence1} we show the first calls after the user clicks on the Start button in the Monitor Page.
+The Main Application receives the start command from the user, then activates the Engine entity. Now, a new Thread is created and started for each missions. The status of the Missions are sent to the Pluto Main Application and showed to the final user, through the \textit{log()} function.
+\\
+
 \begin{figure}[h!]
   \centering
   \includegraphics[width=\linewidth]{pictures/Alfalfa_Sequence_MissionExecution.png}
   \caption{Sequence diagram of the mission execution flow}
   \label{fig:alfalfaSequence2}
 \end{figure}
-
-In figure \ref{fig:alfalfaSequence1} we show the first calls after the user clicks on the Start button in the Monitor Page.
-The Main Application receives the start command from the user, then activates the Engine entity. Now, a new Thread is created and started for each missions. The status of the Missions are sent to the Pluto Main Application and showed to the final user, through the \textit{log()} function.
-\\
 
 In figure \ref{fig:alfalfaSequence2} the Mission Execution is shown.
 The \textit{Mission Thread} entity manages the Mission flow through all the blocks and the execution of the logic inside them.
@@ -332,6 +332,8 @@ After that, the mission thread waits for the completion of the started Trip, and
 Finally, the completed Trip is removed from the list of trips to be executed and the Drone status is set to FREE.
 Otherwise, if the launched Trips was the last one, the Mission status would have been set to COMPLETED.
 \\
+
+\newpage
 
 \begin{figure}[h!]
   \centering
@@ -636,9 +638,11 @@ To solve the first part of the second step of the exercise, the user has to unde
 Since we ask him to re-insert the failed trips in the queue of the trips to launch, he has to put the Priority Manager between the Trip Monitor and the Drone Allocator, as in figure \ref{fig:secondStepPriority}.
 \\
 
+\newpage
+
 \begin{figure}[htb]
   \centering
-  \includegraphics[width=\linewidth,height=8cm]{pictures/secondStep.png}
+  \includegraphics[width=10cm,height=8cm]{pictures/secondStep.png}
   \caption{Solution of the second step with Priority Manager}
   \label{fig:secondStepPriority}
 \end{figure}
@@ -647,6 +651,8 @@ Then to add the Delay feature in the diagram the user needs to do the same thing
 
 This is a useful step to compute, because the user learns how to use the connection element, that is a very important feature in the Pluto framework, and also the Priority Manager and Clock blocks.
 \\
+
+\newpage
 
 \begin{figure}[htb]
   \centering
@@ -662,6 +668,8 @@ So, he has to use the Mission Modifier block, through which he can insert his cu
 
 This is a very useful step to compute, because the user learns how to use Mission Modifier block, which is an important feature of the Pluto Editor, because it allows the programmer to insert his custom code to characterize the application.
 \\
+
+\newpage
 
 \begin{figure}[htb]
   \centering
@@ -779,21 +787,23 @@ Concerning the first exercise,  the answers to the first two steps are quite sim
 The testers gave an "easy" or "normal" grade with few advices, as shown in figures \ref{fig:survey2} and \ref{fig:survey3}.
 \\
 
- \begin{figure}[H]
+ \begin{figure}[h!]
    \centering
    \includegraphics[width=\linewidth]{pictures/survey2.png}
    \label{fig:survey2}
+   \caption{Fist step of exercise 1 results}
  \end{figure}
 
- \begin{figure}[H]
+ \begin{figure}[h!]
    \centering
    \includegraphics[width=\linewidth]{pictures/survey3.png}
    \label{fig:survey3}
+   \caption{Second step of exercise 1 results}
  \end{figure}
 
 On the other hand, in the third step some testers gave an "hard" grade complaining about the difficulty of dealing with the reset of a Trip or how to understand when a Trip is expired, as shown in figure \ref{fig:survey4}.
 
- \begin{figure}[H]
+ \begin{figure}[h!]
    \centering
    \includegraphics[width=\linewidth]{pictures/survey4.png}
    \label{fig:survey4}
@@ -801,7 +811,7 @@ On the other hand, in the third step some testers gave an "hard" grade complaini
 
 We also ask the testers to evaluate the general functioning of the editor, asking them to leave a textual feedback to give us suggestions to improve its usability, as shown in figure \ref{fig:survey1}.
 
- \begin{figure}[H]
+ \begin{figure}[h!]
    \centering
    \includegraphics[width=\linewidth]{pictures/survey1.png}
    \label{fig:survey1}
@@ -811,19 +821,19 @@ Regarding the Main Application exercise, all the steps were considered from "ver
 The users also gave us some suggestions which made us improve some features that appeared tricky or not easily understandable.
 \\
 
-\begin{figure}[H]
+\begin{figure}[h!]
    \centering
    \includegraphics[width=\linewidth]{pictures/survey8.png}
    \label{fig:survey8}
  \end{figure}
  
- \begin{figure}[H]
+ \begin{figure}[h!]
    \centering
    \includegraphics[width=\linewidth]{pictures/survey9.png}
    \label{fig:survey9}
  \end{figure}
  
-\begin{figure}[H]
+\begin{figure}[h!]
    \centering
    \includegraphics[width=\linewidth]{pictures/survey10.png}
    \label{fig:survey10}
