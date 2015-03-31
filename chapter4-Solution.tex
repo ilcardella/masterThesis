@@ -47,7 +47,7 @@ So, to summarize, we identified the following entities:
 
 \begin{figure}[h!]
   \centering
-  \includegraphics[width=\linewidth]
+  \includegraphics[width=\linewidth, height=9cm]
   {pictures/EntityRelationship.png}
   \caption{Relationship among model entities}
   \label{fig:EntityRelationship}
@@ -301,8 +301,6 @@ The inserted code is executed by the system when the Mission object reach this b
   \label{fig:missionmodifier}
 \end{figure}
 
-\newpage
-
 \underline{PriorityManager block}
 \\
 
@@ -384,6 +382,8 @@ For example, after the Mission Creator every Mission's status is set to UNEXECUT
 The Start and End blocks do not contain any logic, they simply represent the beginning and the end of the Mission flow.
 \\
 
+\newpage
+
 \begin{figure}[htb]
   \centering
   \includegraphics[width=\linewidth]{pictures/BlocksDiagram.png}
@@ -460,10 +460,12 @@ The Pluto Main Application is the final application that acts as a Ground Contro
 In this Section we explain how it works and how it can be used.
 \\
 Everything starts in the Mission Page where the user can define the tasks that will be carried out by the drones. After clicking to the "Add Mission" button the user is asked to set a name for the Mission.
+\\
 
-\begin{figure}[H]
+\begin{figure}[h!]
   \centering
-  \includegraphics[width=\linewidth]{pictures/MissionPage.png}
+  \includegraphics[width=\linewidth,height=8cm]
+  {pictures/MissionPage.png}
   \caption{Mission Page interface}
   \label{fig:MissionPage}
 \end{figure}
@@ -478,8 +480,9 @@ The single Trip contains information about the Action to execute once point B is
 \\
 In order to add a new Trip the user can drag and drop the desired Action from the upper list (letter A in figure \ref{fig:TripsPage}) to the map displayed below (letter B in figure \ref{fig:TripsPage}).
 The added trips are shown on the right, in a proper list (letter C in figure \ref{fig:TripsPage}).
+\\
 
-\begin{figure}[H]
+\begin{figure}[h!]
   \centering
   \includegraphics[width=\linewidth]{pictures/TripsPage.png}
   \caption{Trips Page interface}
@@ -503,10 +506,12 @@ Of course the "Start" button starts the execution of the created missions, while
 The first is the Return To Launch and it makes all the drones return to the home location.
 The second option makes all the drones land in their current locations. 
 After the stop command, the missions status is preserved and the execution of the Mission can be started again in the future.
+\\
 
-\begin{figure}[H]
+\begin{figure}[h!]
   \centering
-  \includegraphics[width=\linewidth]{pictures/MonitorPage.png}
+  \includegraphics[width=\linewidth,height=9cm]
+  {pictures/MonitorPage.png}
   \caption{Monitor Page interface}
   \label{fig:MonitorPage}
 \end{figure}
@@ -543,7 +548,7 @@ This is done inside the same Trip entity, simply switching its \textit{sourceLoc
 Later this block was eliminated, since we decided to decouple the two journeys.
 It is sufficient to create a new Trip entity for the return journey.
 
-\begin{figure}[H]
+\begin{figure}[h!]
   \centering
   \includegraphics[width=\linewidth]{pictures/NoTrip.png}
   \caption{Solution without the Trip concept}
@@ -562,7 +567,7 @@ This happened because the MissionCreator managed the first assignment of a Drone
 Furthermore, there was not the MissionModifier block, but only the PriorityManager case, shown in figure \ref{fig:noMM}, so the programmer could not insert his custom code in the application.
 
 
-\begin{figure}[H]
+\begin{figure}[h!]
   \centering
   \includegraphics[width=\linewidth]{pictures/NoMM.png}
   \caption{Solution without the MissionModifier block}

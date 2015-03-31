@@ -27,7 +27,7 @@ The third part, the controller, accepts input and converts it to commands for th
 \\
 
 \begin{figure}[h!]
-\includegraphics[width=\linewidth]
+\includegraphics[width=\linewidth,height=9cm]
 {pictures/MVC.png}
 \caption{MVC design applied to the Main Application}
 \label{fig:mvc}
@@ -95,7 +95,7 @@ In Figure \ref{fig:observerPattern} there is a sequence diagram that describes h
 The "Observe" message in the sequence is the declaration of a block that wants to observe another block. The "Notify" message represents the notification that a block sends to its observers when it changes its status, or in this case when the block ends the management of the Mission object.
 \\
 
- \begin{figure}
+ \begin{figure}[h!]
  \includegraphics[width=\linewidth]
  {pictures/pub_sub.png}
  \caption{Observer design pattern example}
@@ -228,6 +228,7 @@ For the concrete actuation of the sensing tasks required by each application, we
 
 The Crazyflie is a tiny quadcopter often referred to as a nano-quad, built using the PCB itself as the frame,developed solely by open source tools. The Crazyflie specs are the following:
 
+\newpage
 
 \begin{itemize}
 \item {Small and lightweight, around 19g and about 90mm motor to motor

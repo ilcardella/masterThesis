@@ -34,7 +34,9 @@ Hereinafter we analyzed some  example applications, showing whether they can be 
 In this Section we describe three applications we developed with the Pluto programming framework.
 They are all represented by the basic Pluto graph of figure \ref{fig:basicGraph}:
 
- \begin{figure}[H]
+\newpage
+
+ \begin{figure}[h!]
    \centering
    \includegraphics[width=\linewidth]{pictures/BasicBlocksDiagram.png}
    \caption{The basic graph pattern of OF, DD and WIF applications}
@@ -62,7 +64,7 @@ The drones fly to the assigned locations and, if one of them finds the object it
 Figure \ref{fig:OF} shows the basic behavior of the OF application:
 
 
-\begin{figure}[H]
+\begin{figure}[h!]
   \centering
   \includegraphics[width=\linewidth]{pictures/OF.png}
   \caption{The basic functioning of the Object-finder application}
@@ -83,9 +85,7 @@ The TripMonitor changes the status of the executing Trip depending on the outcom
 if the Drone manages to find the lost object, the Trip status is set to COMPLETED, otherwise, for example if the Drone crashes, the Trip status is set to FAILED.
 
 After the first Trip, the Mission entity goes again to the DroneAllocator, in order to execute also the other trips in the Mission, that is to say in order to send drones in the other specified locations to look for the object.
-
-
-\newpage
+\\
 
 \textbf{Warehouse item-finder (WIF)}
 \\
@@ -139,6 +139,7 @@ if the Drone accomplishes to bring the box to the patient, the Trip status is se
 After the first group of trips, the Mission entities go again to the DroneAllocator, in order to execute also the other trips and deliver the remaining boxes.
 
 \textbf{Summary}
+\\
 
 We built the Pluto programming framework in order to address the problems issued by the indoor context.
 We based the development of Pluto on the three applications described above, which deal with houses, warehouses and hospitals contexts.
@@ -155,20 +156,23 @@ A swarm of drones can pollinate the alfalfa plants and also monitor them for pes
 So, the whole application provide three periodic actions: searching for pests, searching for diseases, and looking for flowers in bloom.
 Each one of these actions is achieved by taking pictures of the plants.
 The user may need to define time constraints within the pollination action must be completed.
+\\
+Thanks to the \textit{Take photo} action, already implemented in Pluto, the drones are able to perform the monitoring of leaves for pests, diseases and flowers in bloom.
+\\
 
 The following Pluto Editor graph describes the behavior of the Alfalfa Crop Monitoring and Pollination\cite{alfalfa} application:
+\\
 
-\begin{figure}[H]
+\newpage
+
+\begin{figure}[h!]
   \centering
   \includegraphics[width=\linewidth]{pictures/Alfalfa_Diagram.png}
   \caption{Pluto graph for the Alfalfa Crop Monitoring and Pollination application}
   \label{fig:alfalfaGraph}
 \end{figure}
 
-\newpage 
 
-Thanks to the \textit{Take photo} action, already implemented in Pluto, the drones are able to perform the monitoring of leaves for pests, diseases and flowers in bloom.
-\\
 
 The flow starts with the MissionCreator block, that creates a Mission instance to propagate in the graph.
 In this case, the Mission contains the list of locations where the drones have to take the pictures.
@@ -287,6 +291,7 @@ So, we create three Mission entities, and, for each of them, we drag and drop th
 The figure \ref{fig:alfalfaArea} represents the trips of one of the three Missions.
 Each one of the three missions has its own map where the user distributes the trips to perform.
 Then, when the missions start, the drones will take photos over these spots and, in case of bloom, new Trips will be created to Pollinate the area.
+\\
 
 \begin{figure}[h!]
   \centering
@@ -319,9 +324,11 @@ The Main Application receives the start command from the user, then activates th
 
 In figure \ref{fig:alfalfaSequence2} the Mission Execution is shown.
 The \textit{Mission Thread} entity manages the Mission flow through all the blocks and the execution of the logic inside them.
-For example, the first two method calls belong to the Drone Allocator. 
+For example, the first two method calls belong to the Drone Allocator.
+\\
 For each Trip a new \textit{Trip Thread} instance is created, that will manage the parallel execution of the trips.
 After that, the mission thread waits for the completion of the started Trip, and then the Mission Status is set to STANDBY, since there are other trips to be executed.
+\\
 Finally, the completed Trip is removed from the list of trips to be executed and the Drone status is set to FREE.
 Otherwise, if the launched Trips was the last one, the Mission status would have been set to COMPLETED.
 \\
